@@ -3,7 +3,7 @@ void ButtonDevice::setup() {
   switches.init(ioUsingArduino(), SWITCHES_NO_POLLING, true);
   // Note: after pressing the button 1 non-repeating task is scheduled with TaskManagerIO
   //  and lives forever.
-  switches.addSwitch(PUSH_BUTTON_PIN, buttonDevice.onPress, NO_REPEAT);
+  switches.addSwitch(settings.PUSH_BUTTON_PIN, buttonDevice.onPress, NO_REPEAT);
 }
 
 /*

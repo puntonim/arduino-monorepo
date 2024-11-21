@@ -1,6 +1,3 @@
-const int PUSH_BUTTON_PIN = 2;
-
-
 class ButtonDevice {
 
 private:

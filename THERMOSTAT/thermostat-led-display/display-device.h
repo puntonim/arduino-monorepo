@@ -1,8 +1,5 @@
 LiquidCrystalI2C_RS_EN(lcd, 0x27, false);
 
-// Seconds after which the display switches off.
-const unsigned int DISPLAY_SWITCHOFF_TIMER = 20;
-
 taskid_t switchOffDisplayTaskId = TASKMGR_INVALIDID;
 taskid_t displayDataTaskId = TASKMGR_INVALIDID;
 
@@ -25,6 +22,7 @@ public:
 };
 
 DisplayDevice displayDevice;
+
 
 class RowPrinter {
 

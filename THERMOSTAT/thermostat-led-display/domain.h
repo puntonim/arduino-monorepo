@@ -1,5 +1,4 @@
 #define SENSOR_ERROR -127
-const unsigned int TARGET_T = 18;
 
 taskid_t checkPeriodicallyTaskId = TASKMGR_INVALIDID;
 

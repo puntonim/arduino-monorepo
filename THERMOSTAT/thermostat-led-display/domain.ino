@@ -22,7 +22,7 @@ void Domain::_checkTemperature() {
     errorManager.removeDs18b20SensorError();
   }
 
-  if (temp < TARGET_T) _switchHeatingOn();
+  if (temp < settings.TARGET_T) _switchHeatingOn();
   else _switchHeatingOff();
 }
 

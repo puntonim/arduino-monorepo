@@ -1,16 +1,16 @@
 //********** CLASS HeatingLedDevice *****************************************************
 
 void HeatingLedDevice::setup() {
-  pinMode(HEATING_LED_PIN, OUTPUT);
+  pinMode(settings.HEATING_LED_PIN, OUTPUT);
 }
 
 void HeatingLedDevice::switchOn() {
-  analogWrite(HEATING_LED_PIN, HEATING_LED_BRIGHTNESS_VALUE);
+  analogWrite(settings.HEATING_LED_PIN, settings.HEATING_LED_BRIGHTNESS_VALUE);
   _isOn = true;
 }
 
 void HeatingLedDevice::switchOff() {
-  analogWrite(HEATING_LED_PIN, 0);
+  analogWrite(settings.HEATING_LED_PIN, 0);
   _isOn = false;
 }
 
@@ -29,16 +29,16 @@ void HeatingLedDevice::toggle() {
 //********** CLASS ErrorLedDevice *******************************************************
 
 void ErrorLedDevice::setup() {
-  pinMode(ERROR_LED_PIN, OUTPUT);
+  pinMode(settings.ERROR_LED_PIN, OUTPUT);
 }
 
 void ErrorLedDevice::switchOn() {
-  analogWrite(ERROR_LED_PIN, 100);
+  analogWrite(settings.ERROR_LED_PIN, settings.ERROR_LED_BRIGHTNESS_VALUE);
   _isOn = true;
 }
 
 void ErrorLedDevice::switchOff() {
-  analogWrite(ERROR_LED_PIN, 0);
+  analogWrite(settings.ERROR_LED_PIN, 0);
   _isOn = false;
 }
 

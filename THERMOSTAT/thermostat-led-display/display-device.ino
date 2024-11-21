@@ -1,5 +1,3 @@
-#define DO_ENABLE_FILLING_BLANKS true
-
 //********** CLASS DisplayDevice ********************************************************
 
 void DisplayDevice::setup() {
@@ -38,7 +36,7 @@ void DisplayDevice::switchOn(bool doCancelExistingSwitchOffDisplayTask /* = true
     cancelTask(switchOffDisplayTaskId);
   }
   // And schedule a new task to switch off display.
-  switchOffDisplayTaskId = taskManager.schedule(onceSeconds(DISPLAY_SWITCHOFF_TIMER), [] {
+  switchOffDisplayTaskId = taskManager.schedule(onceSeconds(settings.DISPLAY_SWITCHOFF_TIMER), [] {
     displayDevice.switchOff();
   });
 
@@ -77,7 +75,7 @@ void DisplayDevice::_printFirstRow() {
   RowPrinter p(0);
   if (domain.isHeatingOn()) p.print("ON ");
   else p.print("OFF ");
-  p.print(TARGET_T);
+  p.print(settings.TARGET_T);
   p.print("\xDF");  // Or: p.print("\xDF""C");
   p.printFillingBlanks();
 }

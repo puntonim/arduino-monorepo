@@ -23,9 +23,6 @@
  *  - TaskManagerIO by davetcc https://github.com/TcMenu/TaskManagerIO
  */
 
-// Set IS_DEBUG to false on PRODUCTION.
-#define IS_DEBUG true
-
 #include <list>
 
 #include <SHTSensor.h>
@@ -34,6 +31,7 @@
 #include <IoAbstractionWire.h>
 #include <TaskManagerIO.h>
 
+#include "settings.h"
 #include "common-exceptions.h"
 #include "errors.h"
 #include "display-device.h"
@@ -42,6 +40,7 @@
 #include "led-device.h"
 #include "button-device.h"
 #include "domain.h"
+
 
 void setup() {
 #if IS_DEBUG == true
@@ -67,8 +66,6 @@ void loop() {
 
 /*
 TODO
- - Github!!
-
  - move the wiring settings to the main file
    or to a header file.
 
