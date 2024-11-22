@@ -1,8 +1,11 @@
 void Domain::setup() {
+  // Set the callback function on the button press to switch on the display.
+  buttonDevice.setOnPressCallback([&displayDevice] { displayDevice.switchOn(); });
+
   // Run `checkPeriodically` so it reacts asap after boot. Without this
   //  it would run after the period set in scheduleFixedRate, so 1 sec.
   run();
-  checkPeriodicallyTaskId = taskManager.scheduleFixedRate(1000, [] {
+  runTaskId = taskManager.scheduleFixedRate(1000, [] {
     domain.run();
   });
 }

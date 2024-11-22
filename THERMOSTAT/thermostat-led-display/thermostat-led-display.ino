@@ -24,6 +24,7 @@
  */
 
 #include <list>
+#include <functional>
 
 #include <SHTSensor.h>
 #include <DallasTemperature.h>
@@ -66,11 +67,7 @@ void loop() {
 
 /*
 TODO
- - move the wiring settings to the main file
-   or to a header file.
-
  - Refactor:
-    - the button is told by the domain what to execute on press (devices are agnostic of domain logic and other devices)
     - the display is told by the domain if heating is ON/OFF
     - the display is told by the domain what are the sensor readings at this second
       The domain.run() runs every 2 mins,

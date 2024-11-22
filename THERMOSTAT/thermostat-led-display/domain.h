@@ -1,6 +1,6 @@
 #define SENSOR_ERROR -127
 
-taskid_t checkPeriodicallyTaskId = TASKMGR_INVALIDID;
+taskid_t runTaskId = TASKMGR_INVALIDID;
 
 
 class Domain {

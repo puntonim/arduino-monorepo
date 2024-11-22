@@ -49,7 +49,7 @@ void _printExtraInfo() {
   #if IS_DEBUG == true
   Serial.println((String) "\nswitchOffDisplayTaskId: " + switchOffDisplayTaskId);
   Serial.println((String) "displayDataTaskId: " + displayDataTaskId);
-  Serial.println((String) "checkPeriodicallyTaskId: " + checkPeriodicallyTaskId);
+  Serial.println((String) "runTaskId: " + runTaskId);
   Serial.println((String) "toggleErrorLedTaskId: " + toggleErrorLedTaskId);
   #endif
 }
