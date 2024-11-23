@@ -1,7 +1,4 @@
 void Domain::setup() {
-  // Set the callback function on the button press to switch on the display.
-  buttonDevice.setOnPressCallback([&displayDevice] { displayDevice.switchOn(); });
-  
   std::shared_ptr<bool> _isHeatingOnPointer(&_isHeatingOn);
   // Pass `_isHeatingOnPointer` to all devices that needs it (dependency injection).
   displayDevice.setIsHeatingOnPointer(_isHeatingOnPointer);

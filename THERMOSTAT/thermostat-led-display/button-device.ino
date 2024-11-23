@@ -9,14 +9,6 @@ void ButtonDevice::setup() {
   switches.addSwitch(settings.PUSH_BUTTON_PIN, onButtonPress, NO_REPEAT);
 }
 
-void ButtonDevice::setOnPressCallback(std::function<void()> callback) {
-  _onPressCallback = callback;
-}
-
-std::function<void()> ButtonDevice::getOnPressCallback() {
-  return _onPressCallback;
-}
-
 /*
  * When the button is pressed, execute the callback.
  *
@@ -26,5 +18,5 @@ std::function<void()> ButtonDevice::getOnPressCallback() {
 static void onButtonPress(uint8_t pin, bool isHeldDown) {
   if (isHeldDown) return;
 
-  buttonDevice.getOnPressCallback()();
+  pubSub.publish(new ButtonPressEvent());
 }

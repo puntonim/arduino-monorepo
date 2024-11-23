@@ -6,6 +6,10 @@ void DisplayDevice::setup() {
   // Most I2C backpacks have the backlight on pin 3.
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
+
+  pubSub.subscribe([](ButtonPressEvent* pEvent) {
+    displayDevice.switchOn();
+  });
 }
 
 void DisplayDevice::toogle() {

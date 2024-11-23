@@ -41,8 +41,8 @@
 #include "ds18b20-sensor.h"
 #include "led-device.h"
 #include "button-device.h"
+#include "pubsub-utils.h"
 #include "domain.h"
-
 
 void setup() {
 #if IS_DEBUG == true
