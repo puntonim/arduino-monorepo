@@ -66,7 +66,7 @@ void setup() {
   // ATTENTION: when using the task manager, mind that only 1 task can draw the display.
   //  Never draw to the display in two tasks.
   taskManager.scheduleFixedRate(250, [] {
-    lcd.setCursor(0, 1); // col, row.
+    lcd.setCursor(0, 1);  // col, row.
     float secondsFraction = millis() / 1000.0F;
     lcd.print(secondsFraction);
   });

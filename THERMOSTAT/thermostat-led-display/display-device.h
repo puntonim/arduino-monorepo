@@ -14,11 +14,22 @@ private:
   void _printFirstRow();
   void _printSecondRow();
 
+  // Smart pointers to data to print on display.
+  // Note: by smart pointer e not by reference because references would require
+  //  to be initialized in the contructor, but `displayDevice` is a singleton with
+  //  global scope and cannot know domani._isHeatingOn at construction time.
+  //  Also, using smart pointers is a better solution.
+  std::shared_ptr<const bool> _isHeatingOnPointer;  // `const` so this class cannot change its value.
+  // const float &_ds18b20SensorData;
+  // const float &_sht85SensorData[2];
+  // const std::list<char*> &_errorMessageList;
+
 public:
   void setup();
   void toogle();
   void switchOff(bool doResetSwitchOffDisplayTaskId = true);
   void switchOn(bool doCancelExistingSwitchOffDisplayTask = true);
+  void setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer);
 };
 
 DisplayDevice displayDevice;

@@ -19,11 +19,19 @@ void HeatingLedDevice::toggle() {
   else switchOn();
 }
 
+void HeatingLedDevice::autoUpdateStatus() {
+  if (*_isHeatingOnPointer == true) toggle();
+  else switchOff();
+}
+
 // We need a slow blinking for the heating LED, so no need for the blinking functions but 
 //  instead we manage the blinking in Domain::run() (and with its same slow period of 1 sec).
 // void HeatingLedDevice::startBlinking() {}
 // void HeatingLedDevice::stopBlinking() {}
 
+void HeatingLedDevice::setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer) {
+  _isHeatingOnPointer = isHeatingOnPointer;
+}
 
 
 //********** CLASS ErrorLedDevice *******************************************************

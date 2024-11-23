@@ -14,7 +14,6 @@ private:
 public:
   void setup();
   void run();
-  bool isHeatingOn();
 };
 
 Domain domain;

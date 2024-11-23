@@ -25,6 +25,7 @@
 
 #include <list>
 #include <functional>
+#include <memory>
 
 #include <SHTSensor.h>
 #include <DallasTemperature.h>
@@ -55,6 +56,7 @@ void setup() {
   errorLedDevice.setup();
   heatingLedDevice.setup();
   domain.setup();
+  // Setup the display as last, so when it switches on is updated with the latest info.
   displayDevice.setup();
 }
 

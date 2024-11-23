@@ -73,7 +73,7 @@ void DisplayDevice::_printData() {
 
 void DisplayDevice::_printFirstRow() {
   RowPrinter p(0);
-  if (domain.isHeatingOn()) p.print("ON ");
+  if (*_isHeatingOnPointer == true) p.print("ON ");
   else p.print("OFF ");
   p.print(settings.TARGET_T);
   p.print("\xDF");  // Or: p.print("\xDF""C");
@@ -154,6 +154,9 @@ void DisplayDevice::_printSecondRow() {
   p.printFillingBlanks();
 }
 
+void DisplayDevice::setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer) {
+  _isHeatingOnPointer = isHeatingOnPointer;
+}
 
 
 //********** CLASS RowPrinter ***********************************************************
