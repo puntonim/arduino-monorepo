@@ -7,8 +7,15 @@ void DisplayDevice::setup() {
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
 
-  pubSub.subscribe([](ButtonPressEvent* pEvent) {
-    displayDevice.switchOn();
+  pubSub.subscribe([this](ButtonPressEvent* pEvent) {
+    this->switchOn();
+  });
+
+  pubSub.subscribe([this](HeatingOnEvent* pEvent) {
+    this->_isHeatingOn = true;
+  });
+  pubSub.subscribe([this](HeatingOffEvent* pEvent) {
+    this->_isHeatingOn = false;
   });
 }
 
@@ -77,8 +84,10 @@ void DisplayDevice::_printData() {
 
 void DisplayDevice::_printFirstRow() {
   RowPrinter p(0);
-  if (*_isHeatingOnPointer == true) p.print("ON ");
+
+  if (_isHeatingOn == true) p.print("ON ");
   else p.print("OFF ");
+
   p.print(settings.TARGET_T);
   p.print("\xDF");  // Or: p.print("\xDF""C");
   p.printFillingBlanks();
@@ -155,10 +164,6 @@ void DisplayDevice::_printSecondRow() {
     errorManager.removeSht85SensorError();
   }
   p.printFillingBlanks();
-}
-
-void DisplayDevice::setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer) {
-  _isHeatingOnPointer = isHeatingOnPointer;
 }
 
 
