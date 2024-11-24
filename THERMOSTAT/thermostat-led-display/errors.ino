@@ -1,7 +1,3 @@
-ErrorManager::ErrorManager() {
-  // noop.
-}
-
 /**
   * If there is AT LEAST ONE error: blink the error LED and print it on display.
   * If there are ZERO erros: switch off the error LED and clear the msg shown in the display.
@@ -64,28 +60,4 @@ bool ErrorManager::areThereErrors() {
   */
 std::list<char*> ErrorManager::getErrorMessageListForDisplay() {
   return _errorMessageListForDisplay;
-}
-
-int ErrorManager::getErrorMessageListForDisplaySize() {
-  return getErrorMessageListForDisplay().size();
-}
-
-/**
-  * Get an error messages from the list by index.
-  *
-  * It a custom exception handling (as Arduino does not support real exceptions).
-  */
-char* ErrorManager::getErrorMessageForDisplayByIndex(int i, enum CommonException &err) {
-  if (i >= getErrorMessageListForDisplaySize()) {
-    err = CommonException::IndexError;
-    return "";
-  };
-  int j = 0;
-  for (char* msg : getErrorMessageListForDisplay()) {
-    if (j == i) {
-      err = CommonException::Success;
-      return msg;
-    }
-    j++;
-  }
 }

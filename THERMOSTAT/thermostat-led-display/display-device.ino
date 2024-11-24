@@ -97,19 +97,18 @@ void DisplayDevice::_printSecondRow() {
     if (dv.rem != 0) return;
     else {
       // It's time to rotate the msg on the display.
-      int size = errorManager.getErrorMessageListForDisplaySize();
+      int size = errorManager.getErrorMessageListForDisplay().size();
       // If we have already shown all the error msgs, then it's time to show the regular row.
       if (_indexForCurrentlyDisplayedErrorMsg >= (size - 1)) {
         _indexForCurrentlyDisplayedErrorMsg = -1;
       } else {
         // Print the next msg in the list.
         _indexForCurrentlyDisplayedErrorMsg++;
-        CommonException exc;
-        char* msg = errorManager.getErrorMessageForDisplayByIndex(_indexForCurrentlyDisplayedErrorMsg, exc);
-        if (exc == CommonException::Success) {
+        char* msg = ListUtils::getByIndex(errorManager.getErrorMessageListForDisplay(), _indexForCurrentlyDisplayedErrorMsg);
+        if (msg != nullptr) {
           p.print(msg);
           p.printFillingBlanks();
-        } else if (exc == CommonException::IndexError) {
+        } else {
           p.print("IndexError");
           p.printFillingBlanks();
 #if IS_DEBUG == true
