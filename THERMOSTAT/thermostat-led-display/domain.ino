@@ -1,8 +1,4 @@
 void Domain::setup() {
-  std::shared_ptr<bool> _isHeatingOnPointer(&_isHeatingOn);
-  // Pass `_isHeatingOnPointer` to all devices that needs it (dependency injection).
-  displayDevice.setIsHeatingOnPointer(_isHeatingOnPointer);
-  
   // Run `checkPeriodically` so it reacts asap after boot. Without this
   //  it would run after the period set in scheduleFixedRate, so 1 sec.
   run();

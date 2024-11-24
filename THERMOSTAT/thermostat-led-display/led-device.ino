@@ -3,11 +3,11 @@
 void HeatingLedDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
-  pubSub.subscribe([](HeatingOnEvent* pEvent) {
-    heatingLedDevice.startBlinking();
+  pubSub.subscribe([this](HeatingOnEvent* pEvent) {
+    this->startBlinking();
   });  
-  pubSub.subscribe([](HeatingOffEvent* pEvent) {
-    heatingLedDevice.stopBlinking();
+  pubSub.subscribe([this](HeatingOffEvent* pEvent) {
+    this->stopBlinking();
   });  
 }
 
@@ -47,11 +47,11 @@ void HeatingLedDevice::stopBlinking() {
 void ErrorLedDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
-  pubSub.subscribe([](ErrorStateEvent* pEvent) {
-    errorLedDevice.startBlinking();
+  pubSub.subscribe([this](ErrorStateEvent* pEvent) {
+    this->startBlinking();
   });
-  pubSub.subscribe([](NoErrorStateEvent* pEvent) {
-    errorLedDevice.stopBlinking();
+  pubSub.subscribe([this](NoErrorStateEvent* pEvent) {
+    this->stopBlinking();
   });
 }
 

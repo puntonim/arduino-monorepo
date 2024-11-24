@@ -58,9 +58,8 @@ void setup() {
   errorLedDevice.setup();
   heatingLedDevice.setup();
   domainLedDevice.setup();
-  domain.setup();
-  // Setup the display as last, so when it switches on it is updated with the latest info.
   displayDevice.setup();
+  domain.setup();
 }
 
 void loop() {
@@ -72,10 +71,13 @@ void loop() {
 
 /*
 TODO
- - BUG: it seems to freeze after a while, maybe when the computer goes to standby
+ - BUG: it seems to freeze after a while, since 24/11 early (so th ebug must have been 
+    introduced the day before)
 
  - Refactor:
-    - PUB/SUB for ON/OFF in the display (HeatingOnEvent)
+    - merge HeatingOnEvent+HeatingOffEvent in HeatingStatusChangeEvent
+      and ErrorStateEvent+NoErrorStateEvent into ErrorStatusChangeEvent
+      so we save keystrokes
     - PUB/SUB for the sensor data in the display
     - OLD: the display is told by the domain what are the sensor readings at this second
       The domain.run() runs every 2 mins,
