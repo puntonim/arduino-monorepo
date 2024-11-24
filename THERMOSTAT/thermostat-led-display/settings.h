@@ -25,5 +25,7 @@ struct Settings {
   const unsigned int HEATING_LED_BRIGHTNESS_VALUE = 30;
   const unsigned int ERROR_LED_PIN = 9;
   const unsigned int ERROR_LED_BRIGHTNESS_VALUE = 100;
+  const unsigned int DOMAIN_LED_PIN = 5;
+  const unsigned int DOMAIN_LED_BRIGHTNESS_VALUE = 20;
 
 } settings;

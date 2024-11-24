@@ -1,7 +1,7 @@
-//********** CLASS HeatingLedDevice *****************************************************
+//********** CLASS HeatingLedDevice ***************************************************
 
 void HeatingLedDevice::setup() {
-  pinMode(settings.HEATING_LED_PIN, OUTPUT);
+  pinMode(_PIN, OUTPUT);
 
   pubSub.subscribe([](HeatingOnEvent* pEvent) {
     heatingLedDevice.startBlinking();
@@ -12,12 +12,12 @@ void HeatingLedDevice::setup() {
 }
 
 void HeatingLedDevice::switchOn() {
-  analogWrite(settings.HEATING_LED_PIN, settings.HEATING_LED_BRIGHTNESS_VALUE);
+  analogWrite(_PIN, _BRIGHTNESS_VALUE);
   _isOn = true;
 }
 
 void HeatingLedDevice::switchOff() {
-  analogWrite(settings.HEATING_LED_PIN, 0);
+  analogWrite(_PIN, 0);
   _isOn = false;
 }
 
@@ -42,10 +42,10 @@ void HeatingLedDevice::stopBlinking() {
 }
 
 
-//********** CLASS ErrorLedDevice *******************************************************
+//********** CLASS ErrorLedDevice *****************************************************
 
 void ErrorLedDevice::setup() {
-  pinMode(settings.ERROR_LED_PIN, OUTPUT);
+  pinMode(_PIN, OUTPUT);
 
   pubSub.subscribe([](ErrorStateEvent* pEvent) {
     errorLedDevice.startBlinking();
@@ -56,12 +56,12 @@ void ErrorLedDevice::setup() {
 }
 
 void ErrorLedDevice::switchOn() {
-  analogWrite(settings.ERROR_LED_PIN, settings.ERROR_LED_BRIGHTNESS_VALUE);
+  analogWrite(_PIN, _BRIGHTNESS_VALUE);
   _isOn = true;
 }
 
 void ErrorLedDevice::switchOff() {
-  analogWrite(settings.ERROR_LED_PIN, 0);
+  analogWrite(_PIN, 0);
   _isOn = false;
 }
 
@@ -82,4 +82,21 @@ void ErrorLedDevice::stopBlinking() {
   cancelTask(blinkErrorLedTaskId);
   // Make sure the led is off as the task might have left it on.
   switchOff();
+}
+
+
+//********** CLASS DomainLedDevice ****************************************************
+
+void DomainLedDevice::setup() {
+  pinMode(_PIN, OUTPUT); 
+}
+
+void DomainLedDevice::switchOn() {
+  analogWrite(_PIN, _BRIGHTNESS_VALUE);
+  _isOn = true;
+}
+
+void DomainLedDevice::switchOff() {
+  analogWrite(_PIN, 0);
+  _isOn = false;
 }

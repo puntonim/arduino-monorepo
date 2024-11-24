@@ -22,7 +22,8 @@ public:
 class ErrorStateEvent : public BasePubSubEvent {
 public:
   constexpr static char* topic = "ERROR_EVENT";
-  // TODO add error list as constructor arg
+  std::list<char*> messageList;
+  ErrorStateEvent(std::list<char*> messageList) : messageList(messageList) {};
 };
 
 class NoErrorStateEvent : public BasePubSubEvent {
@@ -55,6 +56,7 @@ public:
   void publish(ErrorStateEvent* pEvent);
   void publish(NoErrorStateEvent* pEvent);
   // void publish(SensorDataEvent* pEvent);
+  
   void subscribe(std::function<void(ButtonPressEvent*)> callback);
   void subscribe(std::function<void(HeatingOnEvent*)> callback);
   void subscribe(std::function<void(HeatingOffEvent*)> callback);

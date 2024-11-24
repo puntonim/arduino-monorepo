@@ -12,9 +12,11 @@ void Domain::setup() {
 }
 
 void Domain::run() {
+  domainLedDevice.switchOn();
   _checkTemperature();
 
   // _checkTime(); // TODO implement this.
+  domainLedDevice.switchOff();
 }
 
 void Domain::_checkTemperature() {

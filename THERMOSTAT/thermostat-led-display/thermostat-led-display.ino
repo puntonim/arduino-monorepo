@@ -57,8 +57,9 @@ void setup() {
   buttonDevice.setup();
   errorLedDevice.setup();
   heatingLedDevice.setup();
+  domainLedDevice.setup();
   domain.setup();
-  // Setup the display as last, so when it switches on is updated with the latest info.
+  // Setup the display as last, so when it switches on it is updated with the latest info.
   displayDevice.setup();
 }
 
@@ -71,8 +72,9 @@ void loop() {
 
 /*
 TODO
+ - BUG: it seems to freeze after a while, maybe when the computer goes to standby
+
  - Refactor:
-    - PUB/SUB for all leds (heatingLed, errorLed)
     - PUB/SUB for ON/OFF in the display (HeatingOnEvent)
     - PUB/SUB for the sensor data in the display
     - OLD: the display is told by the domain what are the sensor readings at this second
@@ -84,7 +86,6 @@ TODO
     - The heatingLed should blink independently at 1 sec rate when heating is ON.
       In the future this might be connected to the actual relay and thus be ON/OFF without blinking.
 
- - domain white led
  - add time counter that runs in domain.run()
 
  - new HW:

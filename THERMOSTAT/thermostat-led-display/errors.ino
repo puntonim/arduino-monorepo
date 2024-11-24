@@ -1,10 +1,7 @@
-/**
-  * If there is AT LEAST ONE error: blink the error LED and print it on display.
-  * If there are ZERO erros: switch off the error LED and clear the msg shown in the display.
-  */
 void ErrorManager::_handleErrors() {
-  // If there is AT LEAST ONE error: blink the error LED. Else stop blinking.
-  areThereErrors() ? errorLedDevice.startBlinking() : errorLedDevice.stopBlinking();
+  // If there is AT LEAST ONE error: publish ErrorStateEvent. Else publish NoErrorStateEvent.
+  if (areThereErrors()) pubSub.publish(new ErrorStateEvent(_errorMessageListForDisplay));
+  else pubSub.publish(new NoErrorStateEvent());
 }
 
 void ErrorManager::addDs18b20SensorError() {
@@ -58,6 +55,7 @@ bool ErrorManager::areThereErrors() {
   * Get all the error messages as a list to be printed on the 2nd row of the
   *  16x2 display.
   */
+// TODO remove this when we switched everything to PUB/SUB.
 std::list<char*> ErrorManager::getErrorMessageListForDisplay() {
   return _errorMessageListForDisplay;
 }
