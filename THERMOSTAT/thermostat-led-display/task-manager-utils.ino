@@ -50,7 +50,8 @@ void _printExtraInfo() {
   Serial.println((String) "\nswitchOffDisplayTaskId: " + switchOffDisplayTaskId);
   Serial.println((String) "displayDataTaskId: " + displayDataTaskId);
   Serial.println((String) "runTaskId: " + runTaskId);
-  Serial.println((String) "toggleErrorLedTaskId: " + toggleErrorLedTaskId);
+  Serial.println((String) "blinkHeatingLedTaskId: " + blinkHeatingLedTaskId);
+  Serial.println((String) "blinkErrorLedTaskId: " + blinkErrorLedTaskId);
   #endif
 }
 

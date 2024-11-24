@@ -2,8 +2,7 @@ void Domain::setup() {
   std::shared_ptr<bool> _isHeatingOnPointer(&_isHeatingOn);
   // Pass `_isHeatingOnPointer` to all devices that needs it (dependency injection).
   displayDevice.setIsHeatingOnPointer(_isHeatingOnPointer);
-  heatingLedDevice.setIsHeatingOnPointer(_isHeatingOnPointer);
-
+  
   // Run `checkPeriodically` so it reacts asap after boot. Without this
   //  it would run after the period set in scheduleFixedRate, so 1 sec.
   run();
@@ -15,7 +14,7 @@ void Domain::setup() {
 void Domain::run() {
   _checkTemperature();
 
-  ///////_checkTime(); // TODO implement this.
+  // _checkTime(); // TODO implement this.
 }
 
 void Domain::_checkTemperature() {
@@ -23,6 +22,7 @@ void Domain::_checkTemperature() {
   float temp = ds18b20Sensor.getData(exc);
   if (exc != Ds18b20SensorException::Success) {
     errorManager.addDs18b20SensorError();
+    // TODO publish error event.
   } else {
     errorManager.removeDs18b20SensorError();
   }
@@ -33,12 +33,12 @@ void Domain::_checkTemperature() {
 
 void Domain::_switchHeatingOn() {
   _isHeatingOn = true;
-  // This is how we blink the heating LED (when heating is ON) with a slow
-  //  period, the same period as run(): 1 sec.
-  heatingLedDevice.autoUpdateStatus();
+
+  pubSub.publish(new HeatingOnEvent());
 }
 
 void Domain::_switchHeatingOff() {
   _isHeatingOn = false;
-  heatingLedDevice.autoUpdateStatus();
+
+  pubSub.publish(new HeatingOffEvent());
 }

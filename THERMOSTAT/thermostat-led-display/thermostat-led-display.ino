@@ -70,20 +70,27 @@ void loop() {
 /*
 TODO
  - Refactor:
-    - the display is told by the domain if heating is ON/OFF
-    - the display is told by the domain what are the sensor readings at this second
+    - PUB/SUB for all leds (heatingLed, errorLed)
+    - PUB/SUB for ON/OFF in the display (HeatingOnEvent)
+    - PUB/SUB for the sensor data in the display
+    - OLD: the display is told by the domain what are the sensor readings at this second
       The domain.run() runs every 2 mins,
        but when the button is pressed (and the display is On) then it runs every 1 second, but only
        if it's not running already.
-       This is usefull when reading the T from a remote sensor.
+       This is useful when reading the T from a remote sensor.
        Add a white LED which is on when domain.run() runs.
     - The heatingLed should blink independently at 1 sec rate when heating is ON.
       In the future this might be connected to the actual relay and thus be ON/OFF without blinking.
 
+ - domain white led
  - add time counter that runs in domain.run()
- - add PID algo: https://playground.arduino.cc/Code/PIDLibrary/
- - add rotary encoder for temp (or hold a button)
- - add rotary encoder for time (or hold a button)
+
+ - new HW:
+    - rotary encoders (temp, time)
+    - bluetooth to another board
+    - switch for heating pump
+
+ - Use PID algo in domain: https://playground.arduino.cc/Code/PIDLibrary/
 
  - Optimization: cache sensor data for 1 sec.
    This could be done in each sensor's getData() method.

@@ -2,6 +2,13 @@
 
 void HeatingLedDevice::setup() {
   pinMode(settings.HEATING_LED_PIN, OUTPUT);
+
+  pubSub.subscribe([](HeatingOnEvent* pEvent) {
+    heatingLedDevice.startBlinking();
+  });  
+  pubSub.subscribe([](HeatingOffEvent* pEvent) {
+    heatingLedDevice.stopBlinking();
+  });  
 }
 
 void HeatingLedDevice::switchOn() {
@@ -19,18 +26,19 @@ void HeatingLedDevice::toggle() {
   else switchOn();
 }
 
-void HeatingLedDevice::autoUpdateStatus() {
-  if (*_isHeatingOnPointer == true) toggle();
-  else switchOff();
+void HeatingLedDevice::startBlinking() {
+  // Start the blinking task only if it's not already running.
+  if (blinkHeatingLedTaskId == TASKMGR_INVALIDID) {
+    blinkHeatingLedTaskId = taskManager.scheduleFixedRate(1000, [] {
+      heatingLedDevice.toggle();
+    });
+  }
 }
 
-// We need a slow blinking for the heating LED, so no need for the blinking functions but 
-//  instead we manage the blinking in Domain::run() (and with its same slow period of 1 sec).
-// void HeatingLedDevice::startBlinking() {}
-// void HeatingLedDevice::stopBlinking() {}
-
-void HeatingLedDevice::setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer) {
-  _isHeatingOnPointer = isHeatingOnPointer;
+void HeatingLedDevice::stopBlinking() {
+  cancelTask(blinkHeatingLedTaskId);
+  // Make sure the LED is off as the task might have left it on.
+  switchOff();
 }
 
 
@@ -38,6 +46,13 @@ void HeatingLedDevice::setIsHeatingOnPointer(std::shared_ptr<const bool> isHeati
 
 void ErrorLedDevice::setup() {
   pinMode(settings.ERROR_LED_PIN, OUTPUT);
+
+  pubSub.subscribe([](ErrorStateEvent* pEvent) {
+    errorLedDevice.startBlinking();
+  });
+  pubSub.subscribe([](NoErrorStateEvent* pEvent) {
+    errorLedDevice.stopBlinking();
+  });
 }
 
 void ErrorLedDevice::switchOn() {
@@ -54,23 +69,17 @@ void ErrorLedDevice::toggle() {
   _isOn ? switchOff() : switchOn();
 }
 
-/**
- * We need an aggressive (fast) blinking for the error LED.
- * So we cannot do it in run() like for the heating LED, but
- *  instead we start a new task with a high frequency. It's not a waste as
- *  error conditions are exceptional (and rare hopefully).
- */
 void ErrorLedDevice::startBlinking() {
   // Start the blinking task only if it's not already running.
-  if (toggleErrorLedTaskId == TASKMGR_INVALIDID) {
-    toggleErrorLedTaskId = taskManager.scheduleFixedRate(100, [] {
+  if (blinkErrorLedTaskId == TASKMGR_INVALIDID) {
+    blinkErrorLedTaskId = taskManager.scheduleFixedRate(100, [] {
       errorLedDevice.toggle();
     });
   }
 }
 
 void ErrorLedDevice::stopBlinking() {
-  cancelTask(toggleErrorLedTaskId);
-  // Make sure it's off as toggleErrorLedTaskId() might have left it on.
+  cancelTask(blinkErrorLedTaskId);
+  // Make sure the led is off as the task might have left it on.
   switchOff();
 }
