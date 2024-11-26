@@ -8,13 +8,22 @@ void DisplayDevice::setup() {
   switchOn();
 
   pubSub.subscribe([this](ButtonPressEvent* pEvent) {
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+#endif
     this->switchOn();
   });
 
   pubSub.subscribe([this](HeatingOnEvent* pEvent) {
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+#endif
     this->_isHeatingOn = true;
   });
   pubSub.subscribe([this](HeatingOffEvent* pEvent) {
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+#endif
     this->_isHeatingOn = false;
   });
 }
@@ -34,7 +43,10 @@ void DisplayDevice::switchOff(bool doResetSwitchOffDisplayTaskId /* = true */) {
   //  have just switched it off, so let those tasks run (but there shouldn't be any).
   if (doResetSwitchOffDisplayTaskId) switchOffDisplayTaskId = TASKMGR_INVALIDID;
 
-  // And cancel any existing tasks to display data because no needed anymore.
+    // And cancel any existing tasks to display data because no needed anymore.
+#if IS_DEBUG == true
+  Serial.println((String) "DisplayDevice - stopping the display task");
+#endif
   cancelTask(displayDataTaskId);
   // And reset the counters.
   _counterForDisplayDataExecutions = 0;
@@ -44,9 +56,15 @@ void DisplayDevice::switchOff(bool doResetSwitchOffDisplayTaskId /* = true */) {
 void DisplayDevice::switchOn(bool doCancelExistingSwitchOffDisplayTask /* = true */) {
   if (doCancelExistingSwitchOffDisplayTask) {
     // Cancel any existing tasks to switch off display because they have an old schedule.
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - stopping the switch off task");
+#endif
     cancelTask(switchOffDisplayTaskId);
   }
   // And schedule a new task to switch off display.
+#if IS_DEBUG == true
+  Serial.println((String) "DisplayDevice - starting a new switch off task");
+#endif
   switchOffDisplayTaskId = taskManager.schedule(onceSeconds(settings.DISPLAY_SWITCHOFF_TIMER), [] {
     displayDevice.switchOff();
   });
@@ -76,6 +94,9 @@ void DisplayDevice::_printData() {
   // Finally schedule a periodic task to update the data shown on display.
   // We cancel this task later on when the display is switched off.
   if (displayDataTaskId == TASKMGR_INVALIDID) {
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - starting a new display task");
+#endif
     displayDataTaskId = taskManager.scheduleFixedRate(1000, [] {
       displayDevice._printData();
     });
