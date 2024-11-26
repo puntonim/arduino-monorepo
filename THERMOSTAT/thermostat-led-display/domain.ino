@@ -2,6 +2,9 @@ void Domain::setup() {
   // Run `checkPeriodically` so it reacts asap after boot. Without this
   //  it would run after the period set in scheduleFixedRate, so 1 sec.
   run();
+#if IS_DEBUG == true
+  Serial.println((String) "Domain - starting a new run task");
+#endif
   runTaskId = taskManager.scheduleFixedRate(1000, [] {
     domain.run();
   });
@@ -17,7 +20,7 @@ void Domain::run() {
 
 void Domain::_checkTemperature() {
   Ds18b20SensorException exc;
-  float temp = ds18b20Sensor.getData(exc);
+  float sensorTemp = ds18b20Sensor.getData(exc);
   if (exc != Ds18b20SensorException::Success) {
     errorManager.addDs18b20SensorError();
     // TODO publish error event.
@@ -25,8 +28,9 @@ void Domain::_checkTemperature() {
     errorManager.removeDs18b20SensorError();
   }
 
-  if (temp < settings.TARGET_T) _switchHeatingOn();
-  else _switchHeatingOff();
+  // TODO replace this with the PID algo: https://playground.arduino.cc/Code/PIDLibrary/
+  if ((sensorTemp < settings.TARGET_T) && !_isHeatingOn) _switchHeatingOn();
+  else if ((sensorTemp >= settings.TARGET_T) && _isHeatingOn) _switchHeatingOff();
 }
 
 void Domain::_switchHeatingOn() {

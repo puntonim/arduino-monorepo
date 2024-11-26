@@ -1,23 +1,24 @@
 void ErrorManager::_handleErrors() {
-  // If there is AT LEAST ONE error: publish ErrorStateEvent. Else publish NoErrorStateEvent.
-  if (areThereErrors()) pubSub.publish(new ErrorStateEvent(_errorMessageListForDisplay));
-  else pubSub.publish(new NoErrorStateEvent());
+  // noop.
 }
 
 void ErrorManager::addDs18b20SensorError() {
   // Add the error msg to the errors list (only if we weren't already in the same error state).
-  if (!isDs18b20SensorError()) {
-    _errorMessageListForDisplay.push_back(_ds18b20SensorErrorMessage);
-  }
+  if (_isDs18b20SensorError) return;
+  _errorMessageListForDisplay.push_back(_ds18b20SensorErrorMessage);
   // Set the error status to true only after the prev check.
   _isDs18b20SensorError = true;
+  pubSub.publish(new ErrorStateEvent(_errorMessageListForDisplay));  
   _handleErrors();
 }
 
 void ErrorManager::removeDs18b20SensorError() {
-  _isDs18b20SensorError = false;
-  // Remove the error msg from the errors list.
+  // Remove the error msg from the errors list (only if we were in the same error state).
+  if (!_isDs18b20SensorError) return;
   _errorMessageListForDisplay.remove(_ds18b20SensorErrorMessage);
+  // Set the error status to false only after the prev check.
+  _isDs18b20SensorError = false;
+  pubSub.publish(new NoErrorStateEvent());
   _handleErrors();
 }
 
@@ -27,18 +28,19 @@ bool ErrorManager::isDs18b20SensorError() {
 
 void ErrorManager::addSht85SensorError() {
   // Add the error msg to the errors list (only if we weren't already in the same error state).
-  if (!isSht85SensorError()) {
-    _errorMessageListForDisplay.push_back(_sht85SensorErrorMessage);
-  }
+  if (_isSht85SensorError) return;
+  _errorMessageListForDisplay.push_back(_sht85SensorErrorMessage);
   // Set the error status to true only after the prev check.
   _isSht85SensorError = true;
   _handleErrors();
 }
 
 void ErrorManager::removeSht85SensorError() {
-  _isSht85SensorError = false;
-  // Remove the error msg from the errors list.
+    // Remove the error msg from the errors list (only if we were in the same error state).
+  if (!_isSht85SensorError) return;
   _errorMessageListForDisplay.remove(_sht85SensorErrorMessage);
+  // Set the error status to false only after the prev check.
+  _isSht85SensorError = false;
   _handleErrors();
 }
 
