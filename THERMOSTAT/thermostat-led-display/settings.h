@@ -20,6 +20,10 @@ struct Settings {
   // DS18B20 sensor.
   const unsigned int DS18B20_SENSOR_PIN = 4;
   const DeviceAddress DS18B20_SENSOR_ADDRESS = { 40, 255, 100, 31, 94, 120, 150, 103 };
+  const unsigned int DS18B20_DATA_CACHE_PERIOD = 1000;  // msec.
+
+  // DS18B20 sensor.
+  const unsigned int SHT85_DATA_CACHE_PERIOD = 1000;  // msec.
 
   // Leds.
   const unsigned int HEATING_LED_PIN = 6;

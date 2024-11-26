@@ -11,19 +11,38 @@ void Sht85Sensor::setup() {
 //  only when the display is ON. This means that if the errorLed has been triggered by an error on
 //   the SHT85 sensor, then the errorLed status can be delayed until the display is ON again.
 
-void Sht85Sensor::getData(float* data, enum Sht85SensorException &exc) {
-  if (sht.readSample()) {
-    data[0] = sht.getTemperature();
-    data[1] = sht.getHumidity();
-    exc = Sht85SensorException::Success;
-    errorManager.removeSht85SensorError();
-  } else {
+/**
+ * Read data from the SHT85 sensor.
+ * 
+ * The data is cached for settings.SHT85_DATA_CACHE_PERIOD msec to avoid hammering the sensor.
+ */
+void Sht85Sensor::getData(float* data, enum Sht85SensorException& exc) {
+  // Cache the read data for DS18B20_DATA_CACHE_PERIOD msec.
+  // So we avoid hammering sensors.
+  auto nowTs = millis();
+  if ((nowTs - _lastDataTs) > settings.SHT85_DATA_CACHE_PERIOD) {
+    // The cache has expired.
+
+    if (sht.readSample()) {
+      _cachedTemperature = sht.getTemperature();
+      _cachedHumidity = sht.getHumidity();
+    } else {
 #if IS_DEBUG == true
-    Serial.println((String) "Sht85Sensor - error reading data");
+      Serial.println((String) "Sht85Sensor - error reading data");
 #endif
-    data[0] = SENSOR_ERROR;
-    data[1] = SENSOR_ERROR;
+      _cachedTemperature = SENSOR_ERROR;
+      _cachedHumidity = SENSOR_ERROR;
+    }
+    _lastDataTs = nowTs;
+  }
+
+  if (_cachedTemperature == SENSOR_ERROR) {
     exc = Sht85SensorException::SensorError;
     errorManager.addSht85SensorError();
+  } else {
+    exc = Sht85SensorException::Success;
+    errorManager.removeSht85SensorError();
+    data[0] = _cachedTemperature;
+    data[1] = _cachedHumidity;
   }
 }
