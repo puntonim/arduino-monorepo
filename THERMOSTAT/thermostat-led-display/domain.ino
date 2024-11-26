@@ -15,6 +15,11 @@ void Domain::run() {
   _checkTemperature();
 
   // _checkTime(); // TODO implement this.
+  
+  // TODO remove this useless delay.
+  //  It's here otherwise the domainLed doesn't even blink as the domain is too fast.
+  delay(100);
+
   domainLedDevice.switchOff();
 }
 

@@ -71,14 +71,6 @@ void loop() {
 
 /*
 TODO
- - Optimization: cache sensor data for 1 sec.
-   This could be done in each sensor's getData() method.
-   This makes sense cause in PROD:
-    - domain is reading sensors data every 1 min or so
-    - display, when ON, is reading sensors data every 1 sec or so
-   And reading sensors data from a remote probe via Bluetooth is
-    expensive, thus caching
-
  - add time counter that runs in domain.run()
 
  - new HW:
@@ -87,4 +79,13 @@ TODO
     - switch for heating pump
 
  - Use PID algo in domain: https://playground.arduino.cc/Code/PIDLibrary/
+
+ - Cloud and web:
+    - send data to IoT cloud or custom BE to track:
+      - T and H over time
+      - heating ON/OFF 
+      These data could collected and sent to the remote every 5 mins
+      Or they could be collected every 1 min, stored in a SD card and sent to the remote every 5 mins 
+    - Hmmm: receive data from remote (IoT cloud? regular HTTP reqs?)
+      But I don't rellay need the feature to switch ON/OFF the heating from remote
 */
