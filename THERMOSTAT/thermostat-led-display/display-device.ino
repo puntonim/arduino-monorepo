@@ -14,18 +14,13 @@ void DisplayDevice::setup() {
     this->switchOn();
   });
 
-  pubSub.subscribe([this](HeatingOnEvent* pEvent) {
+  pubSub.subscribe([this](HeatingStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
-    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic + " isOn=" + (pEvent->isOn ? "ON" : "OFF"));
 #endif
-    this->_isHeatingOn = true;
+    this->_isHeatingOn = pEvent->isOn;
   });
-  pubSub.subscribe([this](HeatingOffEvent* pEvent) {
-#if IS_DEBUG == true
-    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
-#endif
-    this->_isHeatingOn = false;
-  });
+
 }
 
 void DisplayDevice::toogle() {
