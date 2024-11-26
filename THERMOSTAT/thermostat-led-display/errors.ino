@@ -8,7 +8,7 @@ void ErrorManager::addDs18b20SensorError() {
   _errorMessageListForDisplay.push_back(_ds18b20SensorErrorMessage);
   // Set the error status to true only after the prev check.
   _isDs18b20SensorError = true;
-  pubSub.publish(new ErrorStateEvent(_errorMessageListForDisplay));  
+  pubSub.publish(new ErrorStateEvent(_errorMessageListForDisplay));
   _handleErrors();
 }
 

@@ -71,13 +71,11 @@ void loop() {
 
 /*
 TODO
- - BUG: it seems to freeze after a while, since 24/11 early (so th ebug must have been 
-    introduced the day before)
-
  - Refactor:
     - merge HeatingOnEvent+HeatingOffEvent in HeatingStatusChangeEvent
       and ErrorStateEvent+NoErrorStateEvent into ErrorStatusChangeEvent
       so we save keystrokes
+    - PUB/SUB: for the error LED
     - PUB/SUB for the sensor data in the display
     - OLD: the display is told by the domain what are the sensor readings at this second
       The domain.run() runs every 2 mins,
@@ -85,8 +83,6 @@ TODO
        if it's not running already.
        This is useful when reading the T from a remote sensor.
        Add a white LED which is on when domain.run() runs.
-    - The heatingLed should blink independently at 1 sec rate when heating is ON.
-      In the future this might be connected to the actual relay and thus be ON/OFF without blinking.
 
  - add time counter that runs in domain.run()
 

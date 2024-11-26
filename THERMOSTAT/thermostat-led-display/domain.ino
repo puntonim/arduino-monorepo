@@ -5,7 +5,7 @@ void Domain::setup() {
 #if IS_DEBUG == true
   Serial.println((String) "Domain - starting a new run task");
 #endif
-  runTaskId = taskManager.scheduleFixedRate(1000, [] {
+  runTaskId = taskManager.scheduleFixedRate(settings.DOMAIN_RUN_PERIOD, [] {
     domain.run();
   });
 }
