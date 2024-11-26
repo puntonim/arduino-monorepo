@@ -20,7 +20,6 @@ void DisplayDevice::setup() {
 #endif
     this->_isHeatingOn = pEvent->isOn;
   });
-
 }
 
 void DisplayDevice::toogle() {
@@ -149,7 +148,6 @@ void DisplayDevice::_printSecondRow() {
   float t1 = ds18b20Sensor.getData(excDs);
   if (excDs != Ds18b20SensorException::Success) {
     p.print("???-");
-    errorManager.addDs18b20SensorError();
   } else {
     // To use only 1 decimal.
     p.print(t1, 1);
@@ -157,7 +155,6 @@ void DisplayDevice::_printSecondRow() {
     //  https://forum.arduino.cc/t/solved-how-to-print-the-degree-symbol-extended-ascii/438685
     // lcd.print((String)F("\xDF") + "C");
     p.print("|");
-    errorManager.removeDs18b20SensorError();
   }
 
   float sht85Data[2];
@@ -166,7 +163,6 @@ void DisplayDevice::_printSecondRow() {
 
   if (excSh != Sht85SensorException::Success) {
     p.print("???");
-    errorManager.addSht85SensorError();
   } else {
     p.print(sht85Data[0], 1);
     // lcd.print((String)F("\xDF") + "C ");
@@ -177,7 +173,6 @@ void DisplayDevice::_printSecondRow() {
     // lcd.print(sht85Data[1]);
     // Blank filling the whole row that might contain text from the old error screen.
     p.print("%");
-    errorManager.removeSht85SensorError();
   }
   p.printFillingBlanks();
 }

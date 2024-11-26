@@ -71,15 +71,13 @@ void loop() {
 
 /*
 TODO
- - Refactor:
-    - PUB/SUB for display errors
-    - PUB/SUB for the sensor data in the display
-    - OLD: the display is told by the domain what are the sensor readings at this second
-      The domain.run() runs every 2 mins,
-       but when the button is pressed (and the display is On) then it runs every 1 second, but only
-       if it's not running already.
-       This is useful when reading the T from a remote sensor.
-       Add a white LED which is on when domain.run() runs.
+ - Optimization: cache sensor data for 1 sec.
+   This could be done in each sensor's getData() method.
+   This makes sense cause in PROD:
+    - domain is reading sensors data every 1 min or so
+    - display, when ON, is reading sensors data every 1 sec or so
+   And reading sensors data from a remote probe via Bluetooth is
+    expensive, thus caching
 
  - add time counter that runs in domain.run()
 
@@ -89,9 +87,4 @@ TODO
     - switch for heating pump
 
  - Use PID algo in domain: https://playground.arduino.cc/Code/PIDLibrary/
-
- - Optimization: cache sensor data for 1 sec.
-   This could be done in each sensor's getData() method.
-   However this makes sense only if we are reading data faster than 1 sec (fi. if we have 2
-    concurrent tasks that reads sensors data at 1 sec rate each).
 */
