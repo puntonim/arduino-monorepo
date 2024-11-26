@@ -8,7 +8,7 @@ void ErrorManager::addDs18b20SensorError() {
   _errorMessageListForDisplay.push_back(_ds18b20SensorErrorMessage);
   // Set the error status to true only after the prev check.
   _isDs18b20SensorError = true;
-  pubSub.publish(new ErrorStateEvent(_errorMessageListForDisplay));
+  pubSub.publish(new ErrorStatusChangeEvent(true, _errorMessageListForDisplay));
   _handleErrors();
 }
 
@@ -18,7 +18,7 @@ void ErrorManager::removeDs18b20SensorError() {
   _errorMessageListForDisplay.remove(_ds18b20SensorErrorMessage);
   // Set the error status to false only after the prev check.
   _isDs18b20SensorError = false;
-  if (!areThereErrors()) pubSub.publish(new NoErrorStateEvent());
+  if (!areThereErrors()) pubSub.publish(new ErrorStatusChangeEvent(false));
   _handleErrors();
 }
 
@@ -32,7 +32,7 @@ void ErrorManager::addSht85SensorError() {
   _errorMessageListForDisplay.push_back(_sht85SensorErrorMessage);
   // Set the error status to true only after the prev check.
   _isSht85SensorError = true;
-  pubSub.publish(new ErrorStateEvent(_errorMessageListForDisplay));
+  pubSub.publish(new ErrorStatusChangeEvent(true, _errorMessageListForDisplay));
   _handleErrors();
 }
 
@@ -42,7 +42,7 @@ void ErrorManager::removeSht85SensorError() {
   _errorMessageListForDisplay.remove(_sht85SensorErrorMessage);
   // Set the error status to false only after the prev check.
   _isSht85SensorError = false;
-  if (!areThereErrors()) pubSub.publish(new NoErrorStateEvent());
+  if (!areThereErrors()) pubSub.publish(new ErrorStatusChangeEvent(false));
   _handleErrors();
 }
 

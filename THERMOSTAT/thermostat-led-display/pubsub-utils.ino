@@ -10,17 +10,12 @@ void PubSub::publish(HeatingStatusChangeEvent* pEvent) {
   }
 }
 
-void PubSub::publish(ErrorStateEvent* pEvent) {
-  for (auto& callback : _errorStateSubCallbacks) {
+void PubSub::publish(ErrorStatusChangeEvent* pEvent) {
+  for (auto& callback : _errorStatusChangeSubCallbacks) {
     callback(pEvent);
   }
 }
 
-void PubSub::publish(NoErrorStateEvent* pEvent) {
-  for (auto& callback : _noErrorStateSubCallbacks) {
-    callback(pEvent);
-  }
-}
 // void PubSub::publish(SensorDataEvent* pEvent) {
 //   for (auto& callback : _sensorDataSubCallbacks) {
 //     callback(pEvent);
@@ -35,12 +30,8 @@ void PubSub::subscribe(std::function<void(HeatingStatusChangeEvent*)> callback) 
   _heatingStatusChangeSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(ErrorStateEvent*)> callback) {
-  _errorStateSubCallbacks.push_back(callback);
-}
-
-void PubSub::subscribe(std::function<void(NoErrorStateEvent*)> callback) {
-  _noErrorStateSubCallbacks.push_back(callback);
+void PubSub::subscribe(std::function<void(ErrorStatusChangeEvent*)> callback) {
+  _errorStatusChangeSubCallbacks.push_back(callback);
 }
 
 // PubSub::void subscribe(std::function<void(SensorDataEvent*)> callback) {

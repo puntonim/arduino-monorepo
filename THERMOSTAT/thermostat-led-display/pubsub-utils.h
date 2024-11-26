@@ -16,15 +16,12 @@ public:
   HeatingStatusChangeEvent(bool isOn): isOn(isOn) {};
 };
 
-class ErrorStateEvent : public BasePubSubEvent {
+class ErrorStatusChangeEvent : public BasePubSubEvent {
 public:
-  constexpr static char* topic = "ERROR_EVENT";
+  constexpr static char* topic = "ERROR_STATUS_CHANGE_EVENT";
+  const bool isError;
   std::list<char*> messageList;
-  ErrorStateEvent(std::list<char*> messageList) : messageList(messageList) {};
-};
-class NoErrorStateEvent : public BasePubSubEvent {
-public:
-  constexpr static char* topic = "NO_ERROR_EVENT";
+  ErrorStatusChangeEvent(bool isError, std::list<char*> messageList = {}) : isError(isError), messageList(messageList) {};
 };
 
 // class SensorDataEvent : public BasePubSubEvent {
@@ -40,21 +37,18 @@ class PubSub {
 private:
   std::list<std::function<void(ButtonPressEvent*)>> _buttonPressSubCallbacks;
   std::list<std::function<void(HeatingStatusChangeEvent*)>> _heatingStatusChangeSubCallbacks;
-  std::list<std::function<void(ErrorStateEvent*)>> _errorStateSubCallbacks;
-  std::list<std::function<void(NoErrorStateEvent*)>> _noErrorStateSubCallbacks;
+  std::list<std::function<void(ErrorStatusChangeEvent*)>> _errorStatusChangeSubCallbacks;
   // std::list<std::function<void(SensorDataEvent*)>> _sensorDataSubCallbacks;
 
 public:
   void publish(ButtonPressEvent* pEvent);
   void publish(HeatingStatusChangeEvent* pEvent);
-  void publish(ErrorStateEvent* pEvent);
-  void publish(NoErrorStateEvent* pEvent);
+  void publish(ErrorStatusChangeEvent* pEvent);
   // void publish(SensorDataEvent* pEvent);
   
   void subscribe(std::function<void(ButtonPressEvent*)> callback);
   void subscribe(std::function<void(HeatingStatusChangeEvent*)> callback);
-  void subscribe(std::function<void(ErrorStateEvent*)> callback);
-  void subscribe(std::function<void(NoErrorStateEvent*)> callback);
+  void subscribe(std::function<void(ErrorStatusChangeEvent*)> callback);
   // void subscribe(std::function<void(SensorDataEvent*)> callback);
 };
 
