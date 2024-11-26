@@ -109,11 +109,15 @@ void DomainLedDevice::setup() {
 }
 
 void DomainLedDevice::switchOn() {
-  analogWrite(_PIN, _BRIGHTNESS_VALUE);
-  _isOn = true;
+  if (!_isOn) {
+    analogWrite(_PIN, _BRIGHTNESS_VALUE);
+    _isOn = true;
+  }
 }
 
 void DomainLedDevice::switchOff() {
-  analogWrite(_PIN, 0);
-  _isOn = false;
+  if (_isOn) {
+    analogWrite(_PIN, 0);
+    _isOn = false;
+  }
 }

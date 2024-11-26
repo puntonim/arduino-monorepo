@@ -12,7 +12,7 @@ struct Settings {
   const unsigned int TARGET_T = 18;
   // Seconds after which the display switches off.
   const unsigned int DISPLAY_SWITCHOFF_TIMER = 20;
-  const unsigned int DOMAIN_RUN_PERIOD = 1000;  // msec.
+  const unsigned int DOMAIN_RUN_PERIOD = 5000;  // msec.
 
   // Button.
   const int PUSH_BUTTON_PIN = 2;
