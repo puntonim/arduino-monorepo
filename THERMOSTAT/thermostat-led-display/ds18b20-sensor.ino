@@ -11,15 +11,20 @@ void Ds18b20Sensor::setup() {
 float Ds18b20Sensor::getData(enum Ds18b20SensorException &exc) {
   // probes.requestTemperatures();
   // By using requestTemperaturesByAddress(ADDRESS) we avoid a delay when
-  //  no sensor is detected (as the library blocks for ~1sec waiting for any sensor). 
+  //  no sensor is detected (as the library blocks for ~1sec waiting for any sensor).
   probes.requestTemperaturesByAddress(settings.DS18B20_SENSOR_ADDRESS);
 
-  float tempC = probes.getTempC(settings.DS18B20_SENSOR_ADDRESS);
-  if (tempC == DEVICE_DISCONNECTED_C) {
+  float t = probes.getTempC(settings.DS18B20_SENSOR_ADDRESS);
+  if (t == DEVICE_DISCONNECTED_C) {
+#if IS_DEBUG == true
+    Serial.println((String) "Ds18b20Sensor - error reading data");
+#endif
     exc = Ds18b20SensorException::SensorError;
+    errorManager.addDs18b20SensorError();
     return SENSOR_ERROR;
   }
 
   exc = Ds18b20SensorException::Success;
-  return tempC;
+  errorManager.removeDs18b20SensorError();
+  return t;
 }

@@ -20,13 +20,9 @@ void Domain::run() {
 
 void Domain::_checkTemperature() {
   Ds18b20SensorException exc;
+  // Reading only DS18B20 temp for now (and ignoring SHT85 sensor).
   float sensorTemp = ds18b20Sensor.getData(exc);
-  if (exc != Ds18b20SensorException::Success) {
-    errorManager.addDs18b20SensorError();
-    // TODO publish error event.
-  } else {
-    errorManager.removeDs18b20SensorError();
-  }
+  // if (exc == Ds18b20SensorException::SensorError) ...
 
   // TODO replace this with the PID algo: https://playground.arduino.cc/Code/PIDLibrary/
   if ((sensorTemp < settings.TARGET_T) && !_isHeatingOn) _switchHeatingOn();
