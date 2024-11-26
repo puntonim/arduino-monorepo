@@ -36,11 +36,11 @@ void Domain::_checkTemperature() {
 void Domain::_switchHeatingOn() {
   _isHeatingOn = true;
 
-  pubSub.publish(new HeatingOnEvent());
+  pubSub.publish(new HeatingStatusChangeEvent(true));
 }
 
 void Domain::_switchHeatingOff() {
   _isHeatingOn = false;
 
-  pubSub.publish(new HeatingOffEvent());
+  pubSub.publish(new HeatingStatusChangeEvent(false));
 }

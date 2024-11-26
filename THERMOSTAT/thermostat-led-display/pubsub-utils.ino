@@ -4,14 +4,8 @@ void PubSub::publish(ButtonPressEvent* pEvent) {
   }
 }
 
-void PubSub::publish(HeatingOnEvent* pEvent) {
-  for (auto& callback : _heatingOnSubCallbacks) {
-    callback(pEvent);
-  }
-}
-
-void PubSub::publish(HeatingOffEvent* pEvent) {
-  for (auto& callback : _heatingOffSubCallbacks) {
+void PubSub::publish(HeatingStatusChangeEvent* pEvent) {
+  for (auto& callback : _heatingStatusChangeSubCallbacks) {
     callback(pEvent);
   }
 }
@@ -37,12 +31,8 @@ void PubSub::subscribe(std::function<void(ButtonPressEvent*)> callback) {
   _buttonPressSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(HeatingOnEvent*)> callback) {
-  _heatingOnSubCallbacks.push_back(callback);
-}
-
-void PubSub::subscribe(std::function<void(HeatingOffEvent*)> callback) {
-  _heatingOffSubCallbacks.push_back(callback);
+void PubSub::subscribe(std::function<void(HeatingStatusChangeEvent*)> callback) {
+  _heatingStatusChangeSubCallbacks.push_back(callback);
 }
 
 void PubSub::subscribe(std::function<void(ErrorStateEvent*)> callback) {

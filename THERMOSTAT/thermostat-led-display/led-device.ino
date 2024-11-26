@@ -3,17 +3,11 @@
 void HeatingLedDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
-  pubSub.subscribe([this](HeatingOnEvent* pEvent) {
+  pubSub.subscribe([this](HeatingStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
-    Serial.println((String) "HeatingLedDevice - received event: " + pEvent->topic);
+    Serial.println((String) "HeatingLedDevice - received event: " + pEvent->topic + " isOn=" + (pEvent->isOn ? "ON" : "OFF"));
 #endif
-    this->startBlinking();
-  });
-  pubSub.subscribe([this](HeatingOffEvent* pEvent) {
-#if IS_DEBUG == true
-    Serial.println((String) "HeatingLedDevice - received event: " + pEvent->topic);
-#endif
-    this->stopBlinking();
+    pEvent->isOn ? this->startBlinking() : this->stopBlinking();
   });
 }
 
