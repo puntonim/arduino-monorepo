@@ -72,9 +72,7 @@ void loop() {
 /*
 TODO
  - Refactor:
-    - merge HeatingOnEvent+HeatingOffEvent in HeatingStatusChangeEvent
-      and ErrorStateEvent+NoErrorStateEvent into ErrorStatusChangeEvent
-      so we save keystrokes
+    - PUB/SUB for display errors
     - PUB/SUB for the sensor data in the display
     - OLD: the display is told by the domain what are the sensor readings at this second
       The domain.run() runs every 2 mins,

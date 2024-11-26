@@ -53,17 +53,12 @@ void HeatingLedDevice::stopBlinking() {
 void ErrorLedDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
-  pubSub.subscribe([this](ErrorStateEvent* pEvent) {
+  pubSub.subscribe([this](ErrorStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
-    Serial.println((String) "ErrorLedDevice - received event: " + pEvent->topic);
+    Serial.println((String) "ErrorLedDevice - received event: " + pEvent->topic + " isError=" + (pEvent->isError ? "ON" : "OFF"));
 #endif
-    this->startBlinking();
-  });
-  pubSub.subscribe([this](NoErrorStateEvent* pEvent) {
-#if IS_DEBUG == true
-    Serial.println((String) "ErrorLedDevice - received event: " + pEvent->topic);
-#endif
-    this->stopBlinking();
+    if (pEvent->isError) this->startBlinking();
+    else this->stopBlinking();
   });
 }
 
