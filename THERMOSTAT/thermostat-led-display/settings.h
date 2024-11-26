@@ -12,6 +12,7 @@ struct Settings {
   const unsigned int TARGET_T = 18;
   // Seconds after which the display switches off.
   const unsigned int DISPLAY_SWITCHOFF_TIMER = 20;
+  const unsigned int DOMAIN_RUN_PERIOD = 1000;  // msec.
 
   // Button.
   const int PUSH_BUTTON_PIN = 2;
@@ -23,8 +24,10 @@ struct Settings {
   // Leds.
   const unsigned int HEATING_LED_PIN = 6;
   const unsigned int HEATING_LED_BRIGHTNESS_VALUE = 30;
+  const unsigned int HEATING_LED_BLINKING_PERIOD = 1000;  // msec.
   const unsigned int ERROR_LED_PIN = 9;
   const unsigned int ERROR_LED_BRIGHTNESS_VALUE = 100;
+  const unsigned int ERROR_LED_BLINKING_PERIOD = 100;  // msec.
   const unsigned int DOMAIN_LED_PIN = 5;
   const unsigned int DOMAIN_LED_BRIGHTNESS_VALUE = 20;
 

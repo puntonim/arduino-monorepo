@@ -38,7 +38,7 @@ void HeatingLedDevice::startBlinking() {
 #if IS_DEBUG == true
     Serial.println((String) "HeatingLedDevice - starting a new blinking task");
 #endif
-    blinkHeatingLedTaskId = taskManager.scheduleFixedRate(1000, [] {
+    blinkHeatingLedTaskId = taskManager.scheduleFixedRate(settings.HEATING_LED_BLINKING_PERIOD, [] {
       heatingLedDevice.toggle();
     });
   }
@@ -93,7 +93,7 @@ void ErrorLedDevice::startBlinking() {
 #if IS_DEBUG == true
     Serial.println((String) "ErrorLedDevice - starting a new blinking task");
 #endif
-    blinkErrorLedTaskId = taskManager.scheduleFixedRate(100, [] {
+    blinkErrorLedTaskId = taskManager.scheduleFixedRate(settings.ERROR_LED_BLINKING_PERIOD, [] {
       errorLedDevice.toggle();
     });
   }
