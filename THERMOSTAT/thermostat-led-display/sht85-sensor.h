@@ -11,10 +11,13 @@ enum struct Sht85SensorException {
 class Sht85Sensor {
 
 private:
+  unsigned long _lastDataTs = millis();
+  float _cachedTemperature;
+  float _cachedHumidity;
 
 public:
   void setup();
-  void getData(float* data, enum Sht85SensorException &exc);
+  void getData(float* data, enum Sht85SensorException& exc);
 };
 
 Sht85Sensor sht85Sensor;

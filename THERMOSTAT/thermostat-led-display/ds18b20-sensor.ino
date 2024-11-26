@@ -8,14 +8,28 @@ void Ds18b20Sensor::setup() {
   probes.setResolution(12);
 }
 
+/**
+ * Read data from the DS18B20 sensor.
+ * 
+ * The data is cached for settings.DS18B20_DATA_CACHE_PERIOD msec to avoid hammering the sensor.
+ */
 float Ds18b20Sensor::getData(enum Ds18b20SensorException &exc) {
-  // probes.requestTemperatures();
-  // By using requestTemperaturesByAddress(ADDRESS) we avoid a delay when
-  //  no sensor is detected (as the library blocks for ~1sec waiting for any sensor).
-  probes.requestTemperaturesByAddress(settings.DS18B20_SENSOR_ADDRESS);
+  // Cache the read data for DS18B20_DATA_CACHE_PERIOD msec.
+  // So we avoid hammering sensors.
+  auto nowTs = millis();
+  if ((nowTs - _lastDataTs) > settings.DS18B20_DATA_CACHE_PERIOD) {
+    // The cache has expired.
 
-  float t = probes.getTempC(settings.DS18B20_SENSOR_ADDRESS);
-  if (t == DEVICE_DISCONNECTED_C) {
+    // probes.requestTemperatures();
+    // By using requestTemperaturesByAddress(ADDRESS) we avoid a delay when
+    //  no sensor is detected (as the library blocks for ~1sec waiting for any sensor).
+    probes.requestTemperaturesByAddress(settings.DS18B20_SENSOR_ADDRESS);
+
+    _cachedData = probes.getTempC(settings.DS18B20_SENSOR_ADDRESS);
+    _lastDataTs = nowTs;
+  }
+
+  if (_cachedData == DEVICE_DISCONNECTED_C) {
 #if IS_DEBUG == true
     Serial.println((String) "Ds18b20Sensor - error reading data");
 #endif
@@ -26,5 +40,6 @@ float Ds18b20Sensor::getData(enum Ds18b20SensorException &exc) {
 
   exc = Ds18b20SensorException::Success;
   errorManager.removeDs18b20SensorError();
-  return t;
+
+  return _cachedData;
 }
