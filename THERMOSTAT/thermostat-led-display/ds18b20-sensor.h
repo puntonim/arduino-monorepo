@@ -11,7 +11,7 @@ enum struct Ds18b20SensorException {
 class Ds18b20Sensor {
 
 private:
-   unsigned long _lastDataTs = millis();
+   unsigned long _lastDataTs = 0;
    float _cachedData;
 
 public:

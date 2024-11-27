@@ -167,20 +167,19 @@ void DisplayDevice::_printSecondRow() {
     p.print("|");
   }
 
-  float sht85Data[2];
   Sht85SensorException excSh;
-  sht85Sensor.getData(sht85Data, excSh);
+  struct Sht85Data sht85Data = sht85Sensor.getData(excSh);
 
   if (excSh != Sht85SensorException::Success) {
     p.print("???");
   } else {
-    p.print(sht85Data[0], 1);
+    p.print(sht85Data.temperature, 1);
     // lcd.print((String)F("\xDF") + "C ");
     p.print("\xDF ");  // Or: p.print("\xDF""C ");
     // To use no decimals.
-    p.print(sht85Data[1], 0);
+    p.print(sht85Data.humidity, 0);
     // To use 2 decimals.
-    // lcd.print(sht85Data[1]);
+    // lcd.print(sht85Data.humidity);
     // Blank filling the whole row that might contain text from the old error screen.
     p.print("%");
   }

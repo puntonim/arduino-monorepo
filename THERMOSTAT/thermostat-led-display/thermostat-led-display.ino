@@ -72,7 +72,6 @@ void loop() {
 
 /*
 TODO
- - Domain::_checkTime()
  - convert SHT85 from reference to return struct
  - convert many int vars to short
  - use namespace for all utils: https://stackoverflow.com/a/46499087/1969672

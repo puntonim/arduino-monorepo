@@ -17,7 +17,7 @@ float Ds18b20Sensor::getData(enum Ds18b20SensorException &exc) {
   // Cache the read data for DS18B20_DATA_CACHE_PERIOD msec.
   // So we avoid hammering sensors.
   auto nowTs = millis();
-  if ((nowTs - _lastDataTs) > settings.DS18B20_DATA_CACHE_PERIOD) {
+  if ((_lastDataTs == 0) || ((nowTs - _lastDataTs) > settings.DS18B20_DATA_CACHE_PERIOD)) {
     // The cache has expired.
 
     // probes.requestTemperatures();

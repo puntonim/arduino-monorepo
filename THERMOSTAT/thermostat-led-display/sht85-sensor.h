@@ -2,6 +2,11 @@
 SHTSensor sht(SHTSensor::SHT85);
 // To use autodetect: SHTSensor sht;
 
+struct Sht85Data {
+  float temperature;
+  float humidity;
+};
+
 enum struct Sht85SensorException {
   Success,
   SensorError,
@@ -11,11 +16,11 @@ enum struct Sht85SensorException {
 class Sht85Sensor {
 
 private:
-  unsigned long _lastDataTs = millis();
+  unsigned long _lastDataTs = 0;
   float _cachedTemperature;
   float _cachedHumidity;
 
 public:
   void setup();
-  void getData(float* data, enum Sht85SensorException& exc);
+  struct Sht85Data getData(enum Sht85SensorException& exc);
 };
