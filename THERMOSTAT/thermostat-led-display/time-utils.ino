@@ -41,6 +41,14 @@ namespace time_utils
     return _time;
   }
 
+  void Timer::format(char* string) {
+    time_utils::format(string, _time);
+  }
+
+  bool Timer::isOver() {
+    return time_utils::isOver(_time);
+  }
+
   /*
    * Format a Time object to a string like: "1:04:09".
    *
@@ -59,5 +67,10 @@ namespace time_utils
    */
   void format(char* string, Time time) {
     sprintf_P(string, (PGM_P)F("%1d:%02d:%02d"), time.h, time.m, time.s);
+  }
+
+  bool isOver(Time time) {
+    if ((time.h == 0) && (time.m == 0) && (time.s == 0)) return true;
+    else return false;
   }
 }
