@@ -131,7 +131,7 @@ void DisplayDevice::_printSecondRow() {
     if (dv.rem != 0) return;
     else {
       // It's time to rotate the msg on the display.
-      int size = errorManager.getErrorMessageListForDisplay().size();
+      short size = errorManager.getErrorMessageListForDisplay().size();
       // If we have already shown all the error msgs, then it's time to show the regular row.
       if (_indexForCurrentlyDisplayedErrorMsg >= (size - 1)) {
         _indexForCurrentlyDisplayedErrorMsg = -1;
@@ -197,7 +197,7 @@ void DisplayDevice::_printSecondRow() {
  *  row will lead to bugs as the cursor would be in the wrong position. To support
  *  this we should write more code.
  */
-RowPrinter::RowPrinter(int i) {
+RowPrinter::RowPrinter(unsigned short i) {
   i = i;
   lcd.setCursor(0, i);
 }
@@ -239,7 +239,7 @@ void RowPrinter::print(T1 value, T2 extra) {
  */
 void RowPrinter::printFillingBlanks() {
 #if DO_ENABLE_FILLING_BLANKS == true
-  int diff = _MAX_SIZE - _currentSize;
+  short diff = _MAX_SIZE - _currentSize;
   if (diff > 0)
     for (int i = 0; i < diff; i++) lcd.print(" ");
 #endif

@@ -9,32 +9,32 @@
 
 struct Settings {
   // Under this T, the heating wis turned ON.
-  const unsigned int TARGET_T = 18;
+  const unsigned short TARGET_T = 18;
   const time_utils::Time DEFAULT_TIMER = {0, 1, 7};
 
   // Seconds after which the display switches off.
-  const unsigned int DISPLAY_SWITCHOFF_TIMER = 20;
-  const unsigned int DOMAIN_RUN_PERIOD = 5000;  // msec.
+  const unsigned short DISPLAY_SWITCHOFF_TIMER = 20;
+  const unsigned short DOMAIN_RUN_PERIOD = 5000;  // msec.
 
   // Button.
-  const int PUSH_BUTTON_PIN = 2;
+  const unsigned short PUSH_BUTTON_PIN = 2;
 
   // DS18B20 sensor.
-  const unsigned int DS18B20_SENSOR_PIN = 4;
+  const unsigned short DS18B20_SENSOR_PIN = 4;
   const DeviceAddress DS18B20_SENSOR_ADDRESS = { 40, 255, 100, 31, 94, 120, 150, 103 };
-  const unsigned int DS18B20_DATA_CACHE_PERIOD = 1000;  // msec.
+  const unsigned short DS18B20_DATA_CACHE_PERIOD = 1000;  // msec.
 
   // DS18B20 sensor.
-  const unsigned int SHT85_DATA_CACHE_PERIOD = 1000;  // msec.
+  const unsigned short SHT85_DATA_CACHE_PERIOD = 1000;  // msec.
 
   // Leds.
-  const unsigned int HEATING_LED_PIN = 6;
-  const unsigned int HEATING_LED_BRIGHTNESS_VALUE = 30;
-  const unsigned int HEATING_LED_BLINKING_PERIOD = 1000;  // msec.
-  const unsigned int ERROR_LED_PIN = 9;
-  const unsigned int ERROR_LED_BRIGHTNESS_VALUE = 100;
-  const unsigned int ERROR_LED_BLINKING_PERIOD = 100;  // msec.
-  const unsigned int DOMAIN_LED_PIN = 5;
-  const unsigned int DOMAIN_LED_BRIGHTNESS_VALUE = 20;
+  const unsigned short HEATING_LED_PIN = 6;
+  const unsigned short HEATING_LED_BRIGHTNESS_VALUE = 30;
+  const unsigned short HEATING_LED_BLINKING_PERIOD = 1000;  // msec.
+  const unsigned short ERROR_LED_PIN = 9;
+  const unsigned short ERROR_LED_BRIGHTNESS_VALUE = 100;
+  const unsigned short ERROR_LED_BLINKING_PERIOD = 100;  // msec.
+  const unsigned short DOMAIN_LED_PIN = 5;
+  const unsigned short DOMAIN_LED_BRIGHTNESS_VALUE = 20;
 
 } settings;
