@@ -18,5 +18,3 @@ public:
   void setup();
   float getData(enum Ds18b20SensorException &exc);
 };
-
-Ds18b20Sensor ds18b20Sensor;

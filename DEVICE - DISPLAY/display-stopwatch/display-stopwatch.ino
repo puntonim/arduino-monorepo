@@ -105,6 +105,8 @@ void tick(unsigned long delayMs) {
   struct Time nowTime = _millisToTime(nowMs);
   // Serial.println((String) nowTime.h + ":" + nowTime.m + ":" + nowTime.s);
   char nowString[10]; // 10 cause of the final null appended by spritnf.
+                      // Hmmmm I think 9 is enough unless the hours can be 3 digits like
+                      //  103 hours.
   sprintf_P(nowString, (PGM_P)F("%02d:%02d:%02d"), nowTime.h, nowTime.m, nowTime.s);  
   lcd.home();
   lcd.print(nowString);
@@ -115,6 +117,8 @@ void tick(unsigned long delayMs) {
 }
 
 struct Time _millisToTime(unsigned long ms) {
+  // Note: it would have been better to use `std::div` that returns the result and the
+  //  reminder performing the division only once.
   int h = floor(ms / 3600);
   unsigned long reminder = ms % 3600;
   int m = floor(reminder / 60);

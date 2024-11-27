@@ -25,8 +25,6 @@ public:
   void setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer);
 };
 
-DisplayDevice displayDevice;
-
 
 class RowPrinter {
 

@@ -18,8 +18,6 @@ public:
   void stopBlinking();
 };
 
-HeatingLedDevice heatingLedDevice;
-
 
 class ErrorLedDevice {
 
@@ -37,8 +35,6 @@ public:
   void stopBlinking();
 };
 
-ErrorLedDevice errorLedDevice;
-
 
 class DomainLedDevice {
 
@@ -52,5 +48,3 @@ public:
   void switchOn();
   void switchOff();
 };
-
-DomainLedDevice domainLedDevice;

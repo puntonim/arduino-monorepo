@@ -100,11 +100,21 @@ void DisplayDevice::_printData() {
 void DisplayDevice::_printFirstRow() {
   RowPrinter p(0);
 
-  if (_isHeatingOn == true) p.print("ON ");
+  if (_isHeatingOn == true) p.print("ON  ");
   else p.print("OFF ");
 
   p.print(settings.TARGET_T);
-  p.print("\xDF");  // Or: p.print("\xDF""C");
+  p.print("\xDF  ");  // Or: p.print("\xDF""C");
+
+  struct time_utils::Time timerTime = timer.tick();
+  // Format time like: 1:04:09
+  // Size 9 because of the final null appended by spritnf. And the hour can be 2 digits (eg, "26" hours)
+  //  even if we don't do the 0-filling (so 1 hour is printed as "1" and not "01").
+  char timerTimeString[9];
+  // sprintf_P(timerTimeString, (PGM_P)F("%1d:%02d:%02d"), timerTime.h, timerTime.m, timerTime.s);  
+  time_utils::format(timerTimeString, timerTime);
+  p.print(timerTimeString);
+
   p.printFillingBlanks();
 }
 
