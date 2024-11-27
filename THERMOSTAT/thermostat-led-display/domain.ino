@@ -1,4 +1,7 @@
 void Domain::setup() {
+  // TODO this should be done with a rotary encoder.
+  timer.start(settings.DEFAULT_TIMER.h, settings.DEFAULT_TIMER.m, settings.DEFAULT_TIMER.s);
+
   // Run `checkPeriodically` so it reacts asap after boot. Without this
   //  it would run after the period set in scheduleFixedRate, so 1 sec.
   run();
@@ -8,8 +11,6 @@ void Domain::setup() {
   runTaskId = taskManager.scheduleFixedRate(settings.DOMAIN_RUN_PERIOD, [] {
     domain.run();
   });
-
-  timer.start(settings.DEFAULT_TIMER.h, settings.DEFAULT_TIMER.m, settings.DEFAULT_TIMER.s);
 }
 
 void Domain::run() {
