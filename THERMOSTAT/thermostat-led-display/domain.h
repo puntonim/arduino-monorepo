@@ -7,7 +7,8 @@ class Domain {
 
 private:
   bool _isHeatingOn = false;
-  void _checkTemperature();
+  bool _checkForTemperature();
+  bool _checkForTimer();
   void _switchHeatingOn();
   void _switchHeatingOff();
 

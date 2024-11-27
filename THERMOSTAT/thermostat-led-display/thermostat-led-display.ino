@@ -74,8 +74,10 @@ void loop() {
 TODO
  - Domain::_checkTime()
  - convert SHT85 from reference to return struct
- - convert many int to short
+ - convert many int vars to short
  - use namespace for all utils: https://stackoverflow.com/a/46499087/1969672
+ - when the timer is over then stop the domain task
+   It should start again when I set a new timer
 
  - new HW:
     - rotary encoders (temp, time)

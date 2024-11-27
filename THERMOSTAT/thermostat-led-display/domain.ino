@@ -14,9 +14,28 @@ void Domain::setup() {
 
 void Domain::run() {
   domainLedDevice.switchOn();
-  _checkTemperature();
+  
+  bool isOnForTemp = _checkForTemperature();
+  bool isOnForTime = _checkForTimer();
 
-  // _checkTime(); // TODO implement this.
+  // -------------- DECISION TABLE -------------------
+  // isOnForTime   isOnForTemp   status     action to take
+  // -----------   -----------   ------     --------------
+  //     F           T or F        F     -> noop
+  //                               T     -> switch OFF
+  //     T             T           T     -> noop
+  //                               F     -> switch ON
+  //     T             F           F     -> noop
+  //                               T     -> switch OFF
+  //
+  // Notes:
+  //  - `isOnForTime` is true when the timer is not over yet;
+  //  - `isOnForTemp` is true when the sensor T is < target T
+  //  - `status` is true when the heating is ON;
+
+  if ((!isOnForTime) && _isHeatingOn) _switchHeatingOff();
+  else if (isOnForTime && isOnForTemp && (!_isHeatingOn)) _switchHeatingOn();
+  else if (isOnForTime && (!isOnForTemp) && _isHeatingOn) _switchHeatingOff();
 
   // TODO remove this useless delay.
   //  It's here otherwise the domainLed doesn't even blink as the domain is too fast.
@@ -25,15 +44,21 @@ void Domain::run() {
   domainLedDevice.switchOff();
 }
 
-void Domain::_checkTemperature() {
+bool Domain::_checkForTemperature() {
   Ds18b20SensorException exc;
   // Reading only DS18B20 temp for now (and ignoring SHT85 sensor).
   float sensorTemp = ds18b20Sensor.getData(exc);
   // if (exc == Ds18b20SensorException::SensorError) ...
 
   // TODO replace this with the PID algo: https://playground.arduino.cc/Code/PIDLibrary/
-  if ((sensorTemp < settings.TARGET_T) && !_isHeatingOn) _switchHeatingOn();
-  else if ((sensorTemp >= settings.TARGET_T) && _isHeatingOn) _switchHeatingOff();
+  // if ((sensorTemp < settings.TARGET_T) && !_isHeatingOn) _switchHeatingOn();
+  // else if ((sensorTemp >= settings.TARGET_T) && _isHeatingOn) _switchHeatingOff();
+  return sensorTemp < settings.TARGET_T;
+}
+
+bool Domain::_checkForTimer() {
+  timer.tick();
+  return !timer.isOver();
 }
 
 void Domain::_switchHeatingOn() {

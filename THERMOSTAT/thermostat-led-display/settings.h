@@ -10,7 +10,7 @@
 struct Settings {
   // Under this T, the heating wis turned ON.
   const unsigned int TARGET_T = 18;
-  const time_utils::Time DEFAULT_TIMER = {1, 30, 0};
+  const time_utils::Time DEFAULT_TIMER = {0, 1, 7};
 
   // Seconds after which the display switches off.
   const unsigned int DISPLAY_SWITCHOFF_TIMER = 20;
