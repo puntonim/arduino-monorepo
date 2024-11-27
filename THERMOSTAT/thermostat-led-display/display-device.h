@@ -8,8 +8,8 @@ class DisplayDevice {
 
 private:
   bool _isDisplayOn = false;
-  unsigned int _counterForDisplayDataExecutions = 0;
-  int _indexForCurrentlyDisplayedErrorMsg = -1;
+  unsigned short _counterForDisplayDataExecutions = 0;
+  short _indexForCurrentlyDisplayedErrorMsg = -1;
   void _printData();
   void _printFirstRow();
   void _printSecondRow();
@@ -29,12 +29,12 @@ public:
 class RowPrinter {
 
 private:
-  const unsigned int _MAX_SIZE = 16;
-  unsigned int _currentSize = 0;
+  const unsigned short _MAX_SIZE = 16;
+  unsigned short _currentSize = 0;
 
 public:
-  RowPrinter(int i);
-  int i;
+  RowPrinter(unsigned short i);
+  unsigned short i;
   template <typename T>
   void print(T value);
   template <typename T1, typename T2>

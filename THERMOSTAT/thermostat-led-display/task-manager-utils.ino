@@ -11,13 +11,13 @@ int _prevSecs = 0;
   */
 void printDebugTasks() {
   #if IS_DEBUG == true
-  const int PERIOD_SECS = 1;
+  const short PERIOD_SECS = 1;
   int nowSecs = floor(millis() / 1000);
   if (nowSecs >= _prevSecs + PERIOD_SECS) {
 
     char debugData[10];
     taskManager.checkAvailableSlots(debugData, sizeof debugData);
-    int tasksCount = 0;
+    short tasksCount = 0;
     for (int i = 0; i < 10; i++)
       if (debugData[i] != 'F') tasksCount++;
     Serial.print((String) "#" + tasksCount + " tasks [");
