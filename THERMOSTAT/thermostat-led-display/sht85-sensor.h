@@ -19,5 +19,3 @@ public:
   void setup();
   void getData(float* data, enum Sht85SensorException& exc);
 };
-
-Sht85Sensor sht85Sensor;

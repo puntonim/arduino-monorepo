@@ -8,6 +8,8 @@ void Domain::setup() {
   runTaskId = taskManager.scheduleFixedRate(settings.DOMAIN_RUN_PERIOD, [] {
     domain.run();
   });
+
+  timer.start(settings.DEFAULT_TIMER.h, settings.DEFAULT_TIMER.m, settings.DEFAULT_TIMER.s);
 }
 
 void Domain::run() {
@@ -15,7 +17,7 @@ void Domain::run() {
   _checkTemperature();
 
   // _checkTime(); // TODO implement this.
-  
+
   // TODO remove this useless delay.
   //  It's here otherwise the domainLed doesn't even blink as the domain is too fast.
   delay(100);

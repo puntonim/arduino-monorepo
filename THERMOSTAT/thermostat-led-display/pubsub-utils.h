@@ -1,24 +1,24 @@
 class BasePubSubEvent {
 public:
-  constexpr static char* topic = "BASE_EVENT";
+  constexpr static char topic[] = "BASE_EVENT";
 private:
 };
 
 class ButtonPressEvent : public BasePubSubEvent {
 public:
-  constexpr static char* topic = "BUTTON_PRESS_EVENT";
+  constexpr static char topic[] = "BUTTON_PRESS_EVENT";
 };
 
 class HeatingStatusChangeEvent : public BasePubSubEvent {
 public:
-  constexpr static char* topic = "HEATING_STATUS_CHANGE_EVENT";
+  constexpr static char topic[] = "HEATING_STATUS_CHANGE_EVENT";
   const bool isOn;
   HeatingStatusChangeEvent(bool isOn): isOn(isOn) {};
 };
 
 class ErrorStatusChangeEvent : public BasePubSubEvent {
 public:
-  constexpr static char* topic = "ERROR_STATUS_CHANGE_EVENT";
+  constexpr static char topic[] = "ERROR_STATUS_CHANGE_EVENT";
   const bool isError;
   std::list<char*> messageList;
   ErrorStatusChangeEvent(bool isError, std::list<char*> messageList = {}) : isError(isError), messageList(messageList) {};
@@ -26,7 +26,7 @@ public:
 
 // class SensorDataEvent : public BasePubSubEvent {
 // public:
-//   constexpr static char* topic = "SENSOR_DATA_EVENT";
+//   constexpr static char topic[] = "SENSOR_DATA_EVENT";
 //   const float value;
 //   SensorDataEvent(float value)
 //     : value(value) {}
@@ -51,5 +51,3 @@ public:
   void subscribe(std::function<void(ErrorStatusChangeEvent*)> callback);
   // void subscribe(std::function<void(SensorDataEvent*)> callback);
 };
-
-PubSub pubSub;

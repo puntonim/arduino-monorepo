@@ -16,4 +16,19 @@ public:
   void run();
 };
 
+// Declare all global singletons.
 Domain domain;
+
+ButtonDevice buttonDevice;
+DisplayDevice displayDevice;
+
+Ds18b20Sensor ds18b20Sensor;
+Sht85Sensor sht85Sensor;
+
+HeatingLedDevice heatingLedDevice;
+ErrorLedDevice errorLedDevice;
+DomainLedDevice domainLedDevice;
+
+time_utils::Timer timer;
+ErrorManager errorManager;
+PubSub pubSub;

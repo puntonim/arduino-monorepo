@@ -33,6 +33,9 @@
 #include <IoAbstractionWire.h>
 #include <TaskManagerIO.h>
 
+#include "list-utils.h"
+#include "time-utils.h"
+#include "pubsub-utils.h"
 #include "settings.h"
 #include "common-exceptions.h"
 #include "errors.h"
@@ -41,8 +44,6 @@
 #include "ds18b20-sensor.h"
 #include "led-device.h"
 #include "button-device.h"
-#include "pubsub-utils.h"
-#include "list-utils.h"
 #include "domain.h"
 
 
@@ -71,7 +72,10 @@ void loop() {
 
 /*
 TODO
- - add time counter that runs in domain.run()
+ - Domain::_checkTime()
+ - convert SHT85 from reference to return struct
+ - convert many int to short
+ - use namespace for all utils: https://stackoverflow.com/a/46499087/1969672
 
  - new HW:
     - rotary encoders (temp, time)

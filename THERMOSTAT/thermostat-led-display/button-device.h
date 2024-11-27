@@ -5,5 +5,3 @@ private:
 public:
   void setup();
 };
-
-ButtonDevice buttonDevice;

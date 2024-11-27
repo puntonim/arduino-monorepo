@@ -21,5 +21,3 @@ public:
   bool areThereErrors();
   std::list<char *> getErrorMessageListForDisplay();
 };
-
-ErrorManager errorManager;
