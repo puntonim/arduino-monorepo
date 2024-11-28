@@ -1,5 +1,6 @@
-class ListUtils {
-public:
-  template<typename T>
-  static T getByIndex(std::list<T> l, short i);
-};
+namespace list_utils {
+
+template<typename T>
+static T getByIndex(std::list<T> l, short i);
+
+}

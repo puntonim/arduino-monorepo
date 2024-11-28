@@ -3,7 +3,7 @@
 void HeatingLedDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
-  pubSub.subscribe([this](HeatingStatusChangeEvent* pEvent) {
+  pubSub.subscribe([this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "HeatingLedDevice - received event: " + pEvent->topic + " isOn=" + (pEvent->isOn ? "ON" : "OFF"));
 #endif
@@ -42,7 +42,7 @@ void HeatingLedDevice::stopBlinking() {
 #if IS_DEBUG == true
   Serial.println((String) "HeatingLedDevice - stopping the blinking task");
 #endif
-  cancelTask(blinkHeatingLedTaskId);
+  task_manager_utils::cancelTask(blinkHeatingLedTaskId);
   // Make sure the LED is off as the task might have left it on.
   switchOff();
 }
@@ -57,7 +57,7 @@ void HeatingLedDevice::stopBlinking() {
 void ErrorLedDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
-  pubSub.subscribe([this](ErrorStatusChangeEvent* pEvent) {
+  pubSub.subscribe([this](pubsub_utils::ErrorStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "ErrorLedDevice - received event: " + pEvent->topic + " isError=" + (pEvent->isError ? "ON" : "OFF"));
 #endif
@@ -96,7 +96,7 @@ void ErrorLedDevice::stopBlinking() {
 #if IS_DEBUG == true
   Serial.println((String) "ErrorLedDevice - stopping the blinking task");
 #endif
-  cancelTask(blinkErrorLedTaskId);
+  task_manager_utils::cancelTask(blinkErrorLedTaskId);
   // Make sure the led is off as the task might have left it on.
   switchOff();
 }

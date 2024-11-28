@@ -1,3 +1,5 @@
+namespace task_manager_utils {
+
 int _prevSecs = 0;
 
 /**
@@ -10,7 +12,7 @@ int _prevSecs = 0;
   *    }
   */
 void printDebugTasks() {
-  #if IS_DEBUG == true
+#if IS_DEBUG == true
   const short PERIOD_SECS = 1;
   int nowSecs = floor(millis() / 1000);
   if (nowSecs >= _prevSecs + PERIOD_SECS) {
@@ -42,17 +44,17 @@ void printDebugTasks() {
 
     _prevSecs = nowSecs;
   }
-  #endif
+#endif
 }
 
 void _printExtraInfo() {
-  #if IS_DEBUG == true
+#if IS_DEBUG == true
   Serial.println((String) "\nswitchOffDisplayTaskId: " + switchOffDisplayTaskId);
   Serial.println((String) "displayDataTaskId: " + displayDataTaskId);
   Serial.println((String) "runTaskId: " + runTaskId);
   Serial.println((String) "blinkHeatingLedTaskId: " + blinkHeatingLedTaskId);
   Serial.println((String) "blinkErrorLedTaskId: " + blinkErrorLedTaskId);
-  #endif
+#endif
 }
 
 /**
@@ -65,4 +67,6 @@ void _printExtraInfo() {
 void cancelTask(taskid_t &taskId) {
   taskManager.cancelTask(taskId);
   taskId = TASKMGR_INVALIDID;
+}
+
 }

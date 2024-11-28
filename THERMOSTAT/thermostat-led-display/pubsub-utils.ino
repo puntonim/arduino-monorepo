@@ -1,3 +1,5 @@
+namespace pubsub_utils {
+
 void PubSub::publish(ButtonPressEvent* pEvent) {
   for (auto& callback : _buttonPressSubCallbacks) {
     callback(pEvent);
@@ -37,3 +39,5 @@ void PubSub::subscribe(std::function<void(ErrorStatusChangeEvent*)> callback) {
 // PubSub::void subscribe(std::function<void(SensorDataEvent*)> callback) {
 //   _sensorDataSubCallbacks.push_back(callback);
 // }
+
+}

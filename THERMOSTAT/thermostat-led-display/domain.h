@@ -32,4 +32,4 @@ DomainLedDevice domainLedDevice;
 
 time_utils::Timer timer;
 ErrorManager errorManager;
-PubSub pubSub;
+pubsub_utils::PubSub pubSub;

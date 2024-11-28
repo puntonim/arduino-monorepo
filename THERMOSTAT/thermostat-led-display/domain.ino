@@ -65,11 +65,11 @@ bool Domain::_checkForTimer() {
 void Domain::_switchHeatingOn() {
   _isHeatingOn = true;
 
-  pubSub.publish(new HeatingStatusChangeEvent(true));
+  pubSub.publish(new pubsub_utils::HeatingStatusChangeEvent(true));
 }
 
 void Domain::_switchHeatingOff() {
   _isHeatingOn = false;
 
-  pubSub.publish(new HeatingStatusChangeEvent(false));
+  pubSub.publish(new pubsub_utils::HeatingStatusChangeEvent(false));
 }

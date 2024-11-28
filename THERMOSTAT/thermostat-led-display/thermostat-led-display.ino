@@ -36,6 +36,7 @@
 #include "list-utils.h"
 #include "time-utils.h"
 #include "pubsub-utils.h"
+#include "task-manager-utils.h"
 #include "settings.h"
 #include "common-exceptions.h"
 #include "errors.h"
@@ -65,24 +66,28 @@ void setup() {
 
 void loop() {
   // To debug TaskManagerIO's tasks.
-  // printDebugTasks();
+  // task_manager_utils::printDebugTasks();
 
   taskManager.runLoop();
 }
 
 /*
 TODO
- - convert many int vars to short
- - use namespace for all utils: https://stackoverflow.com/a/46499087/1969672
- - when the timer is over then stop the domain task
-   It should start again when I set a new timer
+ - *rotary encoders: when the timer is over then stop the domain task
+   And start it again when setting a new the timer 
 
  - new HW:
     - rotary encoders (temp, time)
     - bluetooth to another board
     - switch for heating pump
+    - co2
 
  - Use PID algo in domain: https://playground.arduino.cc/Code/PIDLibrary/
+
+ - what to do in case of sensor error?
+   we only consider the timer!
+   But do we switch ON until the timer is over then switch OFF?
+   or keep the current status (ON or OFF) until the timer is over and then switch OFF?
 
  - Cloud and web:
     - send data to IoT cloud or custom BE to track:

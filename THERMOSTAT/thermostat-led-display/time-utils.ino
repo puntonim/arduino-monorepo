@@ -1,55 +1,55 @@
-namespace time_utils
-{
-  unsigned long timeToSecs(struct Time time) {
-    return time.s + (time.m * 60) + (time.h * 3600);
-  }
+namespace time_utils {
 
-  struct Time secsToTime(unsigned long secs) {
-    struct Time t;
-    auto dv = div(secs, 60);
-    t.s = dv.rem;
-    dv = div(dv.quot, 60);
-    t.m = dv.rem;
-    t.h = dv.quot;
-    return t;
-  }
+unsigned long timeToSecs(struct Time time) {
+  return time.s + (time.m * 60) + (time.h * 3600);
+}
 
-  void Timer::start(unsigned short hour, unsigned short minute, unsigned short second) {
-    _time.h = hour;
-    _time.m = minute;
-    _time.s = second;
-    _lastTickTs = millis();
-  }
+struct Time secsToTime(unsigned long secs) {
+  struct Time t;
+  auto dv = div(secs, 60);
+  t.s = dv.rem;
+  dv = div(dv.quot, 60);
+  t.m = dv.rem;
+  t.h = dv.quot;
+  return t;
+}
 
-  struct Time Timer::tick() {
-    auto nowTs = millis();
-    // Elapsed secs since last tick.
-    // round(10/3.); // 3.33 -> 3
-    // round(11/3.); // 3.66 -> 4
-    int elapsedSecs = (int)round((nowTs - _lastTickTs) / 1000.0);  // Secs (int).
-    if (elapsedSecs < 0) {
-      // Note: millis() resets to 0 after ~49 days, precisely after it reaches the max value for the type unsigned long.
-      // https://docs.arduino.cc/language-reference/en/functions/time/millis/
-      elapsedSecs = (int)round((std::numeric_limits<unsigned long>::max() - _lastTickTs + nowTs) / 1000.0); 
-    }
-    if (elapsedSecs >= 1) {
-      _lastTickTs = nowTs;
-      int newTimeInSecs = timeToSecs(_time) - elapsedSecs;
-      if (newTimeInSecs < 0) newTimeInSecs = 0;
-      _time = secsToTime(newTimeInSecs);
-    }
-    return _time;
-  }
+void Timer::start(unsigned short hour, unsigned short minute, unsigned short second) {
+  _time.h = hour;
+  _time.m = minute;
+  _time.s = second;
+  _lastTickTs = millis();
+}
 
-  void Timer::format(char* string) {
-    time_utils::format(string, _time);
+struct Time Timer::tick() {
+  auto nowTs = millis();
+  // Elapsed secs since last tick.
+  // round(10/3.); // 3.33 -> 3
+  // round(11/3.); // 3.66 -> 4
+  int elapsedSecs = (int)round((nowTs - _lastTickTs) / 1000.0);  // Secs (int).
+  if (elapsedSecs < 0) {
+    // Note: millis() resets to 0 after ~49 days, precisely after it reaches the max value for the type unsigned long.
+    // https://docs.arduino.cc/language-reference/en/functions/time/millis/
+    elapsedSecs = (int)round((std::numeric_limits<unsigned long>::max() - _lastTickTs + nowTs) / 1000.0);
   }
-
-  bool Timer::isOver() {
-    return time_utils::isOver(_time);
+  if (elapsedSecs >= 1) {
+    _lastTickTs = nowTs;
+    int newTimeInSecs = timeToSecs(_time) - elapsedSecs;
+    if (newTimeInSecs < 0) newTimeInSecs = 0;
+    _time = secsToTime(newTimeInSecs);
   }
+  return _time;
+}
 
-  /*
+void Timer::format(char* string) {
+  time_utils::format(string, _time);
+}
+
+bool Timer::isOver() {
+  return time_utils::isOver(_time);
+}
+
+/*
    * Format a Time object to a string like: "1:04:09".
    *
    * Mind that you nedd to provide a string of size 9, as first arg, because of the final NULL
@@ -65,12 +65,13 @@ namespace time_utils
    *   time_utils::format(timerTimeString, timerTime);
    *   Serial.println(timerTimeString);
    */
-  void format(char* string, Time time) {
-    sprintf_P(string, (PGM_P)F("%1d:%02d:%02d"), time.h, time.m, time.s);
-  }
+void format(char* string, Time time) {
+  sprintf_P(string, (PGM_P)F("%1d:%02d:%02d"), time.h, time.m, time.s);
+}
 
-  bool isOver(Time time) {
-    if ((time.h == 0) && (time.m == 0) && (time.s == 0)) return true;
-    else return false;
-  }
+bool isOver(Time time) {
+  if ((time.h == 0) && (time.m == 0) && (time.s == 0)) return true;
+  else return false;
+}
+
 }

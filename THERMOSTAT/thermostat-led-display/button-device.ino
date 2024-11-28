@@ -18,5 +18,5 @@ void ButtonDevice::setup() {
 static void onButtonPress(uint8_t pin, bool isHeldDown) {
   if (isHeldDown) return;
 
-  pubSub.publish(new ButtonPressEvent());
+  pubSub.publish(new pubsub_utils::ButtonPressEvent());
 }

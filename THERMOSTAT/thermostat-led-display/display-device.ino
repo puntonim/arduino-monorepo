@@ -7,14 +7,14 @@ void DisplayDevice::setup() {
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
 
-  pubSub.subscribe([this](ButtonPressEvent* pEvent) {
+  pubSub.subscribe([this](pubsub_utils::ButtonPressEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
 #endif
     this->switchOn();
   });
 
-  pubSub.subscribe([this](HeatingStatusChangeEvent* pEvent) {
+  pubSub.subscribe([this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "DisplayDevice - received event: " + pEvent->topic + " isOn=" + (pEvent->isOn ? "ON" : "OFF"));
 #endif
@@ -41,7 +41,7 @@ void DisplayDevice::switchOff(bool doResetSwitchOffDisplayTaskId /* = true */) {
 #if IS_DEBUG == true
   Serial.println((String) "DisplayDevice - stopping the display task");
 #endif
-  cancelTask(displayDataTaskId);
+  task_manager_utils::cancelTask(displayDataTaskId);
   // And reset the counters.
   _counterForDisplayDataExecutions = 0;
   _indexForCurrentlyDisplayedErrorMsg = -1;
@@ -53,7 +53,7 @@ void DisplayDevice::switchOn(bool doCancelExistingSwitchOffDisplayTask /* = true
 #if IS_DEBUG == true
     Serial.println((String) "DisplayDevice - stopping the switch off task");
 #endif
-    cancelTask(switchOffDisplayTaskId);
+    task_manager_utils::cancelTask(switchOffDisplayTaskId);
   }
   // And schedule a new task to switch off display.
 #if IS_DEBUG == true
@@ -138,7 +138,7 @@ void DisplayDevice::_printSecondRow() {
       } else {
         // Print the next msg in the list.
         _indexForCurrentlyDisplayedErrorMsg++;
-        char* msg = ListUtils::getByIndex(errorManager.getErrorMessageListForDisplay(), _indexForCurrentlyDisplayedErrorMsg);
+        char* msg = list_utils::getByIndex(errorManager.getErrorMessageListForDisplay(), _indexForCurrentlyDisplayedErrorMsg);
         if (msg != nullptr) {
           p.print(msg);
           p.printFillingBlanks();
