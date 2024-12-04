@@ -3,6 +3,10 @@ Saturday 2024.10.12 23:12:46
 PUSH BUTTON, MOMENTARY SWITCH
 
 Push buttons are momentary switches.
+They need to be connected to Arduino with (the internal) pull-up resistor. Or 
+ a pull-down resistor. There is no whatsovere difference between pull-up or down
+ but up is better because it is integrated in every Arduino PIN so you don't
+ even need an actual resistor.
 
 The best choice is to use the lib IoAbstraction.
 

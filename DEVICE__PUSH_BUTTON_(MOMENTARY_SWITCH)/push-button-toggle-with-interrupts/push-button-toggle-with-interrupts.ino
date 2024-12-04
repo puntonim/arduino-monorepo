@@ -6,7 +6,9 @@
  *  for the same event, due to the fact that the physical transition of the button
  *  from HIGH to LOW (and viceversa) takes time and it produces dupes interrupts.
  *  So you need debouncing.
+ *
  * Note: push buttons are momentary switches.
+ * Note: with a pull-down resistor which is not the smartest choice.
  *
  * PROS
  * ----

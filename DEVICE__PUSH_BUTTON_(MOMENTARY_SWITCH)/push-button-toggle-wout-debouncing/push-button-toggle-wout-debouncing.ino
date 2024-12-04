@@ -3,7 +3,9 @@
  * =====================================
  * Detect the push of a button and toggle the state of the bultin LED
  *  but without debouncing.
+ *
  * Note: push buttons are momentary switches.
+ * Note: with a pull-down resistor which is not the smartest choice.
  *
  * The debouncing is mean to solve the issue due to the fact that
  *  the transition of voltage from LOW to HIGH (or the oppsite) when
