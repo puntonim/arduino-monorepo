@@ -1,6 +1,7 @@
-// Note: SHT85 I2C address: 0x44.
-SHTSensor sht(SHTSensor::SHT85);
-// To use autodetect: SHTSensor sht;
+#ifndef _SHT85_SENSOR_H
+#define _SHT85_SENSOR_H
+
+namespace tstat {
 
 struct Sht85Data {
   float temperature;
@@ -12,15 +13,20 @@ enum struct Sht85SensorException {
   SensorError,
 };
 
-
 class Sht85Sensor {
-
-private:
+ private:
   unsigned long _lastDataTs = 0;
   float _cachedTemperature;
   float _cachedHumidity;
 
-public:
+ public:
   void setup();
   struct Sht85Data getData(enum Sht85SensorException& exc);
 };
+
+// "Soft" singleton global object defined as extern and initialized here,
+//  but also defined in sht85-sensor.cpp.
+extern Sht85Sensor sht85Sensor;
+
+}  // namespace tstat
+#endif

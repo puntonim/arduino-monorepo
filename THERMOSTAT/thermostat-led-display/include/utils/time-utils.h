@@ -1,3 +1,7 @@
+#ifndef _TIME_UTILS_H
+#define _TIME_UTILS_H
+
+namespace tstat {
 namespace time_utils {
 
 struct Time {
@@ -12,14 +16,21 @@ void format(char* string, Time time);
 bool isOver(Time time);
 
 class Timer {
-private:
+ private:
   struct Time _time;
   unsigned long _lastTickTs;
 
-public:
+ public:
   void start(unsigned short hour, unsigned short minute, unsigned short second);
   struct Time tick();
   void format(char* string);
   bool isOver();
 };
-}
+
+// "Soft" singleton global object defined as extern and initialized here,
+//  but also defined in time-utils.cpp.
+extern Timer timer;
+
+}  // namespace time_utils
+}  // namespace tstat
+#endif

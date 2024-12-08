@@ -19,7 +19,7 @@ See manual and photo in this dir.
 Caldaia
 -------
 In the caldaia room we have the same boiler for radiators and hot water.
-Model: VAILLANT VMW 306/5-5 (ecoTEC plus VMW 306/5-5)
+Modello: Vaillant ecoBLOCK plus VMW IT 306/5-5 R3
 Matricola: 21141300100116950001005495N3
 Potenza: 30 Kw
 Installed on: 2014-08-01
