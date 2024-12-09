@@ -1,3 +1,4 @@
+- ---- SPENTO ----
 - button to set timer
 - button to set target T
 - button to switch on display and stop heating (holding the button)
@@ -8,8 +9,12 @@
 
 - Bluetooth: communication between 2 Arduinos
 
-- Use PID algo in domain: https://playground.arduino.cc/Code/PIDLibrary/
+- Use PID algo in heating: https://playground.arduino.cc/Code/PIDLibrary/
   Or it is useless as the time it takes to reach the T is slow
+
+- list-utils::getByIndex to set an IndexError
+  using exceptions defined here: https://github.com/puntonim/arduino-monorepo/blob/790c425cb40c56209f74f5c541a8fc9b81dbcfd8/THERMOSTAT/thermostat-led-display/common-exceptions.h
+  See notes in: /Volumes/home/Drive/DOCUMENTI-SYNC/IT/\_SW,\ SYS\ ENGINEERING/C++/Exceptions.md
 
 - What to do in case of (local) sensor error?
   Maybe, in that error case, we should consider only the timer!

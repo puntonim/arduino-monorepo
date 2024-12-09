@@ -17,15 +17,17 @@ namespace tstat {
 namespace settings {
 
 // Under this T, the heating wis turned ON.
-const unsigned short TARGET_T = 18;
+const unsigned short DEFAULT_TARGET_T = 18;
 const time_utils::Time DEFAULT_TIMER = {0, 1, 7};  // {H, H, S}.
 
 // Seconds after which the display switches off.
 const unsigned short DISPLAY_SWITCHOFF_TIMER = 20;
-const unsigned short DOMAIN_RUN_PERIOD = 5000;  // msec.
+const unsigned short HEATING_DOMAIN_RUN_PERIOD = 5000;  // msec.
 
-// Button.
-const unsigned short PUSH_BUTTON_PIN = 2;
+// Buttons.
+const unsigned short DISPLAY_BUTTON_PIN = 2;
+const unsigned short TARGET_T_BUTTON_PIN = 3;
+const unsigned short TIMER_BUTTON_PIN = 4;
 
 // DS18B20 sensor.
 const unsigned short DS18B20_SENSOR_PIN = 8;

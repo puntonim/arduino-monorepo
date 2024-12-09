@@ -7,8 +7,20 @@ namespace pubsub_utils {
 //  but defined as extern and initialized in pubsub-utils.h.
 PubSub pubSub;
 
-void PubSub::publish(ButtonPressEvent* pEvent) {
-  for (auto& callback : _buttonPressSubCallbacks) {
+void PubSub::publish(DisplayButtonPressEvent* pEvent) {
+  for (auto& callback : _displayButtonPressSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
+void PubSub::publish(TargetTButtonPressEvent* pEvent) {
+  for (auto& callback : _targetTButtonPressSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
+void PubSub::publish(TimerButtonPressEvent* pEvent) {
+  for (auto& callback : _timerButtonPressSubCallbacks) {
     callback(pEvent);
   }
 }
@@ -25,8 +37,16 @@ void PubSub::publish(ErrorStatusChangeEvent* pEvent) {
   }
 }
 
-void PubSub::subscribe(std::function<void(ButtonPressEvent*)> callback) {
-  _buttonPressSubCallbacks.push_back(callback);
+void PubSub::subscribe(std::function<void(DisplayButtonPressEvent*)> callback) {
+  _displayButtonPressSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(TargetTButtonPressEvent*)> callback) {
+  _targetTButtonPressSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(TimerButtonPressEvent*)> callback) {
+  _timerButtonPressSubCallbacks.push_back(callback);
 }
 
 void PubSub::subscribe(

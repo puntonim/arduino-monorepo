@@ -1,8 +1,9 @@
-#include "domain.h"
+#include "domain/heating-domain.h"
 
 #include <TaskManagerIO.h>
 
 #include "devices/led-device.h"
+#include "domain/scheduler-domain.h"
 #include "sensors/ds18b20-sensor.h"
 #include "sensors/sht85-sensor.h"
 #include "settings.h"
@@ -13,25 +14,36 @@
 namespace tstat {
 
 // "Soft" singleton global object defined here,
-//  but defined as extern and initialized in domain.h.
-Domain domain;
+//  but defined as extern and initialized in heating-domain.h.
+HeatingDomain heatingDomain;
 
-void Domain::setup() {
+void HeatingDomain::setup() {
   // TODO this should be done with a rotary encoder.
-  time_utils::timer.start(settings::DEFAULT_TIMER.h, settings::DEFAULT_TIMER.m,
-                          settings::DEFAULT_TIMER.s);
+  schedulerDomain.timer.start(settings::DEFAULT_TIMER.h,
+                              settings::DEFAULT_TIMER.m,
+                              settings::DEFAULT_TIMER.s);
 
   // Run `checkPeriodically` so it reacts asap after boot. Without this
   //  it would run after the period set in scheduleFixedRate, so 1 sec.
   run();
 #if IS_DEBUG == true
-  Serial.println((String) "Domain - starting a new run task");
+  Serial.println((String) "HeatingDomain - starting a new run task");
 #endif
-  runTaskId = taskManager.scheduleFixedRate(settings::DOMAIN_RUN_PERIOD,
-                                            [] { domain.run(); });
+  runTaskId = taskManager.scheduleFixedRate(settings::HEATING_DOMAIN_RUN_PERIOD,
+                                            [] { heatingDomain.run(); });
+
+  // TODO deleteme
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TargetTButtonPressEvent* pEvent) {
+        Serial.println((String) "TMP1 - received event: " + pEvent->topic);
+      });
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TimerButtonPressEvent* pEvent) {
+        Serial.println((String) "TMP2 - received event: " + pEvent->topic);
+      });
 }
 
-void Domain::run() {
+void HeatingDomain::run() {
   domainLedDevice.switchOn();
 
   bool isOnForTemp = _checkForTemperature();
@@ -54,22 +66,22 @@ void Domain::run() {
 
   if (!isOnForTime) task_manager_utils::cancelTask(runTaskId);
 
-  if ((!isOnForTime) && _isHeatingOn)
-    _switchHeatingOff();
-  else if (isOnForTime && isOnForTemp && (!_isHeatingOn))
-    _switchHeatingOn();
-  else if (isOnForTime && (!isOnForTemp) && _isHeatingOn)
-    _switchHeatingOff();
+  if ((!isOnForTime) && _isOn)
+    _switchOff();
+  else if (isOnForTime && isOnForTemp && (!_isOn))
+    _switchOn();
+  else if (isOnForTime && (!isOnForTemp) && _isOn)
+    _switchOff();
 
   // TODO remove this useless delay.
-  //  It's here otherwise the domainLed doesn't even blink as the domain is too
-  //  fast.
+  //  It's here otherwise the domainLed doesn't even blink as the heating domain
+  //  is too fast.
   delay(100);
 
   domainLedDevice.switchOff();
 }
 
-bool Domain::_checkForTemperature() {
+bool HeatingDomain::_checkForTemperature() {
   Ds18b20SensorException exc;
   // Reading only DS18B20 temp for now (and ignoring SHT85 sensor).
   float sensorTemp = ds18b20Sensor.getData(exc);
@@ -79,25 +91,25 @@ bool Domain::_checkForTemperature() {
 
   // TODO replace this with the PID algo:
   // https://playground.arduino.cc/Code/PIDLibrary/ if ((sensorTemp <
-  // settings.TARGET_T) && !_isHeatingOn) _switchHeatingOn(); else if
-  // ((sensorTemp >= settings.TARGET_T) && _isHeatingOn) _switchHeatingOff();
-  return sensorTemp < settings::TARGET_T;
+  // settings.TARGET_T) && !_isOn) _switchOn(); else if
+  // ((sensorTemp >= settings.TARGET_T) && _isOn) _switchOff();
+  return sensorTemp < schedulerDomain.targetTemperature;
 }
 
-bool Domain::_checkForTimer() {
-  time_utils::timer.tick();
-  return !time_utils::timer.isOver();
+bool HeatingDomain::_checkForTimer() {
+  schedulerDomain.timer.tick();
+  return !schedulerDomain.timer.isOver();
 }
 
-void Domain::_switchHeatingOn() {
-  _isHeatingOn = true;
+void HeatingDomain::_switchOn() {
+  _isOn = true;
 
   pubsub_utils::pubSub.publish(
       new pubsub_utils::HeatingStatusChangeEvent(true));
 }
 
-void Domain::_switchHeatingOff() {
-  _isHeatingOn = false;
+void HeatingDomain::_switchOff() {
+  _isOn = false;
 
   pubsub_utils::pubSub.publish(
       new pubsub_utils::HeatingStatusChangeEvent(false));

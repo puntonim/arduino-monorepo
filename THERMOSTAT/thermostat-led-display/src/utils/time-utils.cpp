@@ -5,10 +5,6 @@
 namespace tstat {
 namespace time_utils {
 
-// "Soft" singleton global object defined here,
-//  but defined as extern and initialized in time-utils.h.
-Timer timer;
-
 unsigned long timeToSecs(struct Time time) {
   return time.s + (time.m * 60) + (time.h * 3600);
 }

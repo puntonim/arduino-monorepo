@@ -5,7 +5,7 @@
 
 namespace tstat {
 
-class DisplayButtonDevice {
+class ButtonDevices {
  private:
  public:
   void setup();
@@ -13,7 +13,7 @@ class DisplayButtonDevice {
 
 // "Soft" singleton global object defined as extern and initialized here,
 //  but also defined in button-device.cpp.
-extern DisplayButtonDevice displayButtonDevice;
+extern ButtonDevices buttonDevices;
 
 }  // namespace tstat
 #endif

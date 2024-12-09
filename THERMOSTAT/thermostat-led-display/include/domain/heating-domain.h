@@ -1,17 +1,17 @@
-#ifndef _DOMAIN_H
-#define _DOMAIN_H
+#ifndef _HEATING_DOMAIN_H
+#define _HEATING_DOMAIN_H
 
 #include <TaskManagerIO.h>
 
 namespace tstat {
 
-class Domain {
+class HeatingDomain {
  private:
-  bool _isHeatingOn = false;
+  bool _isOn = false;
   bool _checkForTemperature();
   bool _checkForTimer();
-  void _switchHeatingOn();
-  void _switchHeatingOff();
+  void _switchOn();
+  void _switchOff();
 
  public:
   void setup();
@@ -20,8 +20,8 @@ class Domain {
 };
 
 // "Soft" singleton global object defined as extern and initialized here,
-//  but also defined in domain.cpp.
-extern Domain domain;
+//  but also defined in heating-domain.cpp.
+extern HeatingDomain heatingDomain;
 
 }  // namespace tstat
 #endif

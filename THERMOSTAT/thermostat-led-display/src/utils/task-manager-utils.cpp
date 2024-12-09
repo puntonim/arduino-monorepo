@@ -3,7 +3,7 @@
 // Include settings.h because that is where IS_DEBUG is defined.
 #include "devices/display-device.h"
 #include "devices/led-device.h"
-#include "domain.h"
+#include "domain/heating-domain.h"
 #include "settings.h"
 
 namespace tstat {
@@ -17,7 +17,8 @@ void _printExtraInfo() {
                  displayDevice.displayDataTaskId);
   Serial.println((String) "displayDevice.switchOffTaskId: " +
                  displayDevice.switchOffTaskId);
-  Serial.println((String) "domain.runTaskId: " + domain.runTaskId);
+  Serial.println((String) "heatingDomain.runTaskId: " +
+                 heatingDomain.runTaskId);
   Serial.println((String) "heatingLedDevice.blinkTaskId: " +
                  heatingLedDevice.blinkTaskId);
   Serial.println((String) "errorLedDevice.blinkTaskId): " +

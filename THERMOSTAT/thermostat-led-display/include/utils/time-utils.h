@@ -27,10 +27,6 @@ class Timer {
   bool isOver();
 };
 
-// "Soft" singleton global object defined as extern and initialized here,
-//  but also defined in time-utils.cpp.
-extern Timer timer;
-
 }  // namespace time_utils
 }  // namespace tstat
 #endif

@@ -3,8 +3,8 @@
 #include <LiquidCrystalIO.h>
 // IoAbstractionWire.h required when using the I2C version.
 #include <IoAbstractionWire.h>
-// #include <Wire.h>
 
+#include "domain/scheduler-domain.h"
 #include "errors.h"
 #include "sensors/ds18b20-sensor.h"
 #include "sensors/sht85-sensor.h"
@@ -32,13 +32,14 @@ void DisplayDevice::setup() {
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
 
-  pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::ButtonPressEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::DisplayButtonPressEvent* pEvent) {
 #if IS_DEBUG == true
-    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
 #endif
-    this->switchOn();
-  });
+        this->switchOn();
+      });
 
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
@@ -140,10 +141,10 @@ void DisplayDevice::_printFirstRow() {
   else
     p.print("OFF ");
 
-  p.print(settings::TARGET_T);
+  p.print(schedulerDomain.targetTemperature);
   p.print("\xDF  ");  // Or: p.print("\xDF""C");
 
-  time_utils::timer.tick();
+  schedulerDomain.timer.tick();
   // Format time like: 1:04:09
   // Size 9 because of the final null appended by spritnf. And the hour can be 2
   // digits (eg, "26" hours)
@@ -152,7 +153,7 @@ void DisplayDevice::_printFirstRow() {
   char timerTimeString[9];
   // sprintf_P(timerTimeString, (PGM_P)F("%1d:%02d:%02d"), timerTime.h,
   // timerTime.m, timerTime.s);
-  time_utils::timer.format(timerTimeString);
+  schedulerDomain.timer.format(timerTimeString);
   p.print(timerTimeString);
 
   p.printFillingBlanks();

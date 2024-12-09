@@ -10,7 +10,7 @@
  * Timer button: increase the timer.
  * LED yellow: blinks when heating is ON, so when sensor T < desired T.
  * LED red: blinks when there is an error. Read the error on the display.
- * LED white: ON while the domain is running.
+ * LED white: ON while the heating domain is running.
  *
  * Devices:
  *  1xSHT-85: thermometer and hygrometer sensor
@@ -39,7 +39,8 @@
 #include "devices/button-device.h"
 #include "devices/display-device.h"
 #include "devices/led-device.h"
-#include "domain.h"
+#include "domain/heating-domain.h"
+#include "domain/scheduler-domain.h"
 #include "sensors/ds18b20-sensor.h"
 #include "sensors/sht85-sensor.h"
 #include "utils/list-utils.h"
@@ -57,12 +58,13 @@ void setup() {
 
   sht85Sensor.setup();
   ds18b20Sensor.setup();
-  displayButtonDevice.setup();
+  buttonDevices.setup();
   errorLedDevice.setup();
   heatingLedDevice.setup();
   domainLedDevice.setup();
   displayDevice.setup();
-  domain.setup();
+  schedulerDomain.setup();
+  heatingDomain.setup();
 }
 
 void loop() {
