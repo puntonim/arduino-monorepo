@@ -52,6 +52,15 @@ void DisplayDevice::setup() {
       });
 
   pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::SchedulerEditTimeEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
+#endif
+        this->_refreshFirstRow();
+      });
+
+  pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println(
@@ -243,6 +252,18 @@ void DisplayDevice::_printSecondRow() {
     p.print("%");
   }
   p.printFillingBlanks();
+}
+
+void DisplayDevice::_refreshFirstRow() {
+  task_manager_utils::cancelTask(displayDataTaskId);
+  _printFirstRow();
+  if (displayDataTaskId == TASKMGR_INVALIDID) {
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - starting a new display task");
+#endif
+    displayDataTaskId =
+        taskManager.scheduleFixedRate(1000, [] { displayDevice._printData(); });
+  }
 }
 
 //********** CLASS RowPrinter **************************************************

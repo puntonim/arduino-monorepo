@@ -18,6 +18,7 @@ class DisplayDevice {
   void _printData();
   void _printFirstRow();
   void _printSecondRow();
+  void _refreshFirstRow();
 
   // Data on display.
   bool _isHeatingOn = false;
