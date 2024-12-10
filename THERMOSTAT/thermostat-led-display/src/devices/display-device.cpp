@@ -32,8 +32,18 @@ void DisplayDevice::setup() {
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
 
+  // SUBSCRIPTIONS.
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::DisplayButtonPressEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
+#endif
+        this->switchOn();
+      });
+
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TimerButtonPressEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
@@ -53,16 +63,18 @@ void DisplayDevice::setup() {
 }
 
 void DisplayDevice::toogle() {
-  if (_isDisplayOn == true)
+  if (_isOn == true)
     switchOff();
   else
     switchOn();
 }
 
+bool DisplayDevice::isOn() { return _isOn; }
+
 void DisplayDevice::switchOff(bool doResetSwitchOffDisplayTaskId /* = true */) {
   lcd.noBacklight();
   lcd.noDisplay();
-  _isDisplayOn = false;
+  _isOn = false;
 
   // We need to reset switchOffDisplayTaskId (or the display will always stay
   // on). No need to cancel any existing tasks to switch off the display because
@@ -100,11 +112,11 @@ void DisplayDevice::switchOn(
                            [] { displayDevice.switchOff(); });
 
   // If the diplay is already ON, then nothing to do.
-  if (!_isDisplayOn) {
+  if (!_isOn) {
     _printData();
     lcd.backlight();
     lcd.display();
-    _isDisplayOn = true;
+    _isOn = true;
   }
 }
 

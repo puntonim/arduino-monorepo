@@ -5,12 +5,12 @@
 namespace tstat {
 namespace time_utils {
 
-unsigned long timeToSecs(struct Time time) {
+unsigned long timeToSecs(Time time) {
   return time.s + (time.m * 60) + (time.h * 3600);
 }
 
-struct Time secsToTime(unsigned long secs) {
-  struct Time t;
+Time secsToTime(unsigned long secs) {
+  Time t;
   auto dv = div(secs, 60);
   t.s = dv.rem;
   dv = div(dv.quot, 60);
@@ -27,7 +27,15 @@ void Timer::start(unsigned short hour, unsigned short minute,
   _lastTickTs = millis();
 }
 
-struct Time Timer::tick() {
+Time Timer::addTime(unsigned short hour, unsigned short minute,
+                    unsigned short second) {
+  _time.h += hour;
+  _time.m += minute;
+  _time.s += second;
+  return _time;
+}
+
+Time Timer::tick() {
   auto nowTs = millis();
   // Elapsed secs since last tick.
   // round(10/3.); // 3.33 -> 3
@@ -66,7 +74,7 @@ bool Timer::isOver() { return time_utils::isOver(_time); }
  *   time_utils::Timer timer;
  *   timer.start(1, 2, 11);
  *   ...
- *   struct time_utils::Time timerTime = timer.tick();
+ *   time_utils::Time timerTime = timer.tick();
  *   char timerTimeString[9];
  *   time_utils::format(timerTimeString, timerTime);
  *   Serial.println(timerTimeString);
@@ -76,7 +84,7 @@ void format(char* string, Time time) {
 }
 
 bool isOver(Time time) {
-  if ((time.h == 0) && (time.m == 0) && (time.s == 0))
+  if ((time.h <= 0) && (time.m <= 0) && (time.s <= 0))
     return true;
   else
     return false;

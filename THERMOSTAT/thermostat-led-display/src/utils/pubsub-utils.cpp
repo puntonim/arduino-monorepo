@@ -37,6 +37,18 @@ void PubSub::publish(ErrorStatusChangeEvent* pEvent) {
   }
 }
 
+void PubSub::publish(NewScheduleEvent* pEvent) {
+  for (auto& callback : _newScheduleSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
+void PubSub::publish(SchedulerEditTimeEvent* pEvent) {
+  for (auto& callback : _schedulerEditTimeSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
 void PubSub::subscribe(std::function<void(DisplayButtonPressEvent*)> callback) {
   _displayButtonPressSubCallbacks.push_back(callback);
 }
@@ -56,6 +68,14 @@ void PubSub::subscribe(
 
 void PubSub::subscribe(std::function<void(ErrorStatusChangeEvent*)> callback) {
   _errorStatusChangeSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(NewScheduleEvent*)> callback) {
+  _newScheduleSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(SchedulerEditTimeEvent*)> callback) {
+  _schedulerEditTimeSubCallbacks.push_back(callback);
 }
 
 }  // namespace pubsub_utils

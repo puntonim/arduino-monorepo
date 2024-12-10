@@ -10,19 +10,21 @@ struct Time {
   short s;
 };
 
-unsigned long timeToSecs(struct Time time);
-struct Time secsToTime(unsigned long secs);
+unsigned long timeToSecs(Time time);
+Time secsToTime(unsigned long secs);
 void format(char* string, Time time);
 bool isOver(Time time);
 
 class Timer {
  private:
-  struct Time _time;
+  Time _time;
   unsigned long _lastTickTs;
 
  public:
   void start(unsigned short hour, unsigned short minute, unsigned short second);
-  struct Time tick();
+  Time addTime(unsigned short hour, unsigned short minute,
+               unsigned short second);
+  Time tick();
   void format(char* string);
   bool isOver();
 };

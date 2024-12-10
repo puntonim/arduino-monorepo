@@ -12,7 +12,7 @@ namespace tstat {
 
 class DisplayDevice {
  private:
-  bool _isDisplayOn = false;
+  bool _isOn = false;
   unsigned short _counterForDisplayDataExecutions = 0;
   short _indexForCurrentlyDisplayedErrorMsg = -1;
   void _printData();
@@ -25,6 +25,7 @@ class DisplayDevice {
  public:
   void setup();
   void toogle();
+  bool isOn();
   void switchOff(bool doResetSwitchOffDisplayTaskId = true);
   void switchOn(bool doCancelExistingSwitchOffDisplayTask = true);
   void setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer);

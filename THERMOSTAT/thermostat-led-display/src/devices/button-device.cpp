@@ -2,6 +2,7 @@
 
 #include <IoAbstraction.h>
 
+#include "devices/display-device.h"
 #include "settings.h"
 #include "utils/pubsub-utils.h"
 
@@ -24,8 +25,10 @@ static void _onAnyButtonPress(uint8_t pin, bool isHeldDown) {
     pubsub_utils::pubSub.publish(new pubsub_utils::DisplayButtonPressEvent());
   else if (pin == settings::TARGET_T_BUTTON_PIN)
     pubsub_utils::pubSub.publish(new pubsub_utils::TargetTButtonPressEvent());
-  else if (pin == settings::TIMER_BUTTON_PIN)
-    pubsub_utils::pubSub.publish(new pubsub_utils::TimerButtonPressEvent());
+  else if (pin == settings::TIMER_BUTTON_PIN) {
+    pubsub_utils::pubSub.publish(
+        new pubsub_utils::TimerButtonPressEvent(displayDevice.isOn()));
+  }
 }
 
 void ButtonDevices::setup() {

@@ -31,16 +31,6 @@ void HeatingDomain::setup() {
 #endif
   runTaskId = taskManager.scheduleFixedRate(settings::HEATING_DOMAIN_RUN_PERIOD,
                                             [] { heatingDomain.run(); });
-
-  // TODO deleteme
-  pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TargetTButtonPressEvent* pEvent) {
-        Serial.println((String) "TMP1 - received event: " + pEvent->topic);
-      });
-  pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerButtonPressEvent* pEvent) {
-        Serial.println((String) "TMP2 - received event: " + pEvent->topic);
-      });
 }
 
 void HeatingDomain::run() {

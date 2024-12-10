@@ -4,6 +4,8 @@
 #include <functional>
 #include <list>
 
+#include "utils/time-utils.h"
+
 namespace tstat {
 namespace pubsub_utils {
 
@@ -27,6 +29,8 @@ class TargetTButtonPressEvent : public BasePubSubEvent {
 class TimerButtonPressEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "TIMER_BUTTON_PRESS_EVENT";
+  const bool isDisplayOn;
+  TimerButtonPressEvent(bool isDisplayOn) : isDisplayOn(isDisplayOn) {};
 };
 
 class HeatingStatusChangeEvent : public BasePubSubEvent {
@@ -45,6 +49,18 @@ class ErrorStatusChangeEvent : public BasePubSubEvent {
       : isError(isError), messageList(messageList) {};
 };
 
+class NewScheduleEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "NEW_SCHEDULE_EVENT";
+};
+
+class SchedulerEditTimeEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "SCHEDULER_EDIT_TIME_EVENT";
+  time_utils::Time time;
+  SchedulerEditTimeEvent(time_utils::Time time) : time(time) {};
+};
+
 class PubSub {
  private:
   std::list<std::function<void(DisplayButtonPressEvent*)>>
@@ -57,6 +73,9 @@ class PubSub {
       _heatingStatusChangeSubCallbacks;
   std::list<std::function<void(ErrorStatusChangeEvent*)>>
       _errorStatusChangeSubCallbacks;
+  std::list<std::function<void(NewScheduleEvent*)>> _newScheduleSubCallbacks;
+  std::list<std::function<void(SchedulerEditTimeEvent*)>>
+      _schedulerEditTimeSubCallbacks;
 
  public:
   void publish(DisplayButtonPressEvent* pEvent);
@@ -64,12 +83,16 @@ class PubSub {
   void publish(TimerButtonPressEvent* pEvent);
   void publish(HeatingStatusChangeEvent* pEvent);
   void publish(ErrorStatusChangeEvent* pEvent);
+  void publish(NewScheduleEvent* pEvent);
+  void publish(SchedulerEditTimeEvent* pEvent);
 
   void subscribe(std::function<void(DisplayButtonPressEvent*)> callback);
   void subscribe(std::function<void(TargetTButtonPressEvent*)> callback);
   void subscribe(std::function<void(TimerButtonPressEvent*)> callback);
   void subscribe(std::function<void(HeatingStatusChangeEvent*)> callback);
   void subscribe(std::function<void(ErrorStatusChangeEvent*)> callback);
+  void subscribe(std::function<void(NewScheduleEvent*)> callback);
+  void subscribe(std::function<void(SchedulerEditTimeEvent*)> callback);
 };
 
 // "Soft" singleton global object defined as extern and initialized here,

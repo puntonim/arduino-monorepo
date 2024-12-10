@@ -1,5 +1,6 @@
 - ---- SPENTO ----
 - button to set timer
+- addTime to add 15min first, then 30min
 - button to set target T
 - button to switch on display and stop heating (holding the button)
 
