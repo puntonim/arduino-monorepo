@@ -1,8 +1,6 @@
-- ---- SPENTO ----
-- button to set timer
 - addTime to add 15min first, then 30min
-- button to set target T
-- button to switch on display and stop heating (holding the button)
+- button to increase target T
+- display button to stop heating when held
 
 - HW: relay, PSU, rotary encoders
 
@@ -17,7 +15,7 @@
   using exceptions defined here: https://github.com/puntonim/arduino-monorepo/blob/790c425cb40c56209f74f5c541a8fc9b81dbcfd8/THERMOSTAT/thermostat-led-display/common-exceptions.h
   See notes in: /Volumes/home/Drive/DOCUMENTI-SYNC/IT/\_SW,\ SYS\ ENGINEERING/C++/Exceptions.md
 
-- Optional args
+- Optional args:
 
   - https://levelup.gitconnected.com/optional-arguments-in-c-f7e570dafdab
   - https://stackoverflow.com/questions/73421279/how-do-i-pass-and-modify-an-optional-argument-to-a-function-through-a-header-fil

@@ -171,13 +171,14 @@ void DisplayDevice::_printData() {
 void DisplayDevice::_printFirstRow() {
   RowPrinter p(0);
 
-  if (_isHeatingOn == true)
-    p.print("ON  ");
-  else
-    p.print("OFF ");
+  if (!schedulerDomain.isScheduled()) {
+    p.print("     SPENTO");
+    p.printFillingBlanks();
+    return;
+  }
 
   p.print(schedulerDomain.targetTemperature);
-  p.print("\xDF  ");  // Or: p.print("\xDF""C");
+  p.print("\xDF ");  // Or: p.print("\xDF""C");
 
   schedulerDomain.timer.tick();
   // Format time like: 1:04:09
@@ -190,6 +191,9 @@ void DisplayDevice::_printFirstRow() {
   // timerTime.m, timerTime.s);
   schedulerDomain.timer.format(timerTimeString);
   p.print(timerTimeString);
+  p.print(" ");
+
+  _isHeatingOn ? p.printRightAlign("ON") : p.printRightAlign("OFF");
 
   p.printFillingBlanks();
 }
@@ -337,9 +341,23 @@ void RowPrinter::print(T1 value, T2 extra) {
 void RowPrinter::printFillingBlanks() {
 #if DO_ENABLE_FILLING_BLANKS == true
   short diff = _MAX_SIZE - _currentSize;
-  if (diff > 0)
-    for (int i = 0; i < diff; i++) lcd.print(" ");
+  for (int i = 0; i < diff; i++) lcd.print(" ");
+  _currentSize = _MAX_SIZE;
 #endif
+}
+
+/**
+ * Print the given string to the rightmost part of the row.
+ *
+ * Note: it would be better to make this function generic (like print()) but
+ *  then it's harder to compute the size of the string, as the string is the
+ *  conversion of a generic type to string.
+ */
+void RowPrinter::printRightAlign(char* string) {
+  short diff = _MAX_SIZE - _currentSize - strlen(string);
+  for (int i = 0; i < diff; i++) lcd.print(" ");
+  size_t len = lcd.print(string);
+  _currentSize += len;
 }
 
 }  // namespace tstat

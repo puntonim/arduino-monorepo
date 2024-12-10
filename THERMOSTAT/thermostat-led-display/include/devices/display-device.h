@@ -51,6 +51,7 @@ class RowPrinter {
   template <typename T1, typename T2>
   void print(T1 value, T2 extra);
   void printFillingBlanks();
+  void printRightAlign(char* string);
 };
 
 }  // namespace tstat
