@@ -18,22 +18,17 @@ namespace tstat {
 HeatingDomain heatingDomain;
 
 void HeatingDomain::setup() {
-  // TODO this should be done with a rotary encoder.
-  schedulerDomain.timer.start(settings::DEFAULT_TIMER.h,
-                              settings::DEFAULT_TIMER.m,
-                              settings::DEFAULT_TIMER.s);
-
-  // Run `checkPeriodically` so it reacts asap after boot. Without this
-  //  it would run after the period set in scheduleFixedRate, so 1 sec.
-  run();
+  // SUBSCRIPTIONS.
+  pubsub_utils::pubSub.subscribe([this](
+                                     pubsub_utils::NewScheduleEvent* pEvent) {
 #if IS_DEBUG == true
-  Serial.println((String) "HeatingDomain - starting a new run task");
+    Serial.println((String) "HeatingDomain - received event: " + pEvent->topic);
 #endif
-  runTaskId = taskManager.scheduleFixedRate(settings::HEATING_DOMAIN_RUN_PERIOD,
-                                            [] { heatingDomain.run(); });
+    this->_onNewScheduleEvent();
+  });
 }
 
-void HeatingDomain::run() {
+void HeatingDomain::runCheck() {
   domainLedDevice.switchOn();
 
   bool isOnForTemp = _checkForTemperature();
@@ -103,6 +98,27 @@ void HeatingDomain::_switchOff() {
 
   pubsub_utils::pubSub.publish(
       new pubsub_utils::HeatingStatusChangeEvent(false));
+}
+
+void HeatingDomain::_onNewScheduleEvent() {
+  // Execute `runCheck` so it reacts asap. Without this
+  //  it would run after the period set in scheduleFixedRate, so 1 sec.
+  runCheck();
+#if IS_DEBUG == true
+  Serial.println("HeatingDomain - starting a new run task");
+#endif
+  if (runTaskId != TASKMGR_INVALIDID) {
+    // BUG if this happens then we run one more runTaskId every time we press
+    //  the timer or temperature button. This will result in a freeze as
+    //  the memory and cpu gets full of tasks.
+#if IS_DEBUG == true
+    Serial.println(
+        "!!BUG!! HeatingDomain - starting a new run task but there is"
+        " already at least 1 existing");
+#endif
+  } else
+    runTaskId = taskManager.scheduleFixedRate(
+        settings::HEATING_DOMAIN_RUN_PERIOD, [] { heatingDomain.runCheck(); });
 }
 
 }  // namespace tstat

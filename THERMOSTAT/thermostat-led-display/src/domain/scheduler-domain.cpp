@@ -33,16 +33,20 @@ void SchedulerDomain::_onTimerButtonPress(
   // If the button was pressed when the display was OFF, then noop (as we just
   //  have to switch on the display and NOT to increment the timer).
   if (pEvent->isDisplayOn) {
-    _addTime(0, 15);
-    // If nothing is scheduled, then we need to start a new schedule.
-    if (!_isScheduled)
+    if (timer.isOver()) {
+      // If time is over, then start a new timer with the default time.
+      timer.start(settings::DEFAULT_TIMER.h, settings::DEFAULT_TIMER.m,
+                  settings::DEFAULT_TIMER.s);
+      // And publish the new schedule event.
       pubsub_utils::pubSub.publish(new pubsub_utils::NewScheduleEvent());
+    } else {
+      // If time is not over, then add the time.
+      time_utils::Time time = timer.addTime(0, 0, 2);
+      // And publish the edit time event.
+      pubsub_utils::pubSub.publish(
+          new pubsub_utils::SchedulerEditTimeEvent(time));
+    }
   }
-}
-
-void SchedulerDomain::_addTime(unsigned short int h, unsigned short int m) {
-  time_utils::Time time = timer.addTime(0, 0, 2);
-  pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerEditTimeEvent(time));
 }
 
 }  // namespace tstat

@@ -69,7 +69,7 @@ void setup() {
 
 void loop() {
   // To debug TaskManagerIO's tasks.
-  // tstat::task_manager_utils::printDebugTasks();
+  // tstat::task_manager_utils::printDebugTasks(false);
 
   taskManager.runLoop();
 }

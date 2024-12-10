@@ -17,6 +17,14 @@
   using exceptions defined here: https://github.com/puntonim/arduino-monorepo/blob/790c425cb40c56209f74f5c541a8fc9b81dbcfd8/THERMOSTAT/thermostat-led-display/common-exceptions.h
   See notes in: /Volumes/home/Drive/DOCUMENTI-SYNC/IT/\_SW,\ SYS\ ENGINEERING/C++/Exceptions.md
 
+- Optional args
+
+  - https://levelup.gitconnected.com/optional-arguments-in-c-f7e570dafdab
+  - https://stackoverflow.com/questions/73421279/how-do-i-pass-and-modify-an-optional-argument-to-a-function-through-a-header-fil
+    Then use it in time_utils::start() and note that I cannot import settings
+    in time-utils.h cause it would be a circular dep, then I have to make the args
+    optinals and set them to the defaults if none in \*.cpp
+
 - What to do in case of (local) sensor error?
   Maybe, in that error case, we should consider only the timer!
   But do we switch ON until the timer is over then switch OFF?

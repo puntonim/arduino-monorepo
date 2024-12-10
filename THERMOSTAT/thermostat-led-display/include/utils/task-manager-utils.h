@@ -4,7 +4,7 @@
 namespace tstat {
 namespace task_manager_utils {
 
-void printDebugTasks();
+void printDebugTasks(bool isVerbose = true);
 void _printExtraInfo();
 void cancelTask(taskid_t &taskId);
 

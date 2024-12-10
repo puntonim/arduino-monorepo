@@ -17,14 +17,14 @@ bool isOver(Time time);
 
 class Timer {
  private:
-  Time _time;
+  Time _time = {0, 0, 0};
   unsigned long _lastTickTs;
 
  public:
   void start(unsigned short hour, unsigned short minute, unsigned short second);
   Time addTime(unsigned short hour, unsigned short minute,
                unsigned short second);
-  Time tick();
+  struct Time tick();
   void format(char* string);
   bool isOver();
 };

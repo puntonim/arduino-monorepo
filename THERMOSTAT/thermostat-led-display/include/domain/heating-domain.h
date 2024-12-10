@@ -12,10 +12,11 @@ class HeatingDomain {
   bool _checkForTimer();
   void _switchOn();
   void _switchOff();
+  void _onNewScheduleEvent();
 
  public:
   void setup();
-  void run();
+  void runCheck();
   taskid_t runTaskId = TASKMGR_INVALIDID;
 };
 

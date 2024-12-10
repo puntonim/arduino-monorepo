@@ -35,7 +35,7 @@ void _printExtraInfo() {
  *      taskManager.runLoop();
  *    }
  */
-void printDebugTasks() {
+void printDebugTasks(bool isVerbose /* = true */) {
 #if IS_DEBUG == true
   const short PERIOD_SECS = 1;
   int nowSecs = floor(millis() / 1000);
@@ -49,19 +49,21 @@ void printDebugTasks() {
     for (int i = 0; i < 10; i++) Serial.print(debugData[i]);
     Serial.println("]");
 
-    for (int i = 0; i < 10; i++) {
-      if (debugData[i] != 'F') {
-        auto task = taskManager.getTask(i);
-        Serial.println((String) "\n\tTask id: " + i);
-        Serial.println((String) "\tRepeat?: " +
-                       (task->isRepeating() ? "REPEAT" : "NO-REPEAT"));
-        Serial.println((String) "\tEnabled?: " +
-                       (task->isEnabled() ? "Y" : "N"));
-        Serial.println((String) "\tisMillis?: " +
-                       (task->isMillisSchedule() ? "Y" : "N"));
-        Serial.println((String) "\tisMicros?: " +
-                       (task->isMicrosSchedule() ? "Y" : "N"));
-        Serial.println((String) "\tmicrosFromNow?: " + task->microsFromNow());
+    if (isVerbose) {
+      for (int i = 0; i < 10; i++) {
+        if (debugData[i] != 'F') {
+          auto task = taskManager.getTask(i);
+          Serial.println((String) "\n\tTask id: " + i);
+          Serial.println((String) "\tRepeat?: " +
+                         (task->isRepeating() ? "REPEAT" : "NO-REPEAT"));
+          Serial.println((String) "\tEnabled?: " +
+                         (task->isEnabled() ? "Y" : "N"));
+          Serial.println((String) "\tisMillis?: " +
+                         (task->isMillisSchedule() ? "Y" : "N"));
+          Serial.println((String) "\tisMicros?: " +
+                         (task->isMicrosSchedule() ? "Y" : "N"));
+          Serial.println((String) "\tmicrosFromNow?: " + task->microsFromNow());
+        }
       }
     }
 
