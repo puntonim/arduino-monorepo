@@ -13,6 +13,12 @@ void PubSub::publish(DisplayButtonPressEvent* pEvent) {
   }
 }
 
+void PubSub::publish(DisplayButtonHoldEvent* pEvent) {
+  for (auto& callback : _displayButtonHoldSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
 void PubSub::publish(TargetTButtonPressEvent* pEvent) {
   for (auto& callback : _targetTButtonPressSubCallbacks) {
     callback(pEvent);
@@ -51,6 +57,10 @@ void PubSub::publish(SchedulerEditTimeEvent* pEvent) {
 
 void PubSub::subscribe(std::function<void(DisplayButtonPressEvent*)> callback) {
   _displayButtonPressSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(DisplayButtonHoldEvent*)> callback) {
+  _displayButtonHoldSubCallbacks.push_back(callback);
 }
 
 void PubSub::subscribe(std::function<void(TargetTButtonPressEvent*)> callback) {

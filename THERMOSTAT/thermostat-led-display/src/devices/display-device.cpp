@@ -43,6 +43,15 @@ void DisplayDevice::setup() {
       });
 
   pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::DisplayButtonHoldEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
+#endif
+        this->_refreshFirstRow();
+      });
+
+  pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::TimerButtonPressEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
@@ -273,6 +282,7 @@ void DisplayDevice::_printSecondRow() {
 }
 
 void DisplayDevice::_refreshFirstRow() {
+  if (!_isOn) switchOn();
   task_manager_utils::cancelTask(displayDataTaskId);
   _printFirstRow();
   if ((displayDataTaskId == TASKMGR_INVALIDID) && _isOn) {

@@ -19,7 +19,10 @@ ButtonDevices buttonDevices;
  * in order to be used in `switches.addSwitch()`.
  */
 static void _onAnyButtonPress(uint8_t pin, bool isHeldDown) {
-  if (isHeldDown) return;
+  if (isHeldDown) {
+    if (pin == settings::DISPLAY_BUTTON_PIN)
+      pubsub_utils::pubSub.publish(new pubsub_utils::DisplayButtonHoldEvent());
+  };
 
   if (pin == settings::DISPLAY_BUTTON_PIN)
     pubsub_utils::pubSub.publish(new pubsub_utils::DisplayButtonPressEvent());

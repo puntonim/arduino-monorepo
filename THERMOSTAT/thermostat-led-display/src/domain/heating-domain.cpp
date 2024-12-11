@@ -26,6 +26,15 @@ void HeatingDomain::setup() {
 #endif
     this->_onNewScheduleEvent();
   });
+
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::DisplayButtonHoldEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "HeatingDomain - received event: " +
+                       pEvent->topic);
+#endif
+        this->_stop();
+      });
 }
 
 void HeatingDomain::runCheck() {
@@ -119,6 +128,15 @@ void HeatingDomain::_onNewScheduleEvent() {
   } else
     runTaskId = taskManager.scheduleFixedRate(
         settings::HEATING_DOMAIN_RUN_PERIOD, [] { heatingDomain.runCheck(); });
+}
+
+/**
+ * Stop: switch off the heating and cancel the ongoing schedule.
+ */
+void HeatingDomain::_stop() {
+  schedulerDomain.timer.reset();
+  _switchOff();
+  task_manager_utils::cancelTask(runTaskId);
 }
 
 }  // namespace tstat

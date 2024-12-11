@@ -13,6 +13,7 @@ class HeatingDomain {
   void _switchOn();
   void _switchOff();
   void _onNewScheduleEvent();
+  void _stop();
 
  public:
   void setup();

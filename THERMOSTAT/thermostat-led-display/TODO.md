@@ -1,6 +1,5 @@
 - addTime to add 15min first, then 30min
 - button to increase target T
-- display button to stop heating when held
 
 - HW: relay, PSU, rotary encoders
 

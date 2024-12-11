@@ -63,7 +63,13 @@ void Timer::format(char* string) { time_utils::format(string, _time); }
 
 bool Timer::isOver() { return time_utils::isOver(_time); }
 
-/*
+void Timer::reset() {
+  _time.h = 0;
+  _time.m = 0;
+  _time.s = 0;
+}
+
+/**
  * Format a Time object to a string like: "1:04:09".
  *
  * Mind that you nedd to provide a string of size 9, as first arg, because of

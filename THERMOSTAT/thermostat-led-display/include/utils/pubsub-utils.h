@@ -21,6 +21,11 @@ class DisplayButtonPressEvent : public BasePubSubEvent {
   constexpr static char topic[] = "DISPLAY_BUTTON_PRESS_EVENT";
 };
 
+class DisplayButtonHoldEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "DISPLAY_BUTTON_HOLD_EVENT";
+};
+
 class TargetTButtonPressEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "TARGET_T_BUTTON_PRESS_EVENT";
@@ -65,6 +70,8 @@ class PubSub {
  private:
   std::list<std::function<void(DisplayButtonPressEvent*)>>
       _displayButtonPressSubCallbacks;
+  std::list<std::function<void(DisplayButtonHoldEvent*)>>
+      _displayButtonHoldSubCallbacks;
   std::list<std::function<void(TargetTButtonPressEvent*)>>
       _targetTButtonPressSubCallbacks;
   std::list<std::function<void(TimerButtonPressEvent*)>>
@@ -79,6 +86,7 @@ class PubSub {
 
  public:
   void publish(DisplayButtonPressEvent* pEvent);
+  void publish(DisplayButtonHoldEvent* pEvent);
   void publish(TargetTButtonPressEvent* pEvent);
   void publish(TimerButtonPressEvent* pEvent);
   void publish(HeatingStatusChangeEvent* pEvent);
@@ -87,6 +95,7 @@ class PubSub {
   void publish(SchedulerEditTimeEvent* pEvent);
 
   void subscribe(std::function<void(DisplayButtonPressEvent*)> callback);
+  void subscribe(std::function<void(DisplayButtonHoldEvent*)> callback);
   void subscribe(std::function<void(TargetTButtonPressEvent*)> callback);
   void subscribe(std::function<void(TimerButtonPressEvent*)> callback);
   void subscribe(std::function<void(HeatingStatusChangeEvent*)> callback);

@@ -27,6 +27,7 @@ class Timer {
   struct Time tick();
   void format(char* string);
   bool isOver();
+  void reset();
 };
 
 }  // namespace time_utils
