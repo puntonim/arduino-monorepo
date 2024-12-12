@@ -42,7 +42,7 @@
 // Functions declaration.
 void onButtonTriggered(uint8_t pin, bool isHeldDown);
 
-const int PUSH_BUTTON_PIN = 6;
+const pinid_t PUSH_BUTTON_PIN = 6;
 bool isLedOn = false;
 
 void setup() {
@@ -64,6 +64,9 @@ void setup() {
 
 void onButtonTriggered(uint8_t pin, bool isHeldDown) {
   if (isHeldDown) {
+    // IMP: mind that when holding a button, this function is invoked twice:
+    //  - once, right after the press, with isHeldDown=false;
+    //  - after 2 secs hold, with isHeldDown=true.
     // Hold down the button for 2 secs.
     Serial.println("HELD FOR 2 SECS");
     return;
