@@ -93,6 +93,15 @@ void DisplayDevice::setup() {
         this->_refreshFirstRow();
       });
 
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::SchedulerEditTargetTEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
+#endif
+        this->_refreshFirstRow();
+      });
+
   pubsub_utils::pubSub.subscribe([this](
                                      pubsub_utils::NewScheduleEvent* pEvent) {
 #if IS_DEBUG == true

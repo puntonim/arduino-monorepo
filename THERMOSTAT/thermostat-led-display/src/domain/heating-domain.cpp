@@ -34,9 +34,38 @@ void HeatingDomain::setup() {
 #endif
     this->_stop();
   });
+
+  // When rotating the timer rotary encoder we want the runCheck() to run
+  //  asap (if the display is ON and there is an ongoing schedule) so the heater
+  //  can turn ON/OFF instantly.
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TimerRotaryChangeEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "HeatingDomain - received event: " +
+                       pEvent->topic);
+#endif
+        if (pEvent->isDisplayOn && schedulerDomain.isScheduled())
+          this->runCheck();
+      });
+
+  // When rotating the target T rotary encoder we want the runCheck() to run
+  //  asap (if the display is ON and there is an ongoing schedule) so the heater
+  //  can turn ON/OFF instantly.
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "HeatingDomain - received event: " +
+                       pEvent->topic);
+#endif
+        if (pEvent->isDisplayOn && schedulerDomain.isScheduled())
+          this->runCheck();
+      });
 }
 
 void HeatingDomain::runCheck() {
+#if IS_DEBUG == true
+  Serial.println("HeatingDomain - run check");
+#endif
   domainLedDevice.switchOn();
 
   bool isOnForTemp = _checkForTemperature();
@@ -57,14 +86,14 @@ void HeatingDomain::runCheck() {
   //  - `isOnForTemp` is true when the sensor T is < target T
   //  - `status` is true when the heating is ON;
 
-  if (!isOnForTime) task_manager_utils::cancelTask(runTaskId);
-
-  if ((!isOnForTime) && _isOn)
-    _switchOff();
-  else if (isOnForTime && isOnForTemp && (!_isOn))
-    _switchOn();
-  else if (isOnForTime && (!isOnForTemp) && _isOn)
-    _switchOff();
+  if (!isOnForTime)
+    _stop();
+  else {
+    if (isOnForTemp && (!_isOn))
+      _switchOn();
+    else if ((!isOnForTemp) && _isOn)
+      _switchOff();
+  }
 
   // TODO remove this useless delay.
   //  It's here otherwise the domainLed doesn't even blink as the heating domain
@@ -133,8 +162,8 @@ void HeatingDomain::_onNewScheduleEvent() {
  * Stop: switch off the heating and cancel the ongoing schedule.
  */
 void HeatingDomain::_stop() {
-  schedulerDomain.timer.reset();
   _switchOff();
+  schedulerDomain.reset();
   task_manager_utils::cancelTask(runTaskId);
 }
 

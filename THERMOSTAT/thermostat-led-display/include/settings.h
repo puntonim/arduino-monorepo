@@ -18,7 +18,7 @@ namespace tstat {
 namespace settings {
 
 // Under this T, the heating wis turned ON.
-const unsigned short DEFAULT_TARGET_T = 18;
+const u_int8_t DEFAULT_TARGET_T = 18;
 // When starting a timer, then this is the initial value.
 const time_utils::Time DEFAULT_TIMER = {0, 0, 10};  // {H, M, S}.
 // When rotating the timer rotary encoder, then this time is added/subtracted.

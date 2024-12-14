@@ -10,12 +10,13 @@ namespace tstat {
 class SchedulerDomain {
  private:
   void _onTimerRotaryChange(pubsub_utils::TimerRotaryChangeEvent* pEvent);
-  void _setTargetTemperature(unsigned short int t);
+  void _onTargetTRotaryChange(pubsub_utils::TargetTRotaryChangeEvent* pEvent);
 
  public:
   void setup();
+  void reset();
   time_utils::Timer timer;
-  unsigned short int targetTemperature = settings::DEFAULT_TARGET_T;
+  u_int8_t targetTemperature = settings::DEFAULT_TARGET_T;
   bool isScheduled();
 };
 

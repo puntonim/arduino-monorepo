@@ -67,6 +67,12 @@ void PubSub::publish(SchedulerEditTimeEvent* pEvent) {
   }
 }
 
+void PubSub::publish(SchedulerEditTargetTEvent* pEvent) {
+  for (auto& callback : _schedulerEditTargetTSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
 void PubSub::subscribe(std::function<void(DisplayButtonPressEvent*)> callback) {
   _displayButtonPressSubCallbacks.push_back(callback);
 }
@@ -107,6 +113,11 @@ void PubSub::subscribe(std::function<void(NewScheduleEvent*)> callback) {
 
 void PubSub::subscribe(std::function<void(SchedulerEditTimeEvent*)> callback) {
   _schedulerEditTimeSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(
+    std::function<void(SchedulerEditTargetTEvent*)> callback) {
+  _schedulerEditTargetTSubCallbacks.push_back(callback);
 }
 
 }  // namespace pubsub_utils

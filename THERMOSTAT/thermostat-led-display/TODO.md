@@ -1,4 +1,7 @@
-- move target T with rotary
+- domain Led with doUseDelay=false arg so that it doesn't change state unless the prev
+  change was at least 200millis earlier (otherwise it doesnt even blink)
+
+- add relay-device
 
 - replace heating led managed by software
   with one placed in parallel to the wire Arduino PIN-Relay signal
@@ -6,7 +9,10 @@
 - Optionally disable remove sensor temperature?
 
 - change settings.DELTA_TIME_ON_ROTARY_ROTATION and DEFAULT_TIMER to 15 mins
+- check scheduled tasks
 - READY TO INSTALL AND USE
+
+- rename project to "tsat"
 
 - Bluetooth: communication between 2 Arduinos
 

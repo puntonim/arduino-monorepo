@@ -1,6 +1,7 @@
-/* SchedulerDomain is just a dumb cointainer class that includes a timer
- *  and the target temperature.
- * It doesn't tick the timer and doesn't check the tearget temperature against
+/* SchedulerDomain is just a dumb cointainer class that includes:
+ *  - the timer
+ *  - the target temperature.
+ * It does NOT tick the timer and doesn't check the tearget temperature against
  *  the sensor temperature.
  */
 #include "domain/scheduler-domain.h"
@@ -24,17 +25,38 @@ void SchedulerDomain::setup() {
 #endif
         this->_onTimerRotaryChange(pEvent);
       });
+
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "SchedulerDomain - received event: " +
+                       pEvent->topic);
+#endif
+        this->_onTargetTRotaryChange(pEvent);
+      });
 }
 
 bool SchedulerDomain::isScheduled() { return !timer.isOver(); }
 
+/**
+ * Handle the timer rotary encoder rotation.
+ *
+ * - if the display was OFF: noop (as we just have to switch on
+ *    the display and this is done in display-device.cpp)
+ * - if the display was ON and nothing was scheduled (SPENTO):
+ *    - if the rotation was clockwise then start a new timer with the default
+ *       timer setting
+ *    - if the rotation was clockwise then noop
+ * - if the display was ON and there was an ongoing schedule: just add or
+ *    subtract time
+ */
 void SchedulerDomain::_onTimerRotaryChange(
     pubsub_utils::TimerRotaryChangeEvent* pEvent) {
-  // If the button was pressed when the display was OFF, then noop (as we just
-  //  have to switch on the display and NOT to increment the timer).
+  // If the rotary encoder was rotated when the display was OFF, then noop (as
+  //  as we just have to switch on the display and NOT to increment the timer).
   if (pEvent->isDisplayOn) {
     if (timer.isOver() && pEvent->value > 0) {
-      // If time is over and the timer rotary was rotated clockwise,
+      // If time is over and the timer rotary encoder was rotated clockwise,
       //  then start a new timer with the default time.
       timer.start(settings::DEFAULT_TIMER.h, settings::DEFAULT_TIMER.m,
                   settings::DEFAULT_TIMER.s);
@@ -61,4 +83,31 @@ void SchedulerDomain::_onTimerRotaryChange(
   }
 }
 
+/**
+ * Handle the target T rotary encoder rotation.
+ *
+ * - if the display was OFF: noop (as we just have to switch on
+ *    the display and this is done in display-device.cpp)
+ * - if the display was ON and nothing was scheduled (SPENTO): noop
+ * - if the display was ON and there was an ongoing schedule: just increase or
+ *    decrease the target T
+ */
+void SchedulerDomain::_onTargetTRotaryChange(
+    pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
+  // If the rotary encoder was rotated when the display was OFF, then noop (as
+  //  we have to switch on the display and NOT to increment the target T).
+  if (pEvent->isDisplayOn) {
+    if (isScheduled()) {
+      // If there is an ongoing schedule, then increase/decrease the target T.
+      targetTemperature = pEvent->value;
+      pubsub_utils::pubSub.publish(
+          new pubsub_utils::SchedulerEditTargetTEvent(targetTemperature));
+    }
+  }
+}
+
+void SchedulerDomain::reset() {
+  timer.reset();
+  targetTemperature = settings::DEFAULT_TARGET_T;
+}
 }  // namespace tstat
