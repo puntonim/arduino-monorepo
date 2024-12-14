@@ -79,6 +79,9 @@ void setup() {
                           false,  // Wrap around after hitting min and max.
                           1       // step size.
   );
+
+  // To reset to the initial value.
+  // rotary->setCurrentReading(20);
 }
 
 void onEncoderChange(const int value) {

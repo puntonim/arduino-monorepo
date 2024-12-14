@@ -65,29 +65,39 @@ void RotaryEncoderDevices::setup() {
   // HWACCEL_NONE.
   // Note: switch the order of the params ROTARY_DT_PIN and ROTARY_CLK_PIN
   //  if you want to invert the clockwise-counterclockwise behavior.
-  auto targetTRotary = new HardwareRotaryEncoder(
+  _pTargetTRotary = new HardwareRotaryEncoder(
       settings::TARGET_T_ROTARY_DT_PIN, settings::TARGET_T_ROTARY_CLK_PIN,
       _onTargetTRotaryChange, HWACCEL_NONE);
-  auto timerRotary = new HardwareRotaryEncoder(
-      settings::TIMER_ROTARY_DT_PIN, settings::TIMER_ROTARY_CLK_PIN,
-      _onTimerRotaryChange, HWACCEL_NONE);
+  _pTimerRotary = new HardwareRotaryEncoder(settings::TIMER_ROTARY_DT_PIN,
+                                            settings::TIMER_ROTARY_CLK_PIN,
+                                            _onTimerRotaryChange, HWACCEL_NONE);
   // Indexed array to hold all the rotaries.
-  switches.setEncoder(0, targetTRotary);
-  switches.setEncoder(1, timerRotary);
+  switches.setEncoder(0, _pTargetTRotary);
+  switches.setEncoder(1, _pTimerRotary);
   // Configure the rotary.
-  targetTRotary->changePrecision(
+  _pTargetTRotary->changePrecision(
       30,                          // max value.
-      settings::DEFAULT_TARGET_T,  // starting value.
+      settings::INITIAL_TARGET_T,  // starting value.
       false,                       // Wrap around after hitting min and max.
       1                            // step size.
   );
   // Using maxValue=0 causes the callback to get 1 on every clockwise rotation,
   //  and -1 on every counterclockwise rotation.
-  timerRotary->changePrecision(0,      // max value.
-                               0,      // starting value.
-                               false,  // Wrap around after hitting min and max.
-                               1       // step size.
+  _pTimerRotary->changePrecision(
+      0,      // max value.
+      0,      // starting value.
+      false,  // Wrap around after hitting min and max.
+      1       // step size.
   );
+
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::NewScheduleEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "RotaryEncoderDevices - received event: " +
+                       pEvent->topic);
+#endif
+        _pTargetTRotary->setCurrentReading(settings::INITIAL_TARGET_T);
+      });
 }
 
 }  // namespace tstat
