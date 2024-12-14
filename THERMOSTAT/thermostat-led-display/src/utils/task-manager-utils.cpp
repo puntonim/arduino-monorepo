@@ -19,8 +19,6 @@ void _printExtraInfo() {
                  displayDevice.switchOffTaskId);
   Serial.println((String) "heatingDomain.runTaskId: " +
                  heatingDomain.runTaskId);
-  Serial.println((String) "heatingLedDevice.blinkTaskId: " +
-                 heatingLedDevice.blinkTaskId);
   Serial.println((String) "errorLedDevice.blinkTaskId: " +
                  errorLedDevice.blinkTaskId);
 #endif

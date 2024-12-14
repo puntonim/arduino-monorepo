@@ -6,64 +6,6 @@
 
 namespace tstat {
 
-//********** CLASS HeatingLedDevice ********************************************
-
-// "Soft" singleton global object defined here,
-//  but defined as extern and initialized in led-device.h.
-HeatingLedDevice heatingLedDevice;
-
-void HeatingLedDevice::setup() {
-  pinMode(_PIN, OUTPUT);
-
-  pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
-#if IS_DEBUG == true
-        Serial.println(
-            (String) "HeatingLedDevice - received event: " + pEvent->topic +
-            " isOn=" + (pEvent->isOn ? "ON" : "OFF"));
-#endif
-        pEvent->isOn ? this->startBlinking() : this->stopBlinking();
-      });
-}
-
-void HeatingLedDevice::switchOn() {
-  analogWrite(_PIN, _BRIGHTNESS_VALUE);
-  _isOn = true;
-}
-
-void HeatingLedDevice::switchOff() {
-  analogWrite(_PIN, 0);
-  _isOn = false;
-}
-
-void HeatingLedDevice::toggle() {
-  if (_isOn)
-    switchOff();
-  else
-    switchOn();
-}
-
-void HeatingLedDevice::startBlinking() {
-  // Start the blinking task only if it's not already running.
-  if (blinkTaskId == TASKMGR_INVALIDID) {
-#if IS_DEBUG == true
-    Serial.println((String) "HeatingLedDevice - starting a new blinking task");
-#endif
-    blinkTaskId =
-        taskManager.scheduleFixedRate(settings::HEATING_LED_BLINKING_PERIOD,
-                                      [] { heatingLedDevice.toggle(); });
-  }
-}
-
-void HeatingLedDevice::stopBlinking() {
-#if IS_DEBUG == true
-  Serial.println((String) "HeatingLedDevice - stopping the blinking task");
-#endif
-  task_manager_utils::cancelTask(blinkTaskId);
-  // Make sure the LED is off as the task might have left it on.
-  switchOff();
-}
-
 //********** CLASS ErrorLedDevice **********************************************
 
 // "Soft" singleton global object defined here,

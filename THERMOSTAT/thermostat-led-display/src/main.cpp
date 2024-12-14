@@ -62,7 +62,6 @@ void setup() {
   rotaryEncoderDevices.setup();
   relayDevice.setup();
   errorLedDevice.setup();
-  heatingLedDevice.setup();
   domainLedDevice.setup();
   displayDevice.setup();
   schedulerDomain.setup();

@@ -28,7 +28,7 @@ const time_utils::Time INITIAL_TIMER = {0, 0, 10};  // {H, M, S}.
 const unsigned short DISPLAY_SWITCHOFF_TIMER = 20;  // sec.
 
 // Relay.
-const pinid_t RELAY_S_PIN = 12;
+const pinid_t RELAY_S_PIN = 11;
 
 // Heating domain.
 const unsigned short HEATING_DOMAIN_RUN_PERIOD = 5000;  // msec.
@@ -54,9 +54,6 @@ const unsigned short DS18B20_DATA_CACHE_PERIOD = 1000;  // msec.
 const unsigned short SHT85_DATA_CACHE_PERIOD = 1000;  // msec.
 
 // Leds.
-const pinid_t HEATING_LED_PIN = 11;
-const unsigned short HEATING_LED_BRIGHTNESS_VALUE = 30;
-const unsigned short HEATING_LED_BLINKING_PERIOD = 1000;  // msec.
 const pinid_t ERROR_LED_PIN = 10;
 const unsigned short ERROR_LED_BRIGHTNESS_VALUE = 100;
 const unsigned short ERROR_LED_BLINKING_PERIOD = 100;  // msec.

@@ -1,8 +1,3 @@
-- add relay-device
-
-- replace heating led managed by software
-  with one placed in parallel to the wire Arduino PIN-Relay signal
-
 - Optionally disable remove sensor temperature?
 
 - change settings.DELTA_TIME_ON_ROTARY_ROTATION and INITIAL_TIMER to 15 mins
