@@ -66,7 +66,7 @@ void HeatingDomain::runCheck() {
 #if IS_DEBUG == true
   Serial.println("HeatingDomain - run check");
 #endif
-  domainLedDevice.switchOn();
+  domainLedDevice.switchOn(true);
 
   bool isOnForTemp = _checkForTemperature();
   bool isOnForTime = _checkForTimer();
@@ -100,7 +100,7 @@ void HeatingDomain::runCheck() {
   //  is too fast.
   delay(100);
 
-  domainLedDevice.switchOff();
+  domainLedDevice.switchOff(true);
 }
 
 bool HeatingDomain::_checkForTemperature() {

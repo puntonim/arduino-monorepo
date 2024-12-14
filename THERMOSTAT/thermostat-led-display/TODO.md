@@ -1,7 +1,6 @@
-- domain Led with doUseDelay=false arg so that it doesn't change state unless the prev
-  change was at least 200millis earlier (otherwise it doesnt even blink)
-
 - add relay-device
+
+- instead of cancelling task, disable them: taskManager.setTaskEnabled(taskId, false);
 
 - replace heating led managed by software
   with one placed in parallel to the wire Arduino PIN-Relay signal

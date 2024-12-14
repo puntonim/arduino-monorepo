@@ -51,14 +51,15 @@ extern ErrorLedDevice errorLedDevice;
 class DomainLedDevice {
  private:
   bool _isOn = false;
+  unsigned long _lastStatusChangeTs = 0;
   const unsigned short _PIN = settings::DOMAIN_LED_PIN;
   const unsigned short _BRIGHTNESS_VALUE =
       settings::DOMAIN_LED_BRIGHTNESS_VALUE;
 
  public:
   void setup();
-  void switchOn();
-  void switchOff();
+  void switchOn(const bool doUseDelay = false);
+  void switchOff(const bool doUseDelay = false);
 };
 
 // "Soft" singleton global object defined as extern and initialized here,

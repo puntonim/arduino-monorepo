@@ -134,17 +134,51 @@ DomainLedDevice domainLedDevice;
 
 void DomainLedDevice::setup() { pinMode(_PIN, OUTPUT); }
 
-void DomainLedDevice::switchOn() {
+/**
+ * Switch ON the led.
+ *
+ * Args:
+ *  const bool doUseDelay: when switching ON/OFF the led too fast, then the
+ *   led does NOT even blink. To avoid this, use doUseDelay=true so that the
+ *   led waits 200msec if the prev state change was too soon.
+ */
+void DomainLedDevice::switchOn(const bool doUseDelay /* = false */) {
+  unsigned long nowTs;
+  if (doUseDelay) {
+    nowTs = millis();
+    if ((!_isOn) && (_lastStatusChangeTs != 0) &&
+        (nowTs - _lastStatusChangeTs < 200)) {
+      taskManager.yieldForMicros(200000);  // microsec.
+    }
+  }
   if (!_isOn) {
     analogWrite(_PIN, _BRIGHTNESS_VALUE);
     _isOn = true;
+    if (doUseDelay) _lastStatusChangeTs = nowTs;
   }
 }
 
-void DomainLedDevice::switchOff() {
+/**
+ * Switch OFF the led.
+ *
+ * Args:
+ *  const bool doUseDelay: when switching ON/OFF the led too fast, then the
+ *   led does NOT even blink. To avoid this, use doUseDelay=true so that the
+ *   led waits 200msec if the prev state change was too soon.
+ */
+void DomainLedDevice::switchOff(const bool doUseDelay /* = false */) {
+  unsigned long nowTs;
+  if (doUseDelay) {
+    nowTs = millis();
+    if ((_isOn) && (_lastStatusChangeTs != 0) &&
+        (nowTs - _lastStatusChangeTs < 200)) {
+      taskManager.yieldForMicros(200000);  // microsec.
+    }
+  }
   if (_isOn) {
     analogWrite(_PIN, 0);
     _isOn = false;
+    if (doUseDelay) _lastStatusChangeTs = nowTs;
   }
 }
 
