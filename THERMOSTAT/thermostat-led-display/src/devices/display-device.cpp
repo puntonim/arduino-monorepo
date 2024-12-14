@@ -42,17 +42,41 @@ void DisplayDevice::setup() {
         this->switchOn();
       });
 
+  pubsub_utils::pubSub.subscribe([this](
+                                     pubsub_utils::AnyRotaryHoldEvent* pEvent) {
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+#endif
+    this->_refreshFirstRow();
+  });
+
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::DisplayButtonHoldEvent* pEvent) {
+      [this](pubsub_utils::TimerRotaryPressEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
-        this->_refreshFirstRow();
+        this->switchOn();
+      });
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TimerRotaryChangeEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
+#endif
+        this->switchOn();
       });
 
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerButtonPressEvent* pEvent) {
+      [this](pubsub_utils::TargetTRotaryPressEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
+#endif
+        this->switchOn();
+      });
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);

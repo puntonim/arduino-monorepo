@@ -13,20 +13,32 @@ void PubSub::publish(DisplayButtonPressEvent* pEvent) {
   }
 }
 
-void PubSub::publish(DisplayButtonHoldEvent* pEvent) {
+void PubSub::publish(AnyRotaryHoldEvent* pEvent) {
   for (auto& callback : _displayButtonHoldSubCallbacks) {
     callback(pEvent);
   }
 }
 
-void PubSub::publish(TargetTButtonPressEvent* pEvent) {
-  for (auto& callback : _targetTButtonPressSubCallbacks) {
+void PubSub::publish(TargetTRotaryPressEvent* pEvent) {
+  for (auto& callback : _targetTRotaryPressSubCallbacks) {
     callback(pEvent);
   }
 }
 
-void PubSub::publish(TimerButtonPressEvent* pEvent) {
-  for (auto& callback : _timerButtonPressSubCallbacks) {
+void PubSub::publish(TargetTRotaryChangeEvent* pEvent) {
+  for (auto& callback : _targetTRotaryChangeSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
+void PubSub::publish(TimerRotaryPressEvent* pEvent) {
+  for (auto& callback : _timerRotaryPressSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
+void PubSub::publish(TimerRotaryChangeEvent* pEvent) {
+  for (auto& callback : _timerRotaryChangeSubCallbacks) {
     callback(pEvent);
   }
 }
@@ -59,16 +71,25 @@ void PubSub::subscribe(std::function<void(DisplayButtonPressEvent*)> callback) {
   _displayButtonPressSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(DisplayButtonHoldEvent*)> callback) {
+void PubSub::subscribe(std::function<void(AnyRotaryHoldEvent*)> callback) {
   _displayButtonHoldSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(TargetTButtonPressEvent*)> callback) {
-  _targetTButtonPressSubCallbacks.push_back(callback);
+void PubSub::subscribe(std::function<void(TargetTRotaryPressEvent*)> callback) {
+  _targetTRotaryPressSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(TimerButtonPressEvent*)> callback) {
-  _timerButtonPressSubCallbacks.push_back(callback);
+void PubSub::subscribe(
+    std::function<void(TargetTRotaryChangeEvent*)> callback) {
+  _targetTRotaryChangeSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(TimerRotaryPressEvent*)> callback) {
+  _timerRotaryPressSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(TimerRotaryChangeEvent*)> callback) {
+  _timerRotaryChangeSubCallbacks.push_back(callback);
 }
 
 void PubSub::subscribe(

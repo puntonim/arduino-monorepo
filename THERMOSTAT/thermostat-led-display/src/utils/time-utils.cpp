@@ -9,6 +9,11 @@ unsigned long timeToSecs(Time time) {
   return time.s + (time.m * 60) + (time.h * 3600);
 }
 
+unsigned long toSecs(unsigned short hour, unsigned short minute,
+                     unsigned short second) {
+  return second + (minute * 60) + (hour * 3600);
+}
+
 Time secsToTime(unsigned long secs) {
   Time t;
   auto dv = div(secs, 60);
@@ -28,11 +33,26 @@ void Timer::start(unsigned short hour /*  = settings::DEFAULT_TIMER.h */,
   _lastTickTs = millis();
 }
 
-Time Timer::addTime(unsigned short hour, unsigned short minute,
-                    unsigned short second) {
-  _time.h += hour;
-  _time.m += minute;
-  _time.s += second;
+Time Timer::add(unsigned short hour, unsigned short minute,
+                unsigned short second) {
+  return add(toSecs(hour, minute, second));
+}
+
+Time Timer::add(unsigned short second) {
+  unsigned long resultInSec = timeToSecs(_time) + second;
+  _time = secsToTime(resultInSec);
+  return _time;
+}
+
+Time Timer::subtract(unsigned short hour, unsigned short minute,
+                     unsigned short second) {
+  return subtract(toSecs(hour, minute, second));
+}
+
+Time Timer::subtract(unsigned short second) {
+  unsigned long resultInSec = timeToSecs(_time) - second;
+  if (resultInSec < 0) resultInSec = 0;
+  _time = secsToTime(resultInSec);
   return _time;
 }
 
@@ -52,9 +72,7 @@ Time Timer::tick() {
   }
   if (elapsedSecs >= 1) {
     _lastTickTs = nowTs;
-    int newTimeInSecs = timeToSecs(_time) - elapsedSecs;
-    if (newTimeInSecs < 0) newTimeInSecs = 0;
-    _time = secsToTime(newTimeInSecs);
+    subtract(elapsedSecs);
   }
   return _time;
 }

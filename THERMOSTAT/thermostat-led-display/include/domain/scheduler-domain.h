@@ -9,9 +9,7 @@ namespace tstat {
 
 class SchedulerDomain {
  private:
-  void _onTimerButtonPress(pubsub_utils::TimerButtonPressEvent* pEvent);
-  // TODO deleteme
-  // void _addTime(unsigned short int h, unsigned short int m);
+  void _onTimerRotaryChange(pubsub_utils::TimerRotaryChangeEvent* pEvent);
   void _setTargetTemperature(unsigned short int t);
 
  public:

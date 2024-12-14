@@ -1,14 +1,27 @@
-- addTime to add 15min first, then 30min
-- button to increase target T
+- move target T with rotary
 
-- HW: relay, PSU, rotary encoders
+- replace heating led managed by software
+  with one placed in parallel to the wire Arduino PIN-Relay signal
 
-- Rotary encoders: to replace buttons (set timer and target T)
+- Optionally disable remove sensor temperature?
+
+- change settings.DELTA_TIME_ON_ROTARY_ROTATION and DEFAULT_TIMER to 15 mins
+- READY TO INSTALL AND USE
 
 - Bluetooth: communication between 2 Arduinos
 
-- Use PID algo in heating: https://playground.arduino.cc/Code/PIDLibrary/
-  Or it is useless as the time it takes to reach the T is slow
+- HW:
+
+  - PSU for Arduino: 200V AC to USB 5V DC
+  - 2x manual switces for thermostat wires and wires to Arduino's PSU
+
+- Use PID algo in heating?
+  https://playground.arduino.cc/Code/PIDLibrary/
+  Or it is useless as the time it takes to reach the T is slow?
+  Maybe I can just write some custom code such that the relay cannot change state in
+  less than 5 minutes (to avoid hysteresis, ie. unwanted frequent switching).
+  Then monitor how much it overshoots (what T does it reach after switching off) and
+  how long it takes to reach the target T when it switches ON again.
 
 - list-utils::getByIndex to set an IndexError
   using exceptions defined here: https://github.com/puntonim/arduino-monorepo/blob/790c425cb40c56209f74f5c541a8fc9b81dbcfd8/THERMOSTAT/thermostat-led-display/common-exceptions.h

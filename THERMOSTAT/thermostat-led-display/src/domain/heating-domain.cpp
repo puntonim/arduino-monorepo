@@ -27,14 +27,13 @@ void HeatingDomain::setup() {
     this->_onNewScheduleEvent();
   });
 
-  pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::DisplayButtonHoldEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe([this](
+                                     pubsub_utils::AnyRotaryHoldEvent* pEvent) {
 #if IS_DEBUG == true
-        Serial.println((String) "HeatingDomain - received event: " +
-                       pEvent->topic);
+    Serial.println((String) "HeatingDomain - received event: " + pEvent->topic);
 #endif
-        this->_stop();
-      });
+    this->_stop();
+  });
 }
 
 void HeatingDomain::runCheck() {

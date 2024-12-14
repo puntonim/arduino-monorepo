@@ -21,21 +21,37 @@ class DisplayButtonPressEvent : public BasePubSubEvent {
   constexpr static char topic[] = "DISPLAY_BUTTON_PRESS_EVENT";
 };
 
-class DisplayButtonHoldEvent : public BasePubSubEvent {
+class AnyRotaryHoldEvent : public BasePubSubEvent {
  public:
-  constexpr static char topic[] = "DISPLAY_BUTTON_HOLD_EVENT";
+  constexpr static char topic[] = "ANY_ROTARY_HOLD_EVENT";
 };
 
-class TargetTButtonPressEvent : public BasePubSubEvent {
+class TargetTRotaryPressEvent : public BasePubSubEvent {
  public:
-  constexpr static char topic[] = "TARGET_T_BUTTON_PRESS_EVENT";
+  constexpr static char topic[] = "TARGET_T_ROTARY_PRESS_EVENT";
 };
 
-class TimerButtonPressEvent : public BasePubSubEvent {
+class TargetTRotaryChangeEvent : public BasePubSubEvent {
  public:
-  constexpr static char topic[] = "TIMER_BUTTON_PRESS_EVENT";
+  constexpr static char topic[] = "TARGET_T_ROTARY_CHANGE_EVENT";
+  const int16_t value;
   const bool isDisplayOn;
-  TimerButtonPressEvent(bool isDisplayOn) : isDisplayOn(isDisplayOn) {};
+  TargetTRotaryChangeEvent(const int16_t value, const bool isDisplayOn)
+      : value(value), isDisplayOn(isDisplayOn) {};
+};
+
+class TimerRotaryPressEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "TIMER_ROTARY_PRESS_EVENT";
+};
+
+class TimerRotaryChangeEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "TIMER_ROTARY_CHANGE_EVENT";
+  const int16_t value;
+  const bool isDisplayOn;
+  TimerRotaryChangeEvent(const int16_t value, bool isDisplayOn)
+      : value(value), isDisplayOn(isDisplayOn) {};
 };
 
 class HeatingStatusChangeEvent : public BasePubSubEvent {
@@ -70,12 +86,16 @@ class PubSub {
  private:
   std::list<std::function<void(DisplayButtonPressEvent*)>>
       _displayButtonPressSubCallbacks;
-  std::list<std::function<void(DisplayButtonHoldEvent*)>>
+  std::list<std::function<void(AnyRotaryHoldEvent*)>>
       _displayButtonHoldSubCallbacks;
-  std::list<std::function<void(TargetTButtonPressEvent*)>>
-      _targetTButtonPressSubCallbacks;
-  std::list<std::function<void(TimerButtonPressEvent*)>>
-      _timerButtonPressSubCallbacks;
+  std::list<std::function<void(TargetTRotaryPressEvent*)>>
+      _targetTRotaryPressSubCallbacks;
+  std::list<std::function<void(TargetTRotaryChangeEvent*)>>
+      _targetTRotaryChangeSubCallbacks;
+  std::list<std::function<void(TimerRotaryPressEvent*)>>
+      _timerRotaryPressSubCallbacks;
+  std::list<std::function<void(TimerRotaryChangeEvent*)>>
+      _timerRotaryChangeSubCallbacks;
   std::list<std::function<void(HeatingStatusChangeEvent*)>>
       _heatingStatusChangeSubCallbacks;
   std::list<std::function<void(ErrorStatusChangeEvent*)>>
@@ -86,18 +106,22 @@ class PubSub {
 
  public:
   void publish(DisplayButtonPressEvent* pEvent);
-  void publish(DisplayButtonHoldEvent* pEvent);
-  void publish(TargetTButtonPressEvent* pEvent);
-  void publish(TimerButtonPressEvent* pEvent);
+  void publish(AnyRotaryHoldEvent* pEvent);
+  void publish(TargetTRotaryPressEvent* pEvent);
+  void publish(TargetTRotaryChangeEvent* pEvent);
+  void publish(TimerRotaryPressEvent* pEvent);
+  void publish(TimerRotaryChangeEvent* pEvent);
   void publish(HeatingStatusChangeEvent* pEvent);
   void publish(ErrorStatusChangeEvent* pEvent);
   void publish(NewScheduleEvent* pEvent);
   void publish(SchedulerEditTimeEvent* pEvent);
 
   void subscribe(std::function<void(DisplayButtonPressEvent*)> callback);
-  void subscribe(std::function<void(DisplayButtonHoldEvent*)> callback);
-  void subscribe(std::function<void(TargetTButtonPressEvent*)> callback);
-  void subscribe(std::function<void(TimerButtonPressEvent*)> callback);
+  void subscribe(std::function<void(AnyRotaryHoldEvent*)> callback);
+  void subscribe(std::function<void(TargetTRotaryPressEvent*)> callback);
+  void subscribe(std::function<void(TargetTRotaryChangeEvent*)> callback);
+  void subscribe(std::function<void(TimerRotaryPressEvent*)> callback);
+  void subscribe(std::function<void(TimerRotaryChangeEvent*)> callback);
   void subscribe(std::function<void(HeatingStatusChangeEvent*)> callback);
   void subscribe(std::function<void(ErrorStatusChangeEvent*)> callback);
   void subscribe(std::function<void(NewScheduleEvent*)> callback);
