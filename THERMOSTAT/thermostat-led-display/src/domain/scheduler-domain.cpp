@@ -44,7 +44,7 @@ bool SchedulerDomain::isScheduled() { return !timer.isOver(); }
  * - if the display was OFF: noop (as we just have to switch on
  *    the display and this is done in display-device.cpp)
  * - if the display was ON and nothing was scheduled (SPENTO):
- *    - if the rotation was clockwise then start a new timer with the default
+ *    - if the rotation was clockwise then start a new timer with the initial
  *       timer setting
  *    - if the rotation was clockwise then noop
  * - if the display was ON and there was an ongoing schedule: just add or
@@ -57,9 +57,9 @@ void SchedulerDomain::_onTimerRotaryChange(
   if (pEvent->isDisplayOn) {
     if (timer.isOver() && pEvent->value > 0) {
       // If time is over and the timer rotary encoder was rotated clockwise,
-      //  then start a new timer with the default time.
-      timer.start(settings::DEFAULT_TIMER.h, settings::DEFAULT_TIMER.m,
-                  settings::DEFAULT_TIMER.s);
+      //  then start a new timer with the initial time.
+      timer.start(settings::INITIAL_TIMER.h, settings::INITIAL_TIMER.m,
+                  settings::INITIAL_TIMER.s);
       // And publish the new schedule event.
       pubsub_utils::pubSub.publish(new pubsub_utils::NewScheduleEvent());
     } else {
@@ -108,6 +108,6 @@ void SchedulerDomain::_onTargetTRotaryChange(
 
 void SchedulerDomain::reset() {
   timer.reset();
-  targetTemperature = settings::DEFAULT_TARGET_T;
+  targetTemperature = settings::INITIAL_TARGET_T;
 }
 }  // namespace tstat

@@ -16,7 +16,7 @@ class SchedulerDomain {
   void setup();
   void reset();
   time_utils::Timer timer;
-  u_int8_t targetTemperature = settings::DEFAULT_TARGET_T;
+  u_int8_t targetTemperature = settings::INITIAL_TARGET_T;
   bool isScheduled();
 };
 

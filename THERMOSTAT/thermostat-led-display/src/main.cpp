@@ -38,6 +38,7 @@
 
 #include "devices/display-device.h"
 #include "devices/led-device.h"
+#include "devices/relay-device.h"
 #include "devices/rotary-encoder-device.h"
 #include "domain/heating-domain.h"
 #include "domain/scheduler-domain.h"
@@ -59,6 +60,7 @@ void setup() {
   sht85Sensor.setup();
   ds18b20Sensor.setup();
   rotaryEncoderDevices.setup();
+  relayDevice.setup();
   errorLedDevice.setup();
   heatingLedDevice.setup();
   domainLedDevice.setup();

@@ -1,13 +1,11 @@
 - add relay-device
 
-- instead of cancelling task, disable them: taskManager.setTaskEnabled(taskId, false);
-
 - replace heating led managed by software
   with one placed in parallel to the wire Arduino PIN-Relay signal
 
 - Optionally disable remove sensor temperature?
 
-- change settings.DELTA_TIME_ON_ROTARY_ROTATION and DEFAULT_TIMER to 15 mins
+- change settings.DELTA_TIME_ON_ROTARY_ROTATION and INITIAL_TIMER to 15 mins
 - check scheduled tasks
 - READY TO INSTALL AND USE
 
@@ -38,7 +36,7 @@
   - https://stackoverflow.com/questions/73421279/how-do-i-pass-and-modify-an-optional-argument-to-a-function-through-a-header-fil
     Then use it in time_utils::start() and note that I cannot import settings
     in time-utils.h cause it would be a circular dep, then I have to make the args
-    optinals and set them to the defaults if none in \*.cpp
+    optional and set them to the defaults if null in \*.cpp
 
 - What to do in case of (local) sensor error?
   Maybe, in that error case, we should consider only the timer!
@@ -53,6 +51,7 @@
   Or do we use the same logic as a local sensor error?
 
 - Cloud and web:
+
   - send data to IoT cloud or custom BE to track:
     - T and H over time
     - heating ON/OFF
@@ -62,3 +61,19 @@
   - Hmmm: receive data from remote (IoT cloud? regular HTTP reqs?)
     But I don't rellay need the feature to switch ON/OFF the heating from
     remote
+
+- Optimization: instead of cancelling tasks, enable/disable them:  
+   `taskManager.setTaskEnabled(taskId, false);`
+  Enabling a task, rather than scheduling it a new, is more efficient as it is O(1).
+  Versus O(n) (n = #tasks) when sheduling it anew.
+  However, later on, when we need to check if a task is enabled, we do:
+
+  ```
+  auto task = getTask(taskId);
+  if (task.taskEnabled)...
+  ```
+
+  which is O(n) (n = #tasks).
+  Versus O(1) in the current code where we just do:  
+   `if (blinkTaskId == TASKMGR_INVALIDID)`
+  So, in the end, there is probably zero-little performance gain.

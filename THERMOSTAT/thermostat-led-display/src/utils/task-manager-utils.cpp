@@ -28,6 +28,8 @@ void _printExtraInfo() {
 
 /**
  * Print debug info about tasks scheduled with TaskManagerIO.
+ * Docs:
+ * https://tcmenu.github.io/documentation/arduino-libraries/taskmanager-io/task-manager-scheduling-guide/
  *
  * Usage:
  *    void loop() {
@@ -41,6 +43,8 @@ void printDebugTasks(bool isVerbose /* = true */) {
   int nowSecs = floor(millis() / 1000);
   if (nowSecs >= _prevSecs + PERIOD_SECS) {
     char debugData[10];
+    // Docs:
+    // https://tcmenu.github.io/documentation/arduino-libraries/taskmanager-io/task-manager-scheduling-guide/
     taskManager.checkAvailableSlots(debugData, sizeof debugData);
     short tasksCount = 0;
     for (int i = 0; i < 10; i++)

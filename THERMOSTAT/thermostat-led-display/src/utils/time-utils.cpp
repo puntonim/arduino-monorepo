@@ -24,9 +24,9 @@ Time secsToTime(unsigned long secs) {
   return t;
 }
 
-void Timer::start(unsigned short hour /*  = settings::DEFAULT_TIMER.h */,
-                  unsigned short minute /*  = settings::DEFAULT_TIMER.m */,
-                  unsigned short second /*  = settings::DEFAULT_TIMER.s */) {
+void Timer::start(unsigned short hour /*  = settings::INITIAL_TIMER.h */,
+                  unsigned short minute /*  = settings::INITIAL_TIMER.m */,
+                  unsigned short second /*  = settings::INITIAL_TIMER.s */) {
   _time.h = hour;
   _time.m = minute;
   _time.s = second;
