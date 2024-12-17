@@ -21,6 +21,14 @@ void RelayDevice::setup() {
 #endif
         pEvent->isOn ? this->_switchOn() : this->_switchOff();
       });
+
+  pubsub_utils::pubSub.subscribe([this](
+                                     pubsub_utils::SchedulerOverEvent* pEvent) {
+#if IS_DEBUG == true
+    Serial.println((String) "RelayDevice - received event: " + pEvent->topic);
+#endif
+    this->_switchOff();
+  });
 }
 
 void RelayDevice::_switchOn() {

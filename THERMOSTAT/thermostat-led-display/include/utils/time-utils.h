@@ -23,6 +23,7 @@ class Timer {
   unsigned long _lastTickTs;
 
  public:
+  Time getTime();
   void start(unsigned short hour, unsigned short minute, unsigned short second);
   Time add(unsigned short hour, unsigned short minute, unsigned short second);
   Time add(unsigned short second);

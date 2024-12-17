@@ -34,6 +34,14 @@ void SchedulerDomain::setup() {
 #endif
         this->_onTargetTRotaryChange(pEvent);
       });
+
+  pubsub_utils::pubSub.subscribe([this](
+                                     pubsub_utils::AnyRotaryHoldEvent* pEvent) {
+#if IS_DEBUG == true
+    Serial.println((String) "HeatingDomain - received event: " + pEvent->topic);
+#endif
+    this->reset();
+  });
 }
 
 bool SchedulerDomain::isScheduled() { return !timer.isOver(); }
@@ -55,13 +63,16 @@ void SchedulerDomain::_onTimerRotaryChange(
   // If the rotary encoder was rotated when the display was OFF, then noop (as
   //  as we just have to switch on the display and NOT to increment the timer).
   if (pEvent->isDisplayOn) {
-    if (timer.isOver() && pEvent->value > 0) {
-      // If time is over and the timer rotary encoder was rotated clockwise,
-      //  then start a new timer with the initial time.
-      timer.start(settings::INITIAL_TIMER.h, settings::INITIAL_TIMER.m,
-                  settings::INITIAL_TIMER.s);
-      // And publish the new schedule event.
-      pubsub_utils::pubSub.publish(new pubsub_utils::NewScheduleEvent());
+    if (timer.isOver()) {
+      if (pEvent->value > 0) {
+        // If time is over and the timer rotary encoder was rotated clockwise,
+        //  then start a new timer with the initial time.
+        timer.start(settings::INITIAL_TIMER.h, settings::INITIAL_TIMER.m,
+                    settings::INITIAL_TIMER.s);
+        targetTemperature = settings::INITIAL_TARGET_T;
+        // And publish the new schedule event.
+        pubsub_utils::pubSub.publish(new pubsub_utils::NewScheduleEvent());
+      }
     } else {
       // If time is not over, then add/remove the time.
       time_utils::Time time;
@@ -76,9 +87,13 @@ void SchedulerDomain::_onTimerRotaryChange(
                               settings::DELTA_TIME_ON_ROTARY_ROTATION.m,
                               settings::DELTA_TIME_ON_ROTARY_ROTATION.s);
       }
-      // And publish the edit time event.
-      pubsub_utils::pubSub.publish(
-          new pubsub_utils::SchedulerEditTimeEvent(time));
+      timer.tick();
+      if (!timer.isOver()) {
+        pubsub_utils::pubSub.publish(
+            new pubsub_utils::SchedulerEditTimeEvent(time));
+      } else {
+        pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerOverEvent());
+      }
     }
   }
 }
@@ -107,7 +122,20 @@ void SchedulerDomain::_onTargetTRotaryChange(
 }
 
 void SchedulerDomain::reset() {
+  bool wasScheduled = isScheduled();
   timer.reset();
   targetTemperature = settings::INITIAL_TARGET_T;
+  if (wasScheduled)
+    pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerOverEvent());
 }
+
+struct time_utils::Time SchedulerDomain::tick() {
+  // If the time is already over, then no need to publish the event.
+  if (timer.isOver()) return timer.getTime();
+  struct time_utils::Time time = timer.tick();
+  if (timer.isOver())
+    pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerOverEvent());
+  return time;
+}
+
 }  // namespace tstat

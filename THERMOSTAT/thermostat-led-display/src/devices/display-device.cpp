@@ -32,58 +32,66 @@ void DisplayDevice::setup() {
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
 
-  // SUBSCRIPTIONS.
-  pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::DisplayButtonPressEvent* pEvent) {
-#if IS_DEBUG == true
-        Serial.println((String) "DisplayDevice - received event: " +
-                       pEvent->topic);
-#endif
-        this->switchOn();
-      });
-
+  // SUBSCRIPTION SchedulerOverEvent -------------------------------------------
   pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::AnyRotaryHoldEvent* pEvent) {
+                                     pubsub_utils::SchedulerOverEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
 #endif
-    this->_refreshFirstRow();
+    if (_isOn) this->_refreshFirstRow();
   });
 
+  // SUBSCRIPTION TimerRotaryPressEvent ----------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::TimerRotaryPressEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
+        // Switch ON the display if not already ON, cancel and reschedule
+        //  the switch OFF task in 20 sec.
         this->switchOn();
       });
+
+  // SUBSCRIPTION TimerRotaryChangeEvent ---------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::TimerRotaryChangeEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
+        // Switch ON the display if not already ON, cancel and reschedule
+        //  the switch OFF task in 20 sec. Do not update the timer on display
+        //  as there will be a SchedulerEditTimeEvent for that.
         this->switchOn();
       });
 
+  // SUBSCRIPTION TargetTRotaryPressEvent --------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::TargetTRotaryPressEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
+        // Switch ON the display if not already ON, cancel and reschedule
+        //  the switch OFF task in 20 sec.
         this->switchOn();
       });
+
+  // SUBSCRIPTION TargetTRotaryChangeEvent -------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
+        // Switch ON the display if not already ON, cancel and reschedule
+        //  the switch OFF task in 20 sec.  Do not update the target T on
+        //  display as there will be a SchedulerEditTargetTEvent for that.
         this->switchOn();
       });
 
+  // SUBSCRIPTION SchedulerEditTimeEvent ---------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::SchedulerEditTimeEvent* pEvent) {
 #if IS_DEBUG == true
@@ -93,23 +101,28 @@ void DisplayDevice::setup() {
         this->_refreshFirstRow();
       });
 
+  // SUBSCRIPTION SchedulerEditTargetTEvent ------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::SchedulerEditTargetTEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
+        _targetTemperature = pEvent->targetTemperature;
         this->_refreshFirstRow();
       });
 
+  // SUBSCRIPTION NewScheduleEvent ---------------------------------------------
   pubsub_utils::pubSub.subscribe([this](
                                      pubsub_utils::NewScheduleEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
 #endif
+    _targetTemperature = schedulerDomain.targetTemperature;
     this->_refreshFirstRow();
   });
 
+  // SUBSCRIPTION HeatingStatusChangeEvent -------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
 #if IS_DEBUG == true
@@ -118,6 +131,7 @@ void DisplayDevice::setup() {
             " isOn=" + (pEvent->isOn ? "ON" : "OFF"));
 #endif
         this->_isHeatingOn = pEvent->isOn;
+        if (_isOn) this->_refreshFirstRow();
       });
 }
 
@@ -127,7 +141,6 @@ void DisplayDevice::toogle() {
   else
     switchOn();
 }
-
 bool DisplayDevice::isOn() { return _isOn; }
 
 void DisplayDevice::switchOff(bool doResetSwitchOffDisplayTaskId /* = true */) {
@@ -213,16 +226,17 @@ void DisplayDevice::_printData() {
 void DisplayDevice::_printFirstRow() {
   RowPrinter p(0);
 
+  schedulerDomain.tick();
+
   if (!schedulerDomain.isScheduled()) {
     p.print("     SPENTO");
     p.printFillingBlanks();
     return;
   }
 
-  p.print(schedulerDomain.targetTemperature);
+  p.print(_targetTemperature);
   p.print("\xDF ");  // Or: p.print("\xDF""C");
 
-  schedulerDomain.timer.tick();
   // Format time like: 1:04:09
   // Size 9 because of the final null appended by spritnf. And the hour can be 2
   // digits (eg, "26" hours)
@@ -315,7 +329,7 @@ void DisplayDevice::_printSecondRow() {
 }
 
 void DisplayDevice::_refreshFirstRow() {
-  if (!_isOn) switchOn();
+  if (!_isOn) return switchOn();
   task_manager_utils::cancelTask(displayDataTaskId);
   _printFirstRow();
   if ((displayDataTaskId == TASKMGR_INVALIDID) && _isOn) {

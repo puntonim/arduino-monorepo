@@ -22,6 +22,7 @@ class DisplayDevice {
 
   // Data on display.
   bool _isHeatingOn = false;
+  u_int8_t _targetTemperature = settings::INITIAL_TARGET_T;
 
  public:
   void setup();

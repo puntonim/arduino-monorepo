@@ -27,39 +27,37 @@ void HeatingDomain::setup() {
     this->_onNewScheduleEvent();
   });
 
+  // When the timer has changed (because the timer rotary encoder
+  //  was rotated) then we want the runCheck() to run asap so the relay
+  //  can turn ON/OFF instantly.
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::SchedulerEditTimeEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "HeatingDomain - received event: " +
+                       pEvent->topic);
+#endif
+        this->runCheck();
+      });
+
+  // When the target T has changed (because the target T rotary encoder
+  //  was rotated) then we want the runCheck() to run asap so the relay
+  //  can turn ON/OFF instantly.
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::SchedulerEditTargetTEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "HeatingDomain - received event: " +
+                       pEvent->topic);
+#endif
+        this->runCheck();
+      });
+
   pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::AnyRotaryHoldEvent* pEvent) {
+                                     pubsub_utils::SchedulerOverEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "HeatingDomain - received event: " + pEvent->topic);
 #endif
     this->_stop();
   });
-
-  // When rotating the timer rotary encoder we want the runCheck() to run
-  //  asap (if the display is ON and there is an ongoing schedule) so the heater
-  //  can turn ON/OFF instantly.
-  pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerRotaryChangeEvent* pEvent) {
-#if IS_DEBUG == true
-        Serial.println((String) "HeatingDomain - received event: " +
-                       pEvent->topic);
-#endif
-        if (pEvent->isDisplayOn && schedulerDomain.isScheduled())
-          this->runCheck();
-      });
-
-  // When rotating the target T rotary encoder we want the runCheck() to run
-  //  asap (if the display is ON and there is an ongoing schedule) so the heater
-  //  can turn ON/OFF instantly.
-  pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
-#if IS_DEBUG == true
-        Serial.println((String) "HeatingDomain - received event: " +
-                       pEvent->topic);
-#endif
-        if (pEvent->isDisplayOn && schedulerDomain.isScheduled())
-          this->runCheck();
-      });
 }
 
 void HeatingDomain::runCheck() {
@@ -68,6 +66,9 @@ void HeatingDomain::runCheck() {
 #endif
   domainLedDevice.switchOn(true);
 
+  // When the timer is over the event SchedulerOverEvent is published, so we
+  //  we don't even have to check the timer, but only the sensor T.
+  schedulerDomain.tick();
   bool isOnForTemp = _checkForTemperature();
   bool isOnForTime = _checkForTimer();
 
@@ -86,6 +87,11 @@ void HeatingDomain::runCheck() {
   //  - `isOnForTemp` is true when the sensor T is < target T
   //  - `status` is true when the heating is ON;
 
+  // When the timer is over the event SchedulerOverEvent is published, so it
+  //  might seem that we don't even have to check the timer. However this
+  //  can happen: rotate timer rotary to 0 > SchedulerEditTimeEvent >
+  //  runCheck() > tick() > SchedulerOverEvent > switchOff and then this code
+  //  runs and if we don;t check for time we switch on again for temp.
   if (!isOnForTime)
     _stop();
   else {
@@ -94,11 +100,6 @@ void HeatingDomain::runCheck() {
     else if ((!isOnForTemp) && _isOn)
       _switchOff();
   }
-
-  // TODO remove this useless delay.
-  //  It's here otherwise the domainLed doesn't even blink as the heating domain
-  //  is too fast.
-  delay(100);
 
   domainLedDevice.switchOff(true);
 }
@@ -124,17 +125,19 @@ bool HeatingDomain::_checkForTimer() {
 }
 
 void HeatingDomain::_switchOn() {
-  _isOn = true;
-
-  pubsub_utils::pubSub.publish(
-      new pubsub_utils::HeatingStatusChangeEvent(true));
+  if (!_isOn) {
+    _isOn = true;
+    pubsub_utils::pubSub.publish(
+        new pubsub_utils::HeatingStatusChangeEvent(true));
+  }
 }
 
 void HeatingDomain::_switchOff() {
-  _isOn = false;
-
-  pubsub_utils::pubSub.publish(
-      new pubsub_utils::HeatingStatusChangeEvent(false));
+  if (_isOn) {
+    _isOn = false;
+    pubsub_utils::pubSub.publish(
+        new pubsub_utils::HeatingStatusChangeEvent(false));
+  }
 }
 
 void HeatingDomain::_onNewScheduleEvent() {
@@ -162,8 +165,7 @@ void HeatingDomain::_onNewScheduleEvent() {
  * Stop: switch off the heating and cancel the ongoing schedule.
  */
 void HeatingDomain::_stop() {
-  _switchOff();
-  schedulerDomain.reset();
+  if (_isOn) _switchOff();
   task_manager_utils::cancelTask(runTaskId);
 }
 

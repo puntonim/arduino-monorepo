@@ -60,12 +60,12 @@ void setup() {
   sht85Sensor.setup();
   ds18b20Sensor.setup();
   rotaryEncoderDevices.setup();
-  relayDevice.setup();
   errorLedDevice.setup();
   domainLedDevice.setup();
-  displayDevice.setup();
   schedulerDomain.setup();
   heatingDomain.setup();
+  relayDevice.setup();
+  displayDevice.setup();
 }
 
 void loop() {

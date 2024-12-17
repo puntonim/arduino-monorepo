@@ -18,6 +18,7 @@ class SchedulerDomain {
   time_utils::Timer timer;
   u_int8_t targetTemperature = settings::INITIAL_TARGET_T;
   bool isScheduled();
+  struct time_utils::Time tick();
 };
 
 // "Soft" singleton global object defined as extern and initialized here,

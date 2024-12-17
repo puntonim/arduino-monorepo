@@ -33,15 +33,11 @@ static void _onAnyRotaryPress(const uint8_t pin, const bool isHeldDown) {
 }
 
 static void _onTargetTRotaryChange(const int value) {
-  // TODO deleteme
-  Serial.println((String) "Target T rotary encoder change: " + value);
   pubsub_utils::pubSub.publish(
       new pubsub_utils::TargetTRotaryChangeEvent(value, displayDevice.isOn()));
 }
 
 static void _onTimerRotaryChange(const int value) {
-  // TODO deleteme
-  Serial.println((String) "Timer rotary encoder change: " + value);
   pubsub_utils::pubSub.publish(
       new pubsub_utils::TimerRotaryChangeEvent(value, displayDevice.isOn()));
 }

@@ -24,6 +24,8 @@ Time secsToTime(unsigned long secs) {
   return t;
 }
 
+Time Timer::getTime() { return _time; }
+
 void Timer::start(unsigned short hour /*  = settings::INITIAL_TIMER.h */,
                   unsigned short minute /*  = settings::INITIAL_TIMER.m */,
                   unsigned short second /*  = settings::INITIAL_TIMER.s */) {
@@ -50,6 +52,7 @@ Time Timer::subtract(unsigned short hour, unsigned short minute,
 }
 
 Time Timer::subtract(unsigned short second) {
+  if (isOver()) return _time;
   unsigned long resultInSec = timeToSecs(_time) - second;
   if (resultInSec < 0) resultInSec = 0;
   _time = secsToTime(resultInSec);
@@ -57,6 +60,7 @@ Time Timer::subtract(unsigned short second) {
 }
 
 Time Timer::tick() {
+  if (isOver()) return _time;
   auto nowTs = millis();
   // Elapsed secs since last tick.
   // round(10/3.); // 3.33 -> 3

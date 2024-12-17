@@ -29,21 +29,22 @@ void ErrorLedDevice::setup() {
             (String) "ErrorLedDevice - received event: " + pEvent->topic +
             " isError=" + (pEvent->isError ? "ON" : "OFF"));
 #endif
-        if (pEvent->isError)
-          this->startBlinking();
-        else
-          this->stopBlinking();
+        pEvent->isError ? this->startBlinking() : this->stopBlinking();
       });
 }
 
 void ErrorLedDevice::switchOn() {
-  analogWrite(_PIN, _BRIGHTNESS_VALUE);
-  _isOn = true;
+  if (!_isOn) {
+    analogWrite(_PIN, _BRIGHTNESS_VALUE);
+    _isOn = true;
+  }
 }
 
 void ErrorLedDevice::switchOff() {
-  analogWrite(_PIN, 0);
-  _isOn = false;
+  if (_isOn) {
+    analogWrite(_PIN, 0);
+    _isOn = false;
+  }
 }
 
 void ErrorLedDevice::toggle() { _isOn ? switchOff() : switchOn(); }

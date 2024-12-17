@@ -7,12 +7,6 @@ namespace pubsub_utils {
 //  but defined as extern and initialized in pubsub-utils.h.
 PubSub pubSub;
 
-void PubSub::publish(DisplayButtonPressEvent* pEvent) {
-  for (auto& callback : _displayButtonPressSubCallbacks) {
-    callback(pEvent);
-  }
-}
-
 void PubSub::publish(AnyRotaryHoldEvent* pEvent) {
   for (auto& callback : _displayButtonHoldSubCallbacks) {
     callback(pEvent);
@@ -73,8 +67,10 @@ void PubSub::publish(SchedulerEditTargetTEvent* pEvent) {
   }
 }
 
-void PubSub::subscribe(std::function<void(DisplayButtonPressEvent*)> callback) {
-  _displayButtonPressSubCallbacks.push_back(callback);
+void PubSub::publish(SchedulerOverEvent* pEvent) {
+  for (auto& callback : _schedulerOverSubCallbacks) {
+    callback(pEvent);
+  }
 }
 
 void PubSub::subscribe(std::function<void(AnyRotaryHoldEvent*)> callback) {
@@ -118,6 +114,10 @@ void PubSub::subscribe(std::function<void(SchedulerEditTimeEvent*)> callback) {
 void PubSub::subscribe(
     std::function<void(SchedulerEditTargetTEvent*)> callback) {
   _schedulerEditTargetTSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(SchedulerOverEvent*)> callback) {
+  _schedulerOverSubCallbacks.push_back(callback);
 }
 
 }  // namespace pubsub_utils

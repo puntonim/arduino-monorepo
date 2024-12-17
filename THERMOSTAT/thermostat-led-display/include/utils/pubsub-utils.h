@@ -16,11 +16,6 @@ class BasePubSubEvent {
  private:
 };
 
-class DisplayButtonPressEvent : public BasePubSubEvent {
- public:
-  constexpr static char topic[] = "DISPLAY_BUTTON_PRESS_EVENT";
-};
-
 class AnyRotaryHoldEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "ANY_ROTARY_HOLD_EVENT";
@@ -89,10 +84,13 @@ class SchedulerEditTargetTEvent : public BasePubSubEvent {
   SchedulerEditTargetTEvent(u_int8_t t) : targetTemperature(t) {};
 };
 
+class SchedulerOverEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "SCHEDULER_OVER_EVENT";
+};
+
 class PubSub {
  private:
-  std::list<std::function<void(DisplayButtonPressEvent*)>>
-      _displayButtonPressSubCallbacks;
   std::list<std::function<void(AnyRotaryHoldEvent*)>>
       _displayButtonHoldSubCallbacks;
   std::list<std::function<void(TargetTRotaryPressEvent*)>>
@@ -112,9 +110,10 @@ class PubSub {
       _schedulerEditTimeSubCallbacks;
   std::list<std::function<void(SchedulerEditTargetTEvent*)>>
       _schedulerEditTargetTSubCallbacks;
+  std::list<std::function<void(SchedulerOverEvent*)>>
+      _schedulerOverSubCallbacks;
 
  public:
-  void publish(DisplayButtonPressEvent* pEvent);
   void publish(AnyRotaryHoldEvent* pEvent);
   void publish(TargetTRotaryPressEvent* pEvent);
   void publish(TargetTRotaryChangeEvent* pEvent);
@@ -125,8 +124,8 @@ class PubSub {
   void publish(NewScheduleEvent* pEvent);
   void publish(SchedulerEditTimeEvent* pEvent);
   void publish(SchedulerEditTargetTEvent* pEvent);
+  void publish(SchedulerOverEvent* pEvent);
 
-  void subscribe(std::function<void(DisplayButtonPressEvent*)> callback);
   void subscribe(std::function<void(AnyRotaryHoldEvent*)> callback);
   void subscribe(std::function<void(TargetTRotaryPressEvent*)> callback);
   void subscribe(std::function<void(TargetTRotaryChangeEvent*)> callback);
@@ -137,6 +136,7 @@ class PubSub {
   void subscribe(std::function<void(NewScheduleEvent*)> callback);
   void subscribe(std::function<void(SchedulerEditTimeEvent*)> callback);
   void subscribe(std::function<void(SchedulerEditTargetTEvent*)> callback);
+  void subscribe(std::function<void(SchedulerOverEvent*)> callback);
 };
 
 // "Soft" singleton global object defined as extern and initialized here,
