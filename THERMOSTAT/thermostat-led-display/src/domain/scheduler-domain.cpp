@@ -16,25 +16,27 @@ namespace tstat {
 SchedulerDomain schedulerDomain;
 
 void SchedulerDomain::setup() {
-  // SUBSCRIPTIONS.
+  // SUBSCRIPTION TimerRotaryRotationEvent -------------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerRotaryChangeEvent* pEvent) {
+      [this](pubsub_utils::TimerRotaryRotationEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "SchedulerDomain - received event: " +
                        pEvent->topic);
 #endif
-        this->_onTimerRotaryChange(pEvent);
+        this->_onTimerRotaryRotation(pEvent);
       });
 
+  // SUBSCRIPTION TargetTRotaryRotationEvent -----------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
+      [this](pubsub_utils::TargetTRotaryRotationEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "SchedulerDomain - received event: " +
                        pEvent->topic);
 #endif
-        this->_onTargetTRotaryChange(pEvent);
+        this->_onTargetTRotaryRotation(pEvent);
       });
 
+  // SUBSCRIPTION AnyRotaryHoldEvent -------------------------------------------
   pubsub_utils::pubSub.subscribe([this](
                                      pubsub_utils::AnyRotaryHoldEvent* pEvent) {
 #if IS_DEBUG == true
@@ -58,8 +60,8 @@ bool SchedulerDomain::isScheduled() { return !timer.isOver(); }
  * - if the display was ON and there was an ongoing schedule: just add or
  *    subtract time
  */
-void SchedulerDomain::_onTimerRotaryChange(
-    pubsub_utils::TimerRotaryChangeEvent* pEvent) {
+void SchedulerDomain::_onTimerRotaryRotation(
+    pubsub_utils::TimerRotaryRotationEvent* pEvent) {
   // If the rotary encoder was rotated when the display was OFF, then noop (as
   //  as we just have to switch on the display and NOT to increment the timer).
   if (pEvent->isDisplayOn) {
@@ -71,7 +73,7 @@ void SchedulerDomain::_onTimerRotaryChange(
                     settings::INITIAL_TIMER.s);
         targetTemperature = settings::INITIAL_TARGET_T;
         // And publish the new schedule event.
-        pubsub_utils::pubSub.publish(new pubsub_utils::NewScheduleEvent());
+        pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerStartEvent());
       }
     } else {
       // If time is not over, then add/remove the time.
@@ -90,9 +92,9 @@ void SchedulerDomain::_onTimerRotaryChange(
       timer.tick();
       if (!timer.isOver()) {
         pubsub_utils::pubSub.publish(
-            new pubsub_utils::SchedulerEditTimeEvent(time));
+            new pubsub_utils::SchedulerTimerUpdateEvent(time));
       } else {
-        pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerOverEvent());
+        pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerEndEvent());
       }
     }
   }
@@ -107,8 +109,8 @@ void SchedulerDomain::_onTimerRotaryChange(
  * - if the display was ON and there was an ongoing schedule: just increase or
  *    decrease the target T
  */
-void SchedulerDomain::_onTargetTRotaryChange(
-    pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
+void SchedulerDomain::_onTargetTRotaryRotation(
+    pubsub_utils::TargetTRotaryRotationEvent* pEvent) {
   // If the rotary encoder was rotated when the display was OFF, then noop (as
   //  we have to switch on the display and NOT to increment the target T).
   if (pEvent->isDisplayOn) {
@@ -116,7 +118,7 @@ void SchedulerDomain::_onTargetTRotaryChange(
       // If there is an ongoing schedule, then increase/decrease the target T.
       targetTemperature = pEvent->value;
       pubsub_utils::pubSub.publish(
-          new pubsub_utils::SchedulerEditTargetTEvent(targetTemperature));
+          new pubsub_utils::SchedulerTargetTUpdateEvent(targetTemperature));
     }
   }
 }
@@ -126,7 +128,7 @@ void SchedulerDomain::reset() {
   timer.reset();
   targetTemperature = settings::INITIAL_TARGET_T;
   if (wasScheduled)
-    pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerOverEvent());
+    pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerEndEvent());
 }
 
 struct time_utils::Time SchedulerDomain::tick() {
@@ -134,7 +136,7 @@ struct time_utils::Time SchedulerDomain::tick() {
   if (timer.isOver()) return timer.getTime();
   struct time_utils::Time time = timer.tick();
   if (timer.isOver())
-    pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerOverEvent());
+    pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerEndEvent());
   return time;
 }
 

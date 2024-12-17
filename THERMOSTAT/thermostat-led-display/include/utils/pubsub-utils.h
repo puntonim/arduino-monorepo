@@ -26,12 +26,12 @@ class TargetTRotaryPressEvent : public BasePubSubEvent {
   constexpr static char topic[] = "TARGET_T_ROTARY_PRESS_EVENT";
 };
 
-class TargetTRotaryChangeEvent : public BasePubSubEvent {
+class TargetTRotaryRotationEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "TARGET_T_ROTARY_CHANGE_EVENT";
   const int16_t value;
   const bool isDisplayOn;
-  TargetTRotaryChangeEvent(const int16_t value, const bool isDisplayOn)
+  TargetTRotaryRotationEvent(const int16_t value, const bool isDisplayOn)
       : value(value), isDisplayOn(isDisplayOn) {};
 };
 
@@ -40,51 +40,51 @@ class TimerRotaryPressEvent : public BasePubSubEvent {
   constexpr static char topic[] = "TIMER_ROTARY_PRESS_EVENT";
 };
 
-class TimerRotaryChangeEvent : public BasePubSubEvent {
+class TimerRotaryRotationEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "TIMER_ROTARY_CHANGE_EVENT";
   const int16_t value;
   const bool isDisplayOn;
-  TimerRotaryChangeEvent(const int16_t value, bool isDisplayOn)
+  TimerRotaryRotationEvent(const int16_t value, bool isDisplayOn)
       : value(value), isDisplayOn(isDisplayOn) {};
 };
 
-class HeatingStatusChangeEvent : public BasePubSubEvent {
+class HeatingStatusUpdateEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "HEATING_STATUS_CHANGE_EVENT";
   const bool isOn;
-  HeatingStatusChangeEvent(bool isOn) : isOn(isOn) {};
+  HeatingStatusUpdateEvent(bool isOn) : isOn(isOn) {};
 };
 
-class ErrorStatusChangeEvent : public BasePubSubEvent {
+class ErrorStatusUpdateEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "ERROR_STATUS_CHANGE_EVENT";
   const bool isError;
   std::list<char*> messageList;
-  ErrorStatusChangeEvent(bool isError, std::list<char*> messageList = {})
+  ErrorStatusUpdateEvent(bool isError, std::list<char*> messageList = {})
       : isError(isError), messageList(messageList) {};
 };
 
-class NewScheduleEvent : public BasePubSubEvent {
+class SchedulerStartEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "NEW_SCHEDULE_EVENT";
 };
 
-class SchedulerEditTimeEvent : public BasePubSubEvent {
+class SchedulerTimerUpdateEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "SCHEDULER_EDIT_TIME_EVENT";
   time_utils::Time time;
-  SchedulerEditTimeEvent(time_utils::Time time) : time(time) {};
+  SchedulerTimerUpdateEvent(time_utils::Time time) : time(time) {};
 };
 
-class SchedulerEditTargetTEvent : public BasePubSubEvent {
+class SchedulerTargetTUpdateEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "SCHEDULER_EDIT_TARGET_T_EVENT";
   u_int8_t targetTemperature;
-  SchedulerEditTargetTEvent(u_int8_t t) : targetTemperature(t) {};
+  SchedulerTargetTUpdateEvent(u_int8_t t) : targetTemperature(t) {};
 };
 
-class SchedulerOverEvent : public BasePubSubEvent {
+class SchedulerEndEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "SCHEDULER_OVER_EVENT";
 };
@@ -95,48 +95,47 @@ class PubSub {
       _displayButtonHoldSubCallbacks;
   std::list<std::function<void(TargetTRotaryPressEvent*)>>
       _targetTRotaryPressSubCallbacks;
-  std::list<std::function<void(TargetTRotaryChangeEvent*)>>
+  std::list<std::function<void(TargetTRotaryRotationEvent*)>>
       _targetTRotaryChangeSubCallbacks;
   std::list<std::function<void(TimerRotaryPressEvent*)>>
       _timerRotaryPressSubCallbacks;
-  std::list<std::function<void(TimerRotaryChangeEvent*)>>
+  std::list<std::function<void(TimerRotaryRotationEvent*)>>
       _timerRotaryChangeSubCallbacks;
-  std::list<std::function<void(HeatingStatusChangeEvent*)>>
+  std::list<std::function<void(HeatingStatusUpdateEvent*)>>
       _heatingStatusChangeSubCallbacks;
-  std::list<std::function<void(ErrorStatusChangeEvent*)>>
+  std::list<std::function<void(ErrorStatusUpdateEvent*)>>
       _errorStatusChangeSubCallbacks;
-  std::list<std::function<void(NewScheduleEvent*)>> _newScheduleSubCallbacks;
-  std::list<std::function<void(SchedulerEditTimeEvent*)>>
+  std::list<std::function<void(SchedulerStartEvent*)>> _newScheduleSubCallbacks;
+  std::list<std::function<void(SchedulerTimerUpdateEvent*)>>
       _schedulerEditTimeSubCallbacks;
-  std::list<std::function<void(SchedulerEditTargetTEvent*)>>
+  std::list<std::function<void(SchedulerTargetTUpdateEvent*)>>
       _schedulerEditTargetTSubCallbacks;
-  std::list<std::function<void(SchedulerOverEvent*)>>
-      _schedulerOverSubCallbacks;
+  std::list<std::function<void(SchedulerEndEvent*)>> _schedulerOverSubCallbacks;
 
  public:
   void publish(AnyRotaryHoldEvent* pEvent);
   void publish(TargetTRotaryPressEvent* pEvent);
-  void publish(TargetTRotaryChangeEvent* pEvent);
+  void publish(TargetTRotaryRotationEvent* pEvent);
   void publish(TimerRotaryPressEvent* pEvent);
-  void publish(TimerRotaryChangeEvent* pEvent);
-  void publish(HeatingStatusChangeEvent* pEvent);
-  void publish(ErrorStatusChangeEvent* pEvent);
-  void publish(NewScheduleEvent* pEvent);
-  void publish(SchedulerEditTimeEvent* pEvent);
-  void publish(SchedulerEditTargetTEvent* pEvent);
-  void publish(SchedulerOverEvent* pEvent);
+  void publish(TimerRotaryRotationEvent* pEvent);
+  void publish(HeatingStatusUpdateEvent* pEvent);
+  void publish(ErrorStatusUpdateEvent* pEvent);
+  void publish(SchedulerStartEvent* pEvent);
+  void publish(SchedulerTimerUpdateEvent* pEvent);
+  void publish(SchedulerTargetTUpdateEvent* pEvent);
+  void publish(SchedulerEndEvent* pEvent);
 
   void subscribe(std::function<void(AnyRotaryHoldEvent*)> callback);
   void subscribe(std::function<void(TargetTRotaryPressEvent*)> callback);
-  void subscribe(std::function<void(TargetTRotaryChangeEvent*)> callback);
+  void subscribe(std::function<void(TargetTRotaryRotationEvent*)> callback);
   void subscribe(std::function<void(TimerRotaryPressEvent*)> callback);
-  void subscribe(std::function<void(TimerRotaryChangeEvent*)> callback);
-  void subscribe(std::function<void(HeatingStatusChangeEvent*)> callback);
-  void subscribe(std::function<void(ErrorStatusChangeEvent*)> callback);
-  void subscribe(std::function<void(NewScheduleEvent*)> callback);
-  void subscribe(std::function<void(SchedulerEditTimeEvent*)> callback);
-  void subscribe(std::function<void(SchedulerEditTargetTEvent*)> callback);
-  void subscribe(std::function<void(SchedulerOverEvent*)> callback);
+  void subscribe(std::function<void(TimerRotaryRotationEvent*)> callback);
+  void subscribe(std::function<void(HeatingStatusUpdateEvent*)> callback);
+  void subscribe(std::function<void(ErrorStatusUpdateEvent*)> callback);
+  void subscribe(std::function<void(SchedulerStartEvent*)> callback);
+  void subscribe(std::function<void(SchedulerTimerUpdateEvent*)> callback);
+  void subscribe(std::function<void(SchedulerTargetTUpdateEvent*)> callback);
+  void subscribe(std::function<void(SchedulerEndEvent*)> callback);
 };
 
 // "Soft" singleton global object defined as extern and initialized here,

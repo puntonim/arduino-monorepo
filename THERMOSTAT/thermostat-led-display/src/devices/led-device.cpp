@@ -23,7 +23,7 @@ void ErrorLedDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::ErrorStatusChangeEvent* pEvent) {
+      [this](pubsub_utils::ErrorStatusUpdateEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println(
             (String) "ErrorLedDevice - received event: " + pEvent->topic +

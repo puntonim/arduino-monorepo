@@ -33,13 +33,13 @@ static void _onAnyRotaryPress(const uint8_t pin, const bool isHeldDown) {
 }
 
 static void _onTargetTRotaryChange(const int value) {
-  pubsub_utils::pubSub.publish(
-      new pubsub_utils::TargetTRotaryChangeEvent(value, displayDevice.isOn()));
+  pubsub_utils::pubSub.publish(new pubsub_utils::TargetTRotaryRotationEvent(
+      value, displayDevice.isOn()));
 }
 
 static void _onTimerRotaryChange(const int value) {
   pubsub_utils::pubSub.publish(
-      new pubsub_utils::TimerRotaryChangeEvent(value, displayDevice.isOn()));
+      new pubsub_utils::TimerRotaryRotationEvent(value, displayDevice.isOn()));
 }
 
 void RotaryEncoderDevices::setup() {
@@ -87,7 +87,7 @@ void RotaryEncoderDevices::setup() {
   );
 
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::NewScheduleEvent* pEvent) {
+      [this](pubsub_utils::SchedulerStartEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "RotaryEncoderDevices - received event: " +
                        pEvent->topic);

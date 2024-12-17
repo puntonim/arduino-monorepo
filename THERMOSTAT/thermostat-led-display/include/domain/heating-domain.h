@@ -12,8 +12,8 @@ class HeatingDomain {
   bool _checkForTimer();
   void _switchOn();
   void _switchOff();
-  void _onNewScheduleEvent();
-  void _stop();
+  void _onSchedulerStartEvent();
+  void _end();
 
  public:
   void setup();

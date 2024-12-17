@@ -9,8 +9,9 @@ namespace tstat {
 
 class SchedulerDomain {
  private:
-  void _onTimerRotaryChange(pubsub_utils::TimerRotaryChangeEvent* pEvent);
-  void _onTargetTRotaryChange(pubsub_utils::TargetTRotaryChangeEvent* pEvent);
+  void _onTimerRotaryRotation(pubsub_utils::TimerRotaryRotationEvent* pEvent);
+  void _onTargetTRotaryRotation(
+      pubsub_utils::TargetTRotaryRotationEvent* pEvent);
 
  public:
   void setup();

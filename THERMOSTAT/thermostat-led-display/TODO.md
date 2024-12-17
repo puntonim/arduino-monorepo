@@ -1,4 +1,13 @@
-- Optionally disable remove sensor temperature?
+- document events
+
+- the relay module sinks too much current and when on then the display is less bright
+  However using a 80W USB charger solves the issue
+  Try diff chargers and find the min power (mind W=VxA)
+  Also, try removing the relay led and see if it gets better
+  ALso, try using a larger pull-down resistor for the led (current drained by the led
+  should be less)
+
+- Optionally disable the local temperature sensor (with a settings or #ifdef)?
 
 - change settings.DELTA_TIME_ON_ROTARY_ROTATION and INITIAL_TIMER to 15 mins
 - check scheduled tasks
@@ -11,6 +20,8 @@
 - HW:
 
   - PSU for Arduino: 200V AC to USB 5V DC
+    Or serach amazon for "USB charger" or "macbook usb charger"
+    like: https://www.amazon.it/Anker-Caricatore-Charger-compatto-incluso/dp/B0BDKSW8GC
   - 2x manual switces for thermostat wires and wires to Arduino's PSU
 
 - Use PID algo in heating?

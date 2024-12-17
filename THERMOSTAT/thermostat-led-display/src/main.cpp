@@ -57,6 +57,7 @@ void setup() {
   Serial.println("START");
 #endif
 
+  // Order matters as events subscribers' callbacks are invoked in this order.
   sht85Sensor.setup();
   ds18b20Sensor.setup();
   rotaryEncoderDevices.setup();

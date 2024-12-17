@@ -13,7 +13,7 @@ void RelayDevice::setup() {
   pinMode(_PIN, OUTPUT);
 
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
+      [this](pubsub_utils::HeatingStatusUpdateEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println(
             (String) "RelayDevice - received event: " + pEvent->topic +
@@ -23,7 +23,7 @@ void RelayDevice::setup() {
       });
 
   pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::SchedulerOverEvent* pEvent) {
+                                     pubsub_utils::SchedulerEndEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "RelayDevice - received event: " + pEvent->topic);
 #endif

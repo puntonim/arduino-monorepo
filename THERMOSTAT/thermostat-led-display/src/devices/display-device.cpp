@@ -32,9 +32,9 @@ void DisplayDevice::setup() {
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
 
-  // SUBSCRIPTION SchedulerOverEvent -------------------------------------------
+  // SUBSCRIPTION SchedulerEndEvent --------------------------------------------
   pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::SchedulerOverEvent* pEvent) {
+                                     pubsub_utils::SchedulerEndEvent* pEvent) {
 #if IS_DEBUG == true
     Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
 #endif
@@ -53,16 +53,16 @@ void DisplayDevice::setup() {
         this->switchOn();
       });
 
-  // SUBSCRIPTION TimerRotaryChangeEvent ---------------------------------------
+  // SUBSCRIPTION TimerRotaryRotationEvent -------------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerRotaryChangeEvent* pEvent) {
+      [this](pubsub_utils::TimerRotaryRotationEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
         // Switch ON the display if not already ON, cancel and reschedule
         //  the switch OFF task in 20 sec. Do not update the timer on display
-        //  as there will be a SchedulerEditTimeEvent for that.
+        //  as there will be a SchedulerTimerUpdateEvent for that.
         this->switchOn();
       });
 
@@ -78,22 +78,22 @@ void DisplayDevice::setup() {
         this->switchOn();
       });
 
-  // SUBSCRIPTION TargetTRotaryChangeEvent -------------------------------------
+  // SUBSCRIPTION TargetTRotaryRotationEvent -----------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TargetTRotaryChangeEvent* pEvent) {
+      [this](pubsub_utils::TargetTRotaryRotationEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
 #endif
         // Switch ON the display if not already ON, cancel and reschedule
         //  the switch OFF task in 20 sec.  Do not update the target T on
-        //  display as there will be a SchedulerEditTargetTEvent for that.
+        //  display as there will be a SchedulerTargetTUpdateEvent for that.
         this->switchOn();
       });
 
-  // SUBSCRIPTION SchedulerEditTimeEvent ---------------------------------------
+  // SUBSCRIPTION SchedulerTimerUpdateEvent ------------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::SchedulerEditTimeEvent* pEvent) {
+      [this](pubsub_utils::SchedulerTimerUpdateEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
@@ -101,9 +101,9 @@ void DisplayDevice::setup() {
         this->_refreshFirstRow();
       });
 
-  // SUBSCRIPTION SchedulerEditTargetTEvent ------------------------------------
+  // SUBSCRIPTION SchedulerTargetTUpdateEvent ----------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::SchedulerEditTargetTEvent* pEvent) {
+      [this](pubsub_utils::SchedulerTargetTUpdateEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
                        pEvent->topic);
@@ -112,19 +112,20 @@ void DisplayDevice::setup() {
         this->_refreshFirstRow();
       });
 
-  // SUBSCRIPTION NewScheduleEvent ---------------------------------------------
-  pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::NewScheduleEvent* pEvent) {
-#if IS_DEBUG == true
-    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
-#endif
-    _targetTemperature = schedulerDomain.targetTemperature;
-    this->_refreshFirstRow();
-  });
-
-  // SUBSCRIPTION HeatingStatusChangeEvent -------------------------------------
+  // SUBSCRIPTION SchedulerStartEvent ------------------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::HeatingStatusChangeEvent* pEvent) {
+      [this](pubsub_utils::SchedulerStartEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "DisplayDevice - received event: " +
+                       pEvent->topic);
+#endif
+        _targetTemperature = schedulerDomain.targetTemperature;
+        this->_refreshFirstRow();
+      });
+
+  // SUBSCRIPTION HeatingStatusUpdateEvent -------------------------------------
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::HeatingStatusUpdateEvent* pEvent) {
 #if IS_DEBUG == true
         Serial.println(
             (String) "DisplayDevice - received event: " + pEvent->topic +

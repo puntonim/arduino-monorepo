@@ -19,7 +19,7 @@ void ErrorManager::addDs18b20SensorError() {
   _errorMessageListForDisplay.push_back(_DS18B20_SENSOR_ERROR_MSG);
   // Set the error status to true only after the prev check.
   _isDs18b20SensorError = true;
-  pubsub_utils::pubSub.publish(new pubsub_utils::ErrorStatusChangeEvent(
+  pubsub_utils::pubSub.publish(new pubsub_utils::ErrorStatusUpdateEvent(
       true, _errorMessageListForDisplay));
   _handleErrors();
 }
@@ -33,7 +33,7 @@ void ErrorManager::removeDs18b20SensorError() {
   _isDs18b20SensorError = false;
   if (!areThereErrors()) {
     pubsub_utils::pubSub.publish(
-        new pubsub_utils::ErrorStatusChangeEvent(false));
+        new pubsub_utils::ErrorStatusUpdateEvent(false));
   }
   _handleErrors();
 }
@@ -47,7 +47,7 @@ void ErrorManager::addSht85SensorError() {
   _errorMessageListForDisplay.push_back(_SHT85_SENSOR_ERROR_MSG);
   // Set the error status to true only after the prev check.
   _isSht85SensorError = true;
-  pubsub_utils::pubSub.publish(new pubsub_utils::ErrorStatusChangeEvent(
+  pubsub_utils::pubSub.publish(new pubsub_utils::ErrorStatusUpdateEvent(
       true, _errorMessageListForDisplay));
   _handleErrors();
 }
@@ -61,7 +61,7 @@ void ErrorManager::removeSht85SensorError() {
   _isSht85SensorError = false;
   if (!areThereErrors()) {
     pubsub_utils::pubSub.publish(
-        new pubsub_utils::ErrorStatusChangeEvent(false));
+        new pubsub_utils::ErrorStatusUpdateEvent(false));
   }
   _handleErrors();
 }
