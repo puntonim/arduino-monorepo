@@ -1,5 +1,3 @@
-- document events
-
 - the relay module sinks too much current and when on then the display is less bright
   However using a 80W USB charger solves the issue
   Try diff chargers and find the min power (mind W=VxA)
