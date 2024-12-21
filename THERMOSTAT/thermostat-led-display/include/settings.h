@@ -21,7 +21,7 @@ namespace settings {
 // Under this T, the heating wis turned ON.
 const u_int8_t INITIAL_TARGET_T = 18;
 // When starting a timer, then this is the initial value.
-const time_utils::Time INITIAL_TIMER = {0, 0, 10};  // {H, M, S}.
+const time_utils::Time INITIAL_TIMER = {0, 15, 0};  // {H, M, S}.
 
 // Display.
 // Seconds after which the display switches off.
@@ -36,7 +36,7 @@ const unsigned short HEATING_DOMAIN_RUN_PERIOD = 5000;  // msec.
 // Rotary encoders.
 // When rotating the timer rotary encoder, then this time is added/subtracted.
 // {H, M, S}.
-const time_utils::Time DELTA_TIME_ON_ROTARY_ROTATION = {0, 0, 3};
+const time_utils::Time DELTA_TIME_ON_ROTARY_ROTATION = {0, 15, 0};
 const pinid_t TARGET_T_ROTARY_CLK_PIN = 2;
 const pinid_t TARGET_T_ROTARY_DT_PIN = 3;
 const pinid_t TARGET_T_ROTARY_SW_PIN = 4;

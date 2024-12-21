@@ -113,6 +113,19 @@ void onButtonTriggered(const uint8_t pin, const bool isHeldDown) {
     //  - once, right after the press, with isHeldDown=false;
     //  - after 2 secs hold, with isHeldDown=true.
     // Hold down the button for 2 secs.
+
+    // Detect when we hold both buttons.
+    // Note that we can NOT do this only for one rotary (and no the other)
+    //  because, in that case, the other one would trigger a regular held.
+    for (auto i : {ROTARY_A_SW_PIN, ROTARY_B_SW_PIN}) {
+      if ((i != pin) && switches.isSwitchPressed(i)) {
+        // We need this "if" statement otherwise otherwise we would execute
+        //  twice, one for each button held.
+        if (pin == ROTARY_A_SW_PIN) Serial.println("HELD BOTH!");
+        return;
+      }
+    }
+
     Serial.println((String) "HELD FOR 2 SECS: " + pin);
     return;
   }

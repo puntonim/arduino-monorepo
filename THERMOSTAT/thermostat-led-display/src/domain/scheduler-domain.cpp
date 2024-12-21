@@ -37,13 +37,29 @@ void SchedulerDomain::setup() {
       });
 
   // SUBSCRIPTION AnyRotaryHoldEvent -------------------------------------------
-  pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::AnyRotaryHoldEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::AnyRotaryHoldEvent* pEvent) {
 #if IS_DEBUG == true
-    Serial.println((String) "HeatingDomain - received event: " + pEvent->topic);
+        Serial.println((String) "SchedulerDomain - received event: " +
+                       pEvent->topic);
 #endif
-    this->reset();
-  });
+        this->reset();
+      });
+
+  // SUBSCRIPTION AllRotariesHoldEvent -----------------------------------------
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::AllRotariesHoldEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println((String) "SchedulerDomain - received event: " +
+                       pEvent->topic);
+#endif
+        // This is a sort of hidden feature: when holding both rotary encoders,
+        //  we set the timer to 10 seconds. It is useful for a quick test.
+        this->reset();
+        timer.start(0, 0, 10);
+        targetTemperature = settings::INITIAL_TARGET_T;
+        pubsub_utils::pubSub.publish(new pubsub_utils::SchedulerStartEvent());
+      });
 }
 
 bool SchedulerDomain::isScheduled() { return !timer.isOver(); }

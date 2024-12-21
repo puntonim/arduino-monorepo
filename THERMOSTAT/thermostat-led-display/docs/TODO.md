@@ -2,7 +2,7 @@
   However using a 80W USB charger solves the issue
   Try diff chargers and find the min power (mind W=VxA)
   Also, try removing the relay led and see if it gets better
-  ALso, try using a larger pull-down resistor for the led (current drained by the led
+  Also, try using a larger pull-down resistor for the led (current drained by the led
   should be less)
 
 - Optionally disable the local temperature sensor (with a settings or #ifdef)?
@@ -18,7 +18,8 @@
 - HW:
 
   - PSU for Arduino: 200V AC to USB 5V DC
-    Or serach amazon for "USB charger" or "macbook usb charger"
+    https://www.digikey.it/it/products/detail/mean-well-usa-inc/RS-15-5/7706168
+    Or search amazon for "USB charger" or "macbook usb charger"
     like: https://www.amazon.it/Anker-Caricatore-Charger-compatto-incluso/dp/B0BDKSW8GC
   - 2x manual switces for thermostat wires and wires to Arduino's PSU
 

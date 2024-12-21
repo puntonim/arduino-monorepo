@@ -8,7 +8,13 @@ namespace pubsub_utils {
 PubSub pubSub;
 
 void PubSub::publish(AnyRotaryHoldEvent* pEvent) {
-  for (auto& callback : _displayButtonHoldSubCallbacks) {
+  for (auto& callback : _anyRotaryHoldSubCallbacks) {
+    callback(pEvent);
+  }
+}
+
+void PubSub::publish(AllRotariesHoldEvent* pEvent) {
+  for (auto& callback : _allRotariesHoldSubCallbacks) {
     callback(pEvent);
   }
 }
@@ -74,7 +80,11 @@ void PubSub::publish(SchedulerEndEvent* pEvent) {
 }
 
 void PubSub::subscribe(std::function<void(AnyRotaryHoldEvent*)> callback) {
-  _displayButtonHoldSubCallbacks.push_back(callback);
+  _anyRotaryHoldSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(AllRotariesHoldEvent*)> callback) {
+  _allRotariesHoldSubCallbacks.push_back(callback);
 }
 
 void PubSub::subscribe(std::function<void(TargetTRotaryPressEvent*)> callback) {

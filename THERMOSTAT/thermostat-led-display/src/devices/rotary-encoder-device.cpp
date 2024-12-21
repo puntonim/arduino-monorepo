@@ -20,9 +20,23 @@ RotaryEncoderDevices rotaryEncoderDevices;
  */
 static void _onAnyRotaryPress(const uint8_t pin, const bool isHeldDown) {
   if (isHeldDown) {
-    if ((pin == settings::TARGET_T_ROTARY_SW_PIN) ||
-        (pin == settings::TIMER_ROTARY_SW_PIN))
-      pubsub_utils::pubSub.publish(new pubsub_utils::AnyRotaryHoldEvent());
+    // Detect when we hold both buttons.
+    // Note that we can NOT do this only for one rotary (and no the other)
+    //  because, in that case, the other one would trigger a regular held.
+    for (auto i :
+         {settings::TARGET_T_ROTARY_SW_PIN, settings::TIMER_ROTARY_SW_PIN}) {
+      if ((i != pin) && switches.isSwitchPressed(i)) {
+        // We need this "if" statement otherwise otherwise we would execute
+        //  twice, one for each button held.
+        if (pin == settings::TARGET_T_ROTARY_SW_PIN) {
+          pubsub_utils::pubSub.publish(
+              new pubsub_utils::AllRotariesHoldEvent());
+        }
+        return;
+      }
+    }
+
+    pubsub_utils::pubSub.publish(new pubsub_utils::AnyRotaryHoldEvent());
   };
 
   if (pin == settings::TARGET_T_ROTARY_SW_PIN)

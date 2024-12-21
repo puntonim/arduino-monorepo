@@ -21,6 +21,11 @@ class AnyRotaryHoldEvent : public BasePubSubEvent {
   constexpr static char topic[] = "ANY_ROTARY_HOLD_EVENT";
 };
 
+class AllRotariesHoldEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "ALL_ROTARIES_HOLD_EVENT";
+};
+
 class TargetTRotaryPressEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "TARGET_T_ROTARY_PRESS_EVENT";
@@ -92,7 +97,9 @@ class SchedulerEndEvent : public BasePubSubEvent {
 class PubSub {
  private:
   std::list<std::function<void(AnyRotaryHoldEvent*)>>
-      _displayButtonHoldSubCallbacks;
+      _anyRotaryHoldSubCallbacks;
+  std::list<std::function<void(AllRotariesHoldEvent*)>>
+      _allRotariesHoldSubCallbacks;
   std::list<std::function<void(TargetTRotaryPressEvent*)>>
       _targetTRotaryPressSubCallbacks;
   std::list<std::function<void(TargetTRotaryRotationEvent*)>>
@@ -114,6 +121,7 @@ class PubSub {
 
  public:
   void publish(AnyRotaryHoldEvent* pEvent);
+  void publish(AllRotariesHoldEvent* pEvent);
   void publish(TargetTRotaryPressEvent* pEvent);
   void publish(TargetTRotaryRotationEvent* pEvent);
   void publish(TimerRotaryPressEvent* pEvent);
@@ -126,6 +134,7 @@ class PubSub {
   void publish(SchedulerEndEvent* pEvent);
 
   void subscribe(std::function<void(AnyRotaryHoldEvent*)> callback);
+  void subscribe(std::function<void(AllRotariesHoldEvent*)> callback);
   void subscribe(std::function<void(TargetTRotaryPressEvent*)> callback);
   void subscribe(std::function<void(TargetTRotaryRotationEvent*)> callback);
   void subscribe(std::function<void(TimerRotaryPressEvent*)> callback);
