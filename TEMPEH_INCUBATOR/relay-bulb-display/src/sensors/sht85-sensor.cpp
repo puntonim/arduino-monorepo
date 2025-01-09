@@ -25,11 +25,9 @@ void Sht85Sensor::setup() {
 }
 
 // Note: at the moment the sensor SHT85 is only read by the display, so its
-// error status is updated
-//  only when the display is ON. This means that if the errorLed has been
-//  triggered by an error on
-//   the SHT85 sensor, then the errorLed status can be delayed until the display
-//   is ON again.
+//  error status is updated only when the display is ON. This means that if the
+//  errorLed has been triggered by an error on the SHT85 sensor, then the
+//  errorLed status can be delayed until the display is ON again.
 
 /**
  * Read data from the SHT85 sensor.

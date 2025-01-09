@@ -3,6 +3,7 @@
 #include <TaskManagerIO.h>
 
 #include "devices/led-device.h"
+#include "errors.h"
 #include "sensors/ds18b20-sensor.h"
 #include "sensors/sht85-sensor.h"
 #include "settings.h"
@@ -17,6 +18,16 @@ namespace incub {
 HeatingDomain heatingDomain;
 
 void HeatingDomain::setup() {
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::ErrorStatusUpdateEvent* pEvent) {
+#if IS_DEBUG == true
+        Serial.println(
+            (String) "HeatingDomain - received event: " + pEvent->topic +
+            " isError=" + (pEvent->isError ? "ON" : "OFF"));
+#endif
+        if (pEvent->isError) this->_onError();
+      });
+
   // Execute `runCheck()` straight away, then schedule a periodic execution.
   runCheck();
 #if IS_DEBUG == true
@@ -97,6 +108,14 @@ void HeatingDomain::_switchOff() {
     pubsub_utils::pubSub.publish(
         new pubsub_utils::HeatingStatusUpdateEvent(false));
   }
+}
+
+/**
+ * In case of error in Ds18b20 temoperature sensor (the one used in the
+ *  DECISION LOGIC), then switch OFF the heating.
+ */
+void HeatingDomain::_onError() {
+  if (errorManager.isDs18b20SensorError()) _switchOff();
 }
 
 /**

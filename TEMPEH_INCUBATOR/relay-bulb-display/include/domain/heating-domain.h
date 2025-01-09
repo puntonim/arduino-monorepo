@@ -8,11 +8,9 @@ namespace incub {
 class HeatingDomain {
  private:
   bool _isOn = false;
-  bool _checkForTemperature();
-  bool _checkForTimer();
   void _switchOn();
   void _switchOff();
-  void _onSchedulerStartEvent();
+  void _onError();
   void _end();
   unsigned long _lastSwitchTs = 0;
 
