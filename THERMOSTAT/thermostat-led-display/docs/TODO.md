@@ -7,7 +7,6 @@
 
 - Optionally disable the local temperature sensor (with a settings or #ifdef)?
 
-- change settings.DELTA_TIME_ON_ROTARY_ROTATION and INITIAL_TIMER to 15 mins
 - check scheduled tasks
 - READY TO INSTALL AND USE
 

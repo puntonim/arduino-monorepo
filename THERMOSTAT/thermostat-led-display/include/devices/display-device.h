@@ -4,8 +4,6 @@
 
 #include <TaskManagerIO.h>
 
-#include <memory>
-
 #include "settings.h"
 
 namespace tstat {
@@ -30,7 +28,6 @@ class DisplayDevice {
   bool isOn();
   void switchOff(bool doResetSwitchOffDisplayTaskId = true);
   void switchOn(bool doCancelExistingSwitchOffDisplayTask = true);
-  void setIsHeatingOnPointer(std::shared_ptr<const bool> isHeatingOnPointer);
   taskid_t switchOffTaskId = TASKMGR_INVALIDID;
   taskid_t displayDataTaskId = TASKMGR_INVALIDID;
 };
