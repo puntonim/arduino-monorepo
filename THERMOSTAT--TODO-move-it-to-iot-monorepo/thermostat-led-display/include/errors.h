@@ -10,6 +10,8 @@ namespace tstat {
 class ErrorManager {
  private:
   bool _isDs18b20SensorError = false;
+  // TODO is this correct or should this be: char _DS18B20_SENSOR_ERROR_MSG[] =
+  // "ERRORE T ds18b20";???????
   char* _DS18B20_SENSOR_ERROR_MSG = "ERRORE T ds18b20";
   bool _isSht85SensorError = false;
   char* _SHT85_SENSOR_ERROR_MSG = "ERRORE T sht85";
