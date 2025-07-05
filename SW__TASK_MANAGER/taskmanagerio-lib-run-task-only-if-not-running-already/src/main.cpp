@@ -41,6 +41,6 @@ void loop() { taskManager.runLoop(); }
 void every1Sec() {
   Serial.println(">>>>>>>>>>>>>>>>>>>>>>>> Every 1 sec: " + (String)nRuns);
   nRuns++;
-  // Sleep 10 secs: this is how to sleep using TaskManagerIo.
+  // Sleep 10 secs: this is how to sleep using TaskManagerIo. It's blocking.
   taskManager.yieldForMicros(10 * 1000 * 1000);
 }

@@ -1,28 +1,24 @@
 #include <TaskManagerIO.h>
 
-#include "devices/display-device.h"
 #include "devices/led-device.h"
-#include "domain/heating-domain.h"
+#include "domain/timer-domain.h"
 // Include settings.h because that is where IS_DEBUG is defined.
 #include "settings.h"
 
-namespace tstat {
+namespace bigpjtemplate {
 namespace task_manager_utils {
 
 int _prevSecs = 0;
 
 void _printExtraInfo() {
 #if IS_DEBUG == true
-  Serial.println((String) "\ndisplayDevice.displayDataTaskId: " +
-                 displayDevice.displayDataTaskId);
-  Serial.println((String) "displayDevice.switchOffTaskId: " +
-                 displayDevice.switchOffTaskId);
-  Serial.println((String) "heatingDomain.runTaskId: " +
-                 heatingDomain.runTaskId);
   Serial.println((String) "errorLedDevice.blinkTaskId: " +
                  errorLedDevice.blinkTaskId);
+  Serial.println((String) "timerDomain.timerTaskId: " +
+                 timerDomain.timerTaskId);
 #endif
 }
+auto a = millis();
 
 /**
  * Print debug info about tasks scheduled with TaskManagerIO.
@@ -91,4 +87,4 @@ void cancelTask(taskid_t &taskId) {
 }
 
 }  // namespace task_manager_utils
-}  // namespace tstat
+}  // namespace bigpjtemplate
