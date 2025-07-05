@@ -26,6 +26,8 @@ void readHttpResponseIn1CharChunks();
 void readHttpResponseIn1BigChunk();
 void readHttpResponseInSmallChunks();
 
+// See SW__PROJECT_TEMPLATES/big-project-template to know how to manage
+//  secrets properly.
 char ssid[] = "XXX";  // TODO change to the real values.
 char pass[] = "XXX";  // TODO change to the real values.
 WiFiClient wifiClient;

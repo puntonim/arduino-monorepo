@@ -25,6 +25,8 @@ void printWifiConnectionInfo();
 void doGetRequest(bool isHttps = false);
 void doPostRequest();
 
+// See SW__PROJECT_TEMPLATES/big-project-template to know how to manage
+//  secrets properly.
 char ssid[] = "XXX";  // TODO change to the real values.
 char pass[] = "XXX";  // TODO change to the real values.
 WiFiClient wifiClient;
