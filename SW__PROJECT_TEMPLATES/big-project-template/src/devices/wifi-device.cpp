@@ -4,6 +4,8 @@
 #include <TaskManagerIO.h>
 #include <WiFiS3.h>
 
+#include "utils/error-utils.h"
+
 namespace bigpjtemplate {
 
 // "Soft" *singleton* global objects defined here,
@@ -15,10 +17,9 @@ WiFiClient wifiClient;
 void WifiDevice::setup() {
   // Ensure there is a WiFi module on the board.
   if (WiFi.status() == WL_NO_MODULE) {
-#if IS_DEBUG == true
-    Serial.println("ERROR WiFi module not detected!");
-    Serial.println("Exiting...");
-#endif
+    error_utils::errorMgr.addError("NO_WIFI_MODULE",
+                                   "WiFi module not detected, exiting...",
+                                   "No WiFi HW", true);
     while (true);
   }
 
@@ -46,27 +47,31 @@ void WifiDevice::setup() {
 #endif
     // Sleep 10 secs: this is how to sleep using TaskManagerIo. It's blocking.
     taskManager.yieldForMicros(10 * 1000 * 1000);
+
+    if (wifiConnectionStatus != WL_CONNECTED) {
+      error_utils::errorMgr.addError("WIFI_AP_CONNECTION_ERROR",
+                                     "Cannot connect to WiFi AP, retrying...",
+                                     "WiFi conn err", true);
+    }
   }
+
 #if IS_DEBUG == true
   _printWifiConnectionInfo();
 #endif
+
   // Set the connection timeout (msec).
-  wifiClient.setConnectionTimeout(3 * 1000);  // msec.
+  wifiClient.setConnectionTimeout(3 * 1000);  // 3 msec.
 }
 
 void WifiDevice::_printWifiConnectionInfo() {
 #if IS_DEBUG == true
-  Serial.print("Connected to SSID: ");
-  Serial.println(WiFi.SSID());
+  Serial.println((String) "\nConnected to SSID: " + WiFi.SSID());
 
   IPAddress ip = WiFi.localIP();
-  Serial.print("Assigned IP address: ");
-  Serial.println(ip);
+  Serial.println((String) "Assigned IP address: " + ip);
 
   long rssi = WiFi.RSSI();
-  Serial.print("Signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
+  Serial.println((String) "Signal strength (RSSI): " + rssi + " dBm\n");
 #endif
 }
 

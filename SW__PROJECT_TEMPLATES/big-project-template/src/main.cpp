@@ -3,20 +3,27 @@
  * ====================
  * Template for a big projects. It includes:
  *  - WiFi with remote logging
+ *  - error and domain leds
+ *  - error collection to autom print to Serial and send to iot-be via HTTP
  *  - task manager
  *  - pub/sub
  *  - settings and secrets
  *  - modules, namespace, oop and others.
  *
  * What it does:
- *  it blinks the internal LED when the 30 secs timer is over.
+ *  on boot it connects to WiFi and logs to iot-be,
+ *  then after 20 secs from boot it pretends there is a test error (so the error
+ *   led starts blinking and the error is logged to Serial and to iot-be via
+ *   HTTP) that goes aways after 5 secs,
+ *  and after 30 secs from boot it switches on the LED matrix for 5 secs.
  *
  * Sw architecture:
  *   after the initial setup of the WiFi,
- *   the timerDomain object schedules a task once in 30 sec,
- *   the task publishes the TIMER_FINISH_EVENT,
- *   which is received by the subscribed object errorLedDevice which starts
- *    blinking.
+ *   a task running `MainDomain::run` is scheduled every 5 secs.
+ *   When the test error is added with `error_utils::errorMgr.addError` then it
+ *    is automatically logged to Serial and to iot-be via HTTP and the event
+ *    ERROR_STATUS_UPDATE_EVENT is published, which causes the subscribed
+ *    errorLed to start blinking (until the error is removed).
  *
  * Libs:
  *  - TaskManagerIO by davetcc
@@ -29,8 +36,9 @@
 
 #include "devices/led-device.h"
 #include "devices/wifi-device.h"
-#include "domain/http-clients/remote-log-domain.h"
-#include "domain/timer-domain.h"
+#include "domain/main-domain.h"
+#include "utils/error-utils.h"
+#include "utils/remote-log-utils.h"
 
 using namespace bigpjtemplate;
 
@@ -42,16 +50,25 @@ void setup() {
   Serial.println("START " __FILE__ " compiled on " __DATE__);
 #endif
 
-  wifiDevice.setup();
   errorLedDevice.setup();
-  timerDomain.setup();
+  domainLedDevice.setup();
+  ledMatrixDevice.setup();
 
-  remoteLogDomain.postRemoteLog("Just booted and connected to WiFi");
+  mainDomain.setup();
+
+  // The WiFi setup is slow, so it should happen after the display and
+  //  buttons, but before anything that uses error-utils or remote-log-utils
+  //  because those make HTTP requests. But mind that loop() starts running
+  //  only after this whole setup, including wifiDevice, is complete.
+  wifiDevice.setup();
+
+  remote_log_utils::remoteLog.postRemoteLog(
+      "Just booted and connected to WiFi");
 }
 
 void loop() {
   // To debug TaskManagerIO's tasks.
-  // tstat::task_manager_utils::printDebugTasks(true);
+  // bigpjtemplate::task_manager_utils::printDebugTasks(true);
 
   taskManager.runLoop();
 }

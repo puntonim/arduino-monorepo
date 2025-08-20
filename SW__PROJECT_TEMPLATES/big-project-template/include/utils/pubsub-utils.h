@@ -14,29 +14,22 @@ class BasePubSubEvent {
  private:
 };
 
-class TimerStartEvent : public BasePubSubEvent {
+class ErrorStatusUpdateEvent : public BasePubSubEvent {
  public:
-  constexpr static char topic[] = "TIMER_START_EVENT";
-};
-
-class TimerFinishEvent : public BasePubSubEvent {
- public:
-  constexpr static char topic[] = "TIMER_FINISH_EVENT";
-  unsigned long tsMillis;
-  TimerFinishEvent(unsigned long tsMillis) : tsMillis(tsMillis) {};
+  constexpr static char topic[] = "ERROR_STATUS_UPDATE_EVENT";
+  const bool isError;
+  ErrorStatusUpdateEvent(bool isError) : isError(isError) {};
 };
 
 class PubSub {
  private:
-  std::list<std::function<void(TimerStartEvent*)>> _timerStartSubCallbacks;
-  std::list<std::function<void(TimerFinishEvent*)>> _timerFinishSubCallbacks;
+  std::list<std::function<void(ErrorStatusUpdateEvent*)>>
+      _errorStatusUpdateSubCallbacks;
 
  public:
-  void publish(TimerStartEvent* pEvent);
-  void publish(TimerFinishEvent* pEvent);
+  void publish(ErrorStatusUpdateEvent* pEvent);
 
-  void subscribe(std::function<void(TimerStartEvent*)> callback);
-  void subscribe(std::function<void(TimerFinishEvent*)> callback);
+  void subscribe(std::function<void(ErrorStatusUpdateEvent*)> callback);
 };
 
 // "Soft" singleton global object defined as extern and initialized here,

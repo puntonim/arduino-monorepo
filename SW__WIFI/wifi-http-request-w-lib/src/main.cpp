@@ -70,9 +70,17 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("\n");
+  Serial.println("\n\nSTART LOOP");
+
+  // Testing multiple requests.
+  doGetRequest(true);
   doGetRequest(true);
   doPostRequest();
+  doPostRequest();
+  doPostRequest();
+  doPostRequest();
+
+  Serial.println("\n\nEND LOOP");
 
   // Do nothing.
   while (true);
@@ -87,10 +95,21 @@ void doGetRequest(bool isHttps /* = false */) {
   wifiClient.stop();
   if (isHttps) wifiHttpsClient.stop();
 
-  // This should be done only once, in case of many requests.
-  HttpClient client = HttpClient(wifiClient, "example.com", 80);
-  if (isHttps) client = HttpClient(wifiHttpsClient, "example.com", 443);
-  Serial.println("Making GET request...");
+  // The docs suggests that this should be done only once, in case of many requests.
+  // However I noticed that in case of multiple POST reqs in a sequence, some can fail
+  //  (the request is not actually performed and the client.responseStatusCode is 65533).
+  //  Using many HttpClient instances, instead of sharing the same one, leads to
+  //  less errors.
+  HttpClient client = HttpClient(wifiClient, "echo.free.beeceptor.com", 80);
+  if (isHttps)
+    client = HttpClient(wifiHttpsClient, "echo.free.beeceptor.com", 443);
+
+  // Set the HTTP response timeout (milliseconds to wait without receiving any
+  //  data before returning HTTP_ERROR_TIMED_OUT (during status code and header
+  // processing)).
+  client.setHttpResponseTimeout(5 * 1000);  // msec.
+
+  Serial.println("\n\nMaking GET request...");
   client.get("/");
 
   // HttpClient client = HttpClient(wifiClient, IPAddress(192, 168, 1, 251),
@@ -98,6 +117,8 @@ void doGetRequest(bool isHttps /* = false */) {
   // client.get("/iot/temps/");
 
   const unsigned short statusCode = client.responseStatusCode();
+  // Note: the statusCode is not really realiable, as sometimes I get a 65533 even if
+  //  the actual one was 201.
   String response = client.responseBody();
   Serial.println((String) "Status code: " + statusCode);
   Serial.println("Response:\n" + response);
@@ -107,15 +128,30 @@ void doPostRequest() {
   // Example:
   //  https://github.com/arduino-libraries/ArduinoHttpClient/blob/master/examples/DweetPost/DweetPost.ino
 
-  // This should be done only once, in case of many requests.
+  // Close any connection before sending a new request to free the socket on
+  //  the NINA module.
+  wifiClient.stop();
+
+  // The docs suggests that this should be done only once, in case of many requests.
+  // However I noticed that in case of multiple POST reqs in a sequence, some can fail
+  //  (the request is not actually performed and the client.responseStatusCode is 65533).
+  //  Using many HttpClient instances, instead of sharing the same one, leads to
+  //  less errors.
   HttpClient client = HttpClient(wifiClient, "echo.free.beeceptor.com", 80);
-  Serial.println("Making POST request...");
+  Serial.println("\n\nMaking POST request...");
+
+  // Set the HTTP response timeout (milliseconds to wait without receiving any
+  //  data before returning HTTP_ERROR_TIMED_OUT (during status code and header
+  //  processing)).
+  client.setHttpResponseTimeout(5 * 1000);  // msec.
 
   const char body[] = "{\"temp\": 33}";
   // Or: String body = "{\"temp\": 33}";
   client.post("/ardu", "application/json", body);
 
   const unsigned short statusCode = client.responseStatusCode();
+  // Note: the statusCode is not really realiable, as sometimes I get a 65533 even if
+  //  the actual one was 201.
   String response = client.responseBody();
   Serial.println((String) "Status code: " + statusCode);
   Serial.println("Response:\n" + response);
@@ -130,7 +166,7 @@ void printWifiConnectionInfo() {
   Serial.println(ip);
 
   long rssi = WiFi.RSSI();
-  Serial.print("Signal strength (RSSI):");
+  Serial.print("Signal strength (RSSI): ");
   Serial.print(rssi);
   Serial.println(" dBm");
 }

@@ -1,7 +1,7 @@
 #include <TaskManagerIO.h>
 
 #include "devices/led-device.h"
-#include "domain/timer-domain.h"
+#include "domain/main-domain.h"
 // Include settings.h because that is where IS_DEBUG is defined.
 #include "settings.h"
 
@@ -14,8 +14,7 @@ void _printExtraInfo() {
 #if IS_DEBUG == true
   Serial.println((String) "errorLedDevice.blinkTaskId: " +
                  errorLedDevice.blinkTaskId);
-  Serial.println((String) "timerDomain.timerTaskId: " +
-                 timerDomain.timerTaskId);
+  Serial.println((String) "mainDomain.runTaskId: " + mainDomain.runTaskId);
 #endif
 }
 auto a = millis();
