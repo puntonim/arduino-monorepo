@@ -13,6 +13,8 @@ namespace remote_log_utils {
 //  So I don't know what is going on, however this code here has been working
 //  correctly for many days:
 //  https://github.com/puntonim/iot-monorepo/blob/486bdbc87e40d0480e7091afd95982bd78d02fb4/projects/smart-ac/src/main.cpp
+//  I'll investigate this further in:
+//  https://github.com/puntonim/arduino-monorepo/tree/main/SW__WIFI/wifi-http-request-w-lib
 // *****************************************************************************
 
 // "Soft" *singleton* global objects defined here,
@@ -55,11 +57,11 @@ void RemoteLog::postRemoteLog(const char* message, bool isError /* = false */) {
                "log: " + body);
 #endif
 
-  // The docs suggests that this should be done only once, in case of many
+  // TODO the docs suggests that this should be done only once, in case of many
   // requests. However I noticed that in case of multiple POST reqs in a
   // sequence, some can fail (the request is not actually performed and the
-  //  client.responseStatusCode is 65533). Using many HttpClient instances,
-  //  instead of sharing the same one, leads to less errors.
+  //  client.responseStatusCode is 65533). Here I am trying not to share a
+  //  single module-level HttpClient instance, but the errors still happen.
   HttpClient _client =
       HttpClient(wifiClient, settings::IOT_BE_IP, settings::IOT_BE_PORT);
   // Set the HTTP response timeout (milliseconds to wait without receiving any

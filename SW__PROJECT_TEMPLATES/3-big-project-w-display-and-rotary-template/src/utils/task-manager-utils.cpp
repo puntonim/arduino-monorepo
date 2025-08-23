@@ -17,7 +17,6 @@ void _printExtraInfo() {
   Serial.println((String) "mainDomain.runTaskId: " + mainDomain.runTaskId);
 #endif
 }
-auto a = millis();
 
 /**
  * Print debug info about tasks scheduled with TaskManagerIO.
