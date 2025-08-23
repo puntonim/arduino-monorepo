@@ -4,6 +4,7 @@
 #include <functional>
 #include <list>
 
+#include "devices/display-device.h"
 #include "utils/time-utils.h"
 
 namespace myproject {
@@ -20,6 +21,9 @@ class ErrorStatusUpdateEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "ERROR_STATUS_UPDATE_EVENT";
   const bool isError;
+  // `isError` is a constructor's arg because that info is available in the
+  //  object (ErrorMgr) that publishes this event. Mind how different it is for
+  //  TimerRotaryRotationEvent instead.
   ErrorStatusUpdateEvent(bool isError) : isError(isError) {};
 };
 
@@ -40,11 +44,35 @@ class TimerRotaryPressEvent : public BasePubSubEvent {
 
 class TimerRotaryRotationEvent : public BasePubSubEvent {
  public:
-  constexpr static char topic[] = "TIMER_ROTARY_CHANGE_EVENT";
+  constexpr static char topic[] = "TIMER_ROTARY_ROTATION_EVENT";
   const int16_t value;
-  const bool isDisplayOn;
-  TimerRotaryRotationEvent(const int16_t value, bool isDisplayOn)
+  bool isDisplayOn;
+
+  TimerRotaryRotationEvent(const int16_t value, const bool isDisplayOn)
       : value(value), isDisplayOn(isDisplayOn) {};
+
+  // Note: having the attribute `isDisplayOn` would be handy, but this info
+  //  is NOT available in the same object (rotary-encoder-device.cpp) that
+  //  publishes this event. So I thought of setting the attribute in
+  //  the constructor here, but that would mean including `display-device.h`
+  //  here that could cause a circular dependency, as DisplayDevice might
+  //  need to include `pubsub-utils.h`. So I commented out this code and I
+  //  made the publisher of this event (TimerRotaryEncoder) aware of the
+  //  status of the display by including `display-device.h` and using
+  //  `displayDevice` directly. Notice that the same thing could not
+  //  be done in the consumer (MainDomain) because it needs to know if the
+  //  display was ON when the even was published not when it was received (as
+  //  in the meantime the DispleyDevice might have turned it on).
+  // bool isDisplayOn;
+  // // `isDisplayOn` is NOT a constructor's arg because that info is NOT
+  // //  available in the same object (rotary-encoder-device.cpp) that publishes
+  // //  this event. So we include displayDevice here (rather than in that
+  // object)
+  // //  and get the info. This ws the code is better de-coupled. Mind how
+  // //  different it is for ErrorStatusUpdateEvent instead.
+  // TimerRotaryRotationEvent(const int16_t value) : value(value) {
+  //   isDisplayOn = displayDevice.isOn();
+  // };
 };
 
 class TimerStartEvent : public BasePubSubEvent {
@@ -60,7 +88,10 @@ class TimerEndEvent : public BasePubSubEvent {
 class TimerUpdateEvent : public BasePubSubEvent {
  public:
   constexpr static char topic[] = "TIMER_UPDATE_EVENT";
-  time_utils::Time time;
+  const time_utils::Time time;
+  // `time` is a constructor's arg because that info is available in the
+  //  object (MainDomain) that publishes this event. Mind how different it is
+  //  for TimerRotaryRotationEvent instead.
   TimerUpdateEvent(time_utils::Time time) : time(time) {};
 };
 
@@ -75,7 +106,7 @@ class PubSub {
   std::list<std::function<void(TimerRotaryPressEvent*)>>
       _timerRotaryPressSubCallbacks;
   std::list<std::function<void(TimerRotaryRotationEvent*)>>
-      _timerRotaryChangeSubCallbacks;
+      _timerRotaryRotationSubCallbacks;
   std::list<std::function<void(TimerStartEvent*)>> _timerStartSubCallbacks;
   std::list<std::function<void(TimerEndEvent*)>> _timerEndSubCallbacks;
   std::list<std::function<void(TimerUpdateEvent*)>> _timerUpdateSubCallbacks;

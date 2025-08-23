@@ -2,8 +2,6 @@
 
 #include <IoAbstraction.h>
 
-#include "devices/display-device.h"
-#include "settings.h"
 #include "utils/pubsub-utils.h"
 
 namespace myproject {
@@ -49,7 +47,7 @@ static void _onAnyRotaryPress(const uint8_t pin, const bool isHeldDown) {
   }
 }
 
-static void _onTimerRotaryChange(const int value) {
+static void _onTimerRotaryRotation(const int value) {
   pubsub_utils::pubSub.publish(
       new pubsub_utils::TimerRotaryRotationEvent(value, displayDevice.isOn()));
 }
@@ -71,9 +69,9 @@ void RotaryEncoderDevices::setup() {
   // HWACCEL_NONE.
   // Note: switch the order of the params ROTARY_DT_PIN and ROTARY_CLK_PIN
   //  if you want to invert the clockwise-counterclockwise behavior.
-  _pTimerRotary = new HardwareRotaryEncoder(settings::TIMER_ROTARY_DT_PIN,
-                                            settings::TIMER_ROTARY_CLK_PIN,
-                                            _onTimerRotaryChange, HWACCEL_NONE);
+  _pTimerRotary = new HardwareRotaryEncoder(
+      settings::TIMER_ROTARY_DT_PIN, settings::TIMER_ROTARY_CLK_PIN,
+      _onTimerRotaryRotation, HWACCEL_NONE);
   // Indexed array to hold all the rotaries.
   switches.setEncoder(0, _pTimerRotary);
   // Configure the rotary.

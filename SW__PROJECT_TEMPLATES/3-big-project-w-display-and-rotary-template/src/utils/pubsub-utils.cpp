@@ -32,7 +32,7 @@ void PubSub::publish(TimerRotaryPressEvent* pEvent) {
 }
 
 void PubSub::publish(TimerRotaryRotationEvent* pEvent) {
-  for (auto& callback : _timerRotaryChangeSubCallbacks) {
+  for (auto& callback : _timerRotaryRotationSubCallbacks) {
     callback(pEvent);
   }
 }
@@ -73,7 +73,7 @@ void PubSub::subscribe(std::function<void(TimerRotaryPressEvent*)> callback) {
 
 void PubSub::subscribe(
     std::function<void(TimerRotaryRotationEvent*)> callback) {
-  _timerRotaryChangeSubCallbacks.push_back(callback);
+  _timerRotaryRotationSubCallbacks.push_back(callback);
 }
 
 void PubSub::subscribe(std::function<void(TimerStartEvent*)> callback) {
