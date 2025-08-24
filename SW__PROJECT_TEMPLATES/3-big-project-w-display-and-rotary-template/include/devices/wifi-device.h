@@ -15,6 +15,7 @@ class WifiDevice {
   void _printWifiConnectionInfo();
 
  public:
+  unsigned short wifiStatus;
   void setup();
 };
 

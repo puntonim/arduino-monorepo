@@ -5,6 +5,7 @@
 #include <WiFiS3.h>
 
 #include "utils/error-utils.h"
+#include "utils/pubsub-utils.h"
 
 namespace myproject {
 
@@ -16,7 +17,8 @@ WiFiClient wifiClient;
 
 void WifiDevice::setup() {
   // Ensure there is a WiFi module on the board.
-  if (WiFi.status() == WL_NO_MODULE) {
+  wifiStatus = WiFi.status();
+  if (wifiStatus == WL_NO_MODULE) {
     error_utils::errorMgr.addError("NO_WIFI_MODULE",
                                    "WiFi module not detected, exiting...",
                                    "No WiFi HW", true);
@@ -35,12 +37,12 @@ void WifiDevice::setup() {
 #endif
 
   // Connect to WiFi.
-  unsigned short wifiConnectionStatus = WL_IDLE_STATUS;
-  while (wifiConnectionStatus != WL_CONNECTED) {
+  wifiStatus = WL_IDLE_STATUS;
+  while (wifiStatus != WL_CONNECTED) {
 #if IS_DEBUG == true
     Serial.println((String) "Connecting to SSID " + _ssid + "...");
 #endif
-    wifiConnectionStatus = WiFi.begin(_ssid, _ppp);
+    wifiStatus = WiFi.begin(_ssid, _ppp);
 
 #if IS_DEBUG == true
     Serial.println("Waiting 10 secs...");
@@ -48,9 +50,11 @@ void WifiDevice::setup() {
     // Sleep 10 secs: this is how to sleep using TaskManagerIo. It's blocking.
     taskManager.yieldForMicros(10 * 1000 * 1000);
 
-    if (wifiConnectionStatus != WL_CONNECTED) {
-      error_utils::errorMgr.addError("WIFI_AP_CONNECTION_ERROR",
-                                     "Cannot connect to WiFi AP, retrying...",
+    if (wifiStatus == WL_CONNECTED) {
+      pubsub_utils::pubSub.publish(pubsub_utils::WifiConnectedEvent());
+    } else {
+      error_utils::errorMgr.addError("WIFI_CONNECTION_ERROR",
+                                     "Cannot connect to WiFi, retrying...",
                                      "WiFi conn err", true);
     }
   }

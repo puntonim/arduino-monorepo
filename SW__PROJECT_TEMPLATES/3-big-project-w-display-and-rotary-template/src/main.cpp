@@ -66,8 +66,6 @@ void setup() {
   ledMatrixDevice.setup();
   rotaryEncoderDevices.setup();
 
-  mainDomain.setup();
-
   // The WiFi setup is slow, so it should happen after the display and
   //  buttons, but before anything that uses error-utils or remote-log-utils
   //  because those make HTTP requests. But mind that loop() starts running
@@ -76,6 +74,9 @@ void setup() {
 
   remote_log_utils::remoteLog.postRemoteLog(
       "Just booted and connected to WiFi");
+
+  // Finally start the main domain.
+  mainDomain.setup();
 }
 
 void loop() {

@@ -13,6 +13,7 @@ class DisplayDevice {
   bool _isOn = false;
   unsigned short _counterForPrintRowsExecutions = 0;
   short _indexForCurrentlyDisplayedErrorMsg = -1;
+  bool _isBootComplete = false;
   void _printRows();
   void _printFirstRow();
   void _printSecondRow();
@@ -22,8 +23,9 @@ class DisplayDevice {
   void setup();
   void toogle();
   bool isOn();
-  void switchOff(bool doResetSwitchOffDisplayTaskId = true);
-  void switchOn(bool doCancelExistingSwitchOffDisplayTask = true);
+  void switchOff(const bool doResetSwitchOffDisplayTaskId = true);
+  void switchOn(const bool doCancelExistingSwitchOffDisplayTask = true,
+                const bool doForceSwitchOn = false);
   taskid_t switchOffTaskId = TASKMGR_INVALIDID;
   taskid_t printRowsTaskId = TASKMGR_INVALIDID;
 };

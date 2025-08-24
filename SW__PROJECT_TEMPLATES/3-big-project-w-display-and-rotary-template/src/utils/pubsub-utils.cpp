@@ -13,6 +13,12 @@ void PubSub::publish(ErrorStatusUpdateEvent event) {
   }
 }
 
+void PubSub::publish(WifiConnectedEvent event) {
+  for (auto& callback : _wifiConnectedSubCallbacks) {
+    callback(event);
+  }
+}
+
 void PubSub::publish(AnyRotaryHoldEvent event) {
   for (auto& callback : _anyRotaryHoldSubCallbacks) {
     callback(event);
@@ -57,6 +63,10 @@ void PubSub::publish(TimerUpdateEvent event) {
 
 void PubSub::subscribe(std::function<void(ErrorStatusUpdateEvent)> callback) {
   _errorStatusUpdateSubCallbacks.push_back(callback);
+}
+
+void PubSub::subscribe(std::function<void(WifiConnectedEvent)> callback) {
+  _wifiConnectedSubCallbacks.push_back(callback);
 }
 
 void PubSub::subscribe(std::function<void(AnyRotaryHoldEvent)> callback) {

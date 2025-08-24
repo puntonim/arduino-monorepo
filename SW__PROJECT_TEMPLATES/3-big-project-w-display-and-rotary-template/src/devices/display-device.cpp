@@ -27,6 +27,18 @@ void DisplayDevice::setup() {
   lcd.configureBacklightPin(3, LiquidCrystal::BACKLIGHT_NORMAL);
   switchOn();
 
+  // SUBSCRIPTION WifiConnectedEvent -------------------------------------------
+  pubsub_utils::pubSub.subscribe([this](
+                                     pubsub_utils::WifiConnectedEvent event) {
+#if IS_DEBUG == true
+    Serial.println((String) "DisplayDevice - received event: " + event.topic);
+#endif
+    _isBootComplete = true;
+    // Switch ON the display if not already ON, cancel and reschedule
+    //  then switch OFF task in 20 sec.
+    this->switchOn(true, true);
+  });
+
   // SUBSCRIPTION TimerRotaryPressEvent --------------------------------------
   pubsub_utils::pubSub.subscribe(
       [this](pubsub_utils::TimerRotaryPressEvent event) {
@@ -35,7 +47,7 @@ void DisplayDevice::setup() {
                        event.topic);
 #endif
         // Switch ON the display if not already ON, cancel and reschedule
-        //  the switch OFF task in 20 sec.
+        //  then switch OFF task in 20 sec.
         this->switchOn();
       });
 
@@ -47,7 +59,7 @@ void DisplayDevice::setup() {
                        event.topic);
 #endif
         // Switch ON the display if not already ON, cancel and reschedule
-        //  the switch OFF task in 20 sec.
+        //  then switch OFF task in 20 sec.
         this->switchOn();
       });
 
@@ -109,7 +121,8 @@ void DisplayDevice::switchOff(bool doResetSwitchOffDisplayTaskId /* = true */) {
 }
 
 void DisplayDevice::switchOn(
-    bool doCancelExistingSwitchOffDisplayTask /* = true */) {
+    const bool doCancelExistingSwitchOffDisplayTask /* = true */,
+    const bool doForceSwitchOn /* = false */) {
   if (doCancelExistingSwitchOffDisplayTask) {
     // Cancel any existing tasks to switch off display because they have an old
     // schedule.
@@ -120,18 +133,20 @@ void DisplayDevice::switchOn(
     task_manager_utils::cancelTask(switchOffTaskId);
   }
 
-  // Schedule a new task to switch off display.
+  if (_isBootComplete) {
+    // Schedule a new task to switch off display.
 #if IS_DEBUG == true
-  Serial.println((
-      String) "DisplayDevice - starting a new switch off "
-              "task");
+    Serial.println((
+        String) "DisplayDevice - starting a new switch off "
+                "task");
 #endif
-  switchOffTaskId =
-      taskManager.schedule(onceSeconds(settings::DISPLAY_SWITCHOFF_TIMER),
-                           [] { displayDevice.switchOff(); });
+    switchOffTaskId =
+        taskManager.schedule(onceSeconds(settings::DISPLAY_SWITCHOFF_TIMER),
+                             [] { displayDevice.switchOff(); });
+  }
 
   // If the display is already ON, then nothing to do.
-  if (!_isOn) {
+  if (!_isOn || doForceSwitchOn) {
     _isOn = true;
     _printRows();
     lcd.backlight();
@@ -156,7 +171,7 @@ void DisplayDevice::_printRows() {
 
   // Finally schedule a periodic task to update the data shown on display.
   // We cancel this task later on when the display is switched off.
-  if ((printRowsTaskId == TASKMGR_INVALIDID) && _isOn) {
+  if ((printRowsTaskId == TASKMGR_INVALIDID) && _isOn && _isBootComplete) {
 #if IS_DEBUG == true
     Serial.println(
         "DisplayDevice::_printRows - starting a new "
@@ -169,6 +184,12 @@ void DisplayDevice::_printRows() {
 
 void DisplayDevice::_printFirstRow() {
   RowPrinter p(0);
+
+  if (!_isBootComplete) {
+    p.print("[Booting]");
+    p.printFillingBlanks();
+    return;
+  }
 
   mainDomain.tick();
 
@@ -193,6 +214,13 @@ void DisplayDevice::_printFirstRow() {
 
 void DisplayDevice::_printSecondRow() {
   RowPrinter p(1);
+
+  if (!_isBootComplete) {
+    p.print("Conn to WiFi...");
+    p.printFillingBlanks();
+    return;
+  }
+
   p.print("Turn the rotary");
   p.printFillingBlanks();
 }

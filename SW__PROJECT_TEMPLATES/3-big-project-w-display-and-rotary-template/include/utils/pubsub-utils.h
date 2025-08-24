@@ -24,7 +24,12 @@ class ErrorStatusUpdateEvent : public BasePubSubEvent {
   // `isError` is a constructor's arg because that info is available in the
   //  object (ErrorMgr) that publishes this event. Mind how different it is for
   //  TimerRotaryRotationEvent instead.
-  ErrorStatusUpdateEvent(bool isError) : isError(isError) {};
+  ErrorStatusUpdateEvent(const bool isError) : isError(isError) {};
+};
+
+class WifiConnectedEvent : public BasePubSubEvent {
+ public:
+  constexpr static char topic[] = "WIFI_CONNECTED_EVENT";
 };
 
 class AnyRotaryHoldEvent : public BasePubSubEvent {
@@ -92,13 +97,14 @@ class TimerUpdateEvent : public BasePubSubEvent {
   // `time` is a constructor's arg because that info is available in the
   //  object (MainDomain) that publishes this event. Mind how different it is
   //  for TimerRotaryRotationEvent instead.
-  TimerUpdateEvent(time_utils::Time time) : time(time) {};
+  TimerUpdateEvent(const time_utils::Time time) : time(time) {};
 };
 
 class PubSub {
  private:
   std::list<std::function<void(ErrorStatusUpdateEvent)>>
       _errorStatusUpdateSubCallbacks;
+  std::list<std::function<void(WifiConnectedEvent)>> _wifiConnectedSubCallbacks;
   std::list<std::function<void(AnyRotaryHoldEvent)>> _anyRotaryHoldSubCallbacks;
   std::list<std::function<void(AllRotariesHoldEvent)>>
       _allRotariesHoldSubCallbacks;
@@ -112,6 +118,7 @@ class PubSub {
 
  public:
   void publish(ErrorStatusUpdateEvent event);
+  void publish(WifiConnectedEvent event);
   void publish(AnyRotaryHoldEvent event);
   void publish(AllRotariesHoldEvent event);
   void publish(TimerRotaryPressEvent event);
@@ -121,6 +128,7 @@ class PubSub {
   void publish(TimerUpdateEvent event);
 
   void subscribe(std::function<void(ErrorStatusUpdateEvent)> callback);
+  void subscribe(std::function<void(WifiConnectedEvent)> callback);
   void subscribe(std::function<void(AnyRotaryHoldEvent)> callback);
   void subscribe(std::function<void(AllRotariesHoldEvent)> callback);
   void subscribe(std::function<void(TimerRotaryPressEvent)> callback);
