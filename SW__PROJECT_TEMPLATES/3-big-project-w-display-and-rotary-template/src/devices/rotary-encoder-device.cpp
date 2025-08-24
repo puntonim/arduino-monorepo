@@ -32,24 +32,22 @@ static void _onAnyRotaryPress(const uint8_t pin, const bool isHeldDown) {
         // We need this "if" statement otherwise otherwise we would execute
         //  twice, one for each button held.
         if (pin == settings::TIMER_ROTARY_SW_PIN) {
-          pubsub_utils::pubSub.publish(
-              new pubsub_utils::AllRotariesHoldEvent());
+          pubsub_utils::pubSub.publish(pubsub_utils::AllRotariesHoldEvent());
         }
         return;
       }
     }
 
-    pubsub_utils::pubSub.publish(new pubsub_utils::AnyRotaryHoldEvent());
+    pubsub_utils::pubSub.publish(pubsub_utils::AnyRotaryHoldEvent());
   };
 
   if (pin == settings::TIMER_ROTARY_SW_PIN) {
-    pubsub_utils::pubSub.publish(new pubsub_utils::TimerRotaryPressEvent());
+    pubsub_utils::pubSub.publish(pubsub_utils::TimerRotaryPressEvent());
   }
 }
 
 static void _onTimerRotaryRotation(const int value) {
-  pubsub_utils::pubSub.publish(
-      new pubsub_utils::TimerRotaryRotationEvent(value, displayDevice.isOn()));
+  pubsub_utils::pubSub.publish(pubsub_utils::TimerRotaryRotationEvent(value, displayDevice.isOn()));
 }
 
 void RotaryEncoderDevices::setup() {
@@ -83,6 +81,9 @@ void RotaryEncoderDevices::setup() {
       false,  // Wrap around after hitting min and max.
       1       // step size.
   );
+  // Mind: no NOT delete the pointer to avoid memory leak, as it is used
+  //  by `switches`.
+  // delete _pTimerRotary;
 }
 
 }  // namespace myproject

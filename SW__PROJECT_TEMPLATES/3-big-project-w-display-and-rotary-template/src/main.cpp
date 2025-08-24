@@ -1,6 +1,6 @@
 /**
- * BIG PROJECT TEMPLATE WITH DISPLAY AND ROTARY
- * ============================================
+ * 3. BIG PROJECT TEMPLATE WITH DISPLAY AND ROTARY
+ * ===============================================
  * Template for a big projects. It includes:
  *  - WiFi with remote logging
  *  - error and domain leds

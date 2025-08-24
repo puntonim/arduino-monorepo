@@ -10,7 +10,7 @@ namespace myproject {
 
 class MainDomain {
  private:
-  void _onTimerRotaryRotation(pubsub_utils::TimerRotaryRotationEvent* pEvent);
+  void _onTimerRotaryRotation(pubsub_utils::TimerRotaryRotationEvent event);
   void _onTimerEnd();
   void _handleTestError();
   void _onAnyRotaryHoldEvent();

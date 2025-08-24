@@ -29,10 +29,10 @@ void DisplayDevice::setup() {
 
   // SUBSCRIPTION TimerRotaryPressEvent --------------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerRotaryPressEvent* pEvent) {
+      [this](pubsub_utils::TimerRotaryPressEvent event) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
-                       pEvent->topic);
+                       event.topic);
 #endif
         // Switch ON the display if not already ON, cancel and reschedule
         //  the switch OFF task in 20 sec.
@@ -41,10 +41,10 @@ void DisplayDevice::setup() {
 
   // SUBSCRIPTION TimerRotaryRotationEvent -----------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerRotaryRotationEvent* pEvent) {
+      [this](pubsub_utils::TimerRotaryRotationEvent event) {
 #if IS_DEBUG == true
         Serial.println((String) "DisplayDevice - received event: " +
-                       pEvent->topic);
+                       event.topic);
 #endif
         // Switch ON the display if not already ON, cancel and reschedule
         //  the switch OFF task in 20 sec.
@@ -52,26 +52,25 @@ void DisplayDevice::setup() {
       });
 
   // SUBSCRIPTION TimerStartEvent ------------------------------------------
-  pubsub_utils::pubSub.subscribe([this](pubsub_utils::TimerStartEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe([this](pubsub_utils::TimerStartEvent event) {
 #if IS_DEBUG == true
-    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+    Serial.println((String) "DisplayDevice - received event: " + event.topic);
 #endif
     this->_refreshFirstRow();
   });
 
   // SUBSCRIPTION TimerEndEvent --------------------------------------------
-  pubsub_utils::pubSub.subscribe([this](pubsub_utils::TimerEndEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe([this](pubsub_utils::TimerEndEvent event) {
 #if IS_DEBUG == true
-    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+    Serial.println((String) "DisplayDevice - received event: " + event.topic);
 #endif
     if (_isOn) this->_refreshFirstRow();
   });
 
   // SUBSCRIPTION TimerUpdateEvent ------------------------------------
-  pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::TimerUpdateEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe([this](pubsub_utils::TimerUpdateEvent event) {
 #if IS_DEBUG == true
-    Serial.println((String) "DisplayDevice - received event: " + pEvent->topic);
+    Serial.println((String) "DisplayDevice - received event: " + event.topic);
 #endif
     this->_refreshFirstRow();
   });

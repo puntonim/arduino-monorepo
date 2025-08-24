@@ -17,13 +17,12 @@ void ErrorLedDevice::setup() {
 
   // SUBSCRIPTION ErrorStatusUpdateEvent -------------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::ErrorStatusUpdateEvent* pEvent) {
+      [this](pubsub_utils::ErrorStatusUpdateEvent event) {
 #if IS_DEBUG == true
-        Serial.println(
-            (String) "ErrorLedDevice - received event: " + pEvent->topic +
-            " isError=" + (pEvent->isError ? "T" : "F"));
+        Serial.println((String) "ErrorLedDevice - received event: " +
+                       event.topic + " isError=" + (event.isError ? "T" : "F"));
 #endif
-        pEvent->isError ? this->startBlinking() : this->stopBlinking();
+        event.isError ? this->startBlinking() : this->stopBlinking();
       });
 }
 

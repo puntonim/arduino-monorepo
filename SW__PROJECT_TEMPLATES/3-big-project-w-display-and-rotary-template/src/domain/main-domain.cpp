@@ -13,27 +13,26 @@ MainDomain mainDomain;
 void MainDomain::setup() {
   // SUBSCRIPTION TimerRotaryRotationEvent -------------------------------------
   pubsub_utils::pubSub.subscribe(
-      [this](pubsub_utils::TimerRotaryRotationEvent* pEvent) {
+      [this](pubsub_utils::TimerRotaryRotationEvent event) {
 #if IS_DEBUG == true
-        Serial.println((String) "MainDomain - received event: " +
-                       pEvent->topic);
+        Serial.println((String) "MainDomain - received event: " + event.topic);
 #endif
-        this->_onTimerRotaryRotation(pEvent);
+        this->_onTimerRotaryRotation(event);
       });
 
   // SUBSCRIPTION AnyRotaryHoldEvent -------------------------------------------
-  pubsub_utils::pubSub.subscribe([this](
-                                     pubsub_utils::AnyRotaryHoldEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe(
+      [this](pubsub_utils::AnyRotaryHoldEvent event) {
 #if IS_DEBUG == true
-    Serial.println((String) "MainDomain - received event: " + pEvent->topic);
+        Serial.println((String) "MainDomain - received event: " + event.topic);
 #endif
-    this->_onAnyRotaryHoldEvent();
-  });
+        this->_onAnyRotaryHoldEvent();
+      });
 
   // SUBSCRIPTION TimerEndEvent --------------------------------------------
-  pubsub_utils::pubSub.subscribe([this](pubsub_utils::TimerEndEvent* pEvent) {
+  pubsub_utils::pubSub.subscribe([this](pubsub_utils::TimerEndEvent event) {
 #if IS_DEBUG == true
-    Serial.println((String) "MainDomain - received event: " + pEvent->topic);
+    Serial.println((String) "MainDomain - received event: " + event.topic);
 #endif
     this->_onTimerEnd();
   });
@@ -90,7 +89,7 @@ struct time_utils::Time MainDomain::tick() {
   if (timer.isOver()) return timer.getTime();
   struct time_utils::Time time = timer.tick();
   if (timer.isOver())
-    pubsub_utils::pubSub.publish(new pubsub_utils::TimerEndEvent());
+    pubsub_utils::pubSub.publish(pubsub_utils::TimerEndEvent());
   return time;
 }
 
@@ -108,7 +107,7 @@ void MainDomain::_onTimerEnd() {
 void MainDomain::_onAnyRotaryHoldEvent() {
   bool wasOver = timer.isOver();
   timer.reset();
-  if (!wasOver) pubsub_utils::pubSub.publish(new pubsub_utils::TimerEndEvent());
+  if (!wasOver) pubsub_utils::pubSub.publish(pubsub_utils::TimerEndEvent());
 }
 
 /**
@@ -124,24 +123,24 @@ void MainDomain::_onAnyRotaryHoldEvent() {
  *    subtract time
  */
 void MainDomain::_onTimerRotaryRotation(
-    pubsub_utils::TimerRotaryRotationEvent* pEvent) {
+    pubsub_utils::TimerRotaryRotationEvent event) {
   // If the rotary encoder was rotated when the display was OFF, then noop (as
   //  as we just have to switch on the display and NOT to increment the
   //  countdown timer).
-  if (!pEvent->isDisplayOn) return;
+  if (!event.isDisplayOn) return;
   if (timer.isOver()) {
-    if (pEvent->value > 0) {
+    if (event.value > 0) {
       // If time is over and the timer rotary encoder was rotated clockwise,
       //  then start a new countdown timer with the initial time.
       timer.start(settings::INITIAL_TIMER.h, settings::INITIAL_TIMER.m,
                   settings::INITIAL_TIMER.s);
       // And publish the new schedule event.
-      pubsub_utils::pubSub.publish(new pubsub_utils::TimerStartEvent());
+      pubsub_utils::pubSub.publish(pubsub_utils::TimerStartEvent());
     }
   } else {
     // If time is not over, then add/remove the time.
     time_utils::Time time;
-    if (pEvent->value > 0) {
+    if (event.value > 0) {
       // Clockwise rotation: add time.
       time = timer.add(settings::DELTA_TIME_ON_ROTARY_ROTATION.h,
                        settings::DELTA_TIME_ON_ROTARY_ROTATION.m,
@@ -154,9 +153,9 @@ void MainDomain::_onTimerRotaryRotation(
     }
     timer.tick();
     if (!timer.isOver()) {
-      pubsub_utils::pubSub.publish(new pubsub_utils::TimerUpdateEvent(time));
+      pubsub_utils::pubSub.publish(pubsub_utils::TimerUpdateEvent(time));
     } else {
-      pubsub_utils::pubSub.publish(new pubsub_utils::TimerEndEvent());
+      pubsub_utils::pubSub.publish(pubsub_utils::TimerEndEvent());
     }
   }
 }

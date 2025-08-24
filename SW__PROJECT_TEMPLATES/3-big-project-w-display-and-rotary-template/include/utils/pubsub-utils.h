@@ -97,38 +97,37 @@ class TimerUpdateEvent : public BasePubSubEvent {
 
 class PubSub {
  private:
-  std::list<std::function<void(ErrorStatusUpdateEvent*)>>
+  std::list<std::function<void(ErrorStatusUpdateEvent)>>
       _errorStatusUpdateSubCallbacks;
-  std::list<std::function<void(AnyRotaryHoldEvent*)>>
-      _anyRotaryHoldSubCallbacks;
-  std::list<std::function<void(AllRotariesHoldEvent*)>>
+  std::list<std::function<void(AnyRotaryHoldEvent)>> _anyRotaryHoldSubCallbacks;
+  std::list<std::function<void(AllRotariesHoldEvent)>>
       _allRotariesHoldSubCallbacks;
-  std::list<std::function<void(TimerRotaryPressEvent*)>>
+  std::list<std::function<void(TimerRotaryPressEvent)>>
       _timerRotaryPressSubCallbacks;
-  std::list<std::function<void(TimerRotaryRotationEvent*)>>
+  std::list<std::function<void(TimerRotaryRotationEvent)>>
       _timerRotaryRotationSubCallbacks;
-  std::list<std::function<void(TimerStartEvent*)>> _timerStartSubCallbacks;
-  std::list<std::function<void(TimerEndEvent*)>> _timerEndSubCallbacks;
-  std::list<std::function<void(TimerUpdateEvent*)>> _timerUpdateSubCallbacks;
+  std::list<std::function<void(TimerStartEvent)>> _timerStartSubCallbacks;
+  std::list<std::function<void(TimerEndEvent)>> _timerEndSubCallbacks;
+  std::list<std::function<void(TimerUpdateEvent)>> _timerUpdateSubCallbacks;
 
  public:
-  void publish(ErrorStatusUpdateEvent* pEvent);
-  void publish(AnyRotaryHoldEvent* pEvent);
-  void publish(AllRotariesHoldEvent* pEvent);
-  void publish(TimerRotaryPressEvent* pEvent);
-  void publish(TimerRotaryRotationEvent* pEvent);
-  void publish(TimerStartEvent* pEvent);
-  void publish(TimerEndEvent* pEvent);
-  void publish(TimerUpdateEvent* pEvent);
+  void publish(ErrorStatusUpdateEvent event);
+  void publish(AnyRotaryHoldEvent event);
+  void publish(AllRotariesHoldEvent event);
+  void publish(TimerRotaryPressEvent event);
+  void publish(TimerRotaryRotationEvent event);
+  void publish(TimerStartEvent event);
+  void publish(TimerEndEvent event);
+  void publish(TimerUpdateEvent event);
 
-  void subscribe(std::function<void(ErrorStatusUpdateEvent*)> callback);
-  void subscribe(std::function<void(AnyRotaryHoldEvent*)> callback);
-  void subscribe(std::function<void(AllRotariesHoldEvent*)> callback);
-  void subscribe(std::function<void(TimerRotaryPressEvent*)> callback);
-  void subscribe(std::function<void(TimerRotaryRotationEvent*)> callback);
-  void subscribe(std::function<void(TimerStartEvent*)> callback);
-  void subscribe(std::function<void(TimerEndEvent*)> callback);
-  void subscribe(std::function<void(TimerUpdateEvent*)> callback);
+  void subscribe(std::function<void(ErrorStatusUpdateEvent)> callback);
+  void subscribe(std::function<void(AnyRotaryHoldEvent)> callback);
+  void subscribe(std::function<void(AllRotariesHoldEvent)> callback);
+  void subscribe(std::function<void(TimerRotaryPressEvent)> callback);
+  void subscribe(std::function<void(TimerRotaryRotationEvent)> callback);
+  void subscribe(std::function<void(TimerStartEvent)> callback);
+  void subscribe(std::function<void(TimerEndEvent)> callback);
+  void subscribe(std::function<void(TimerUpdateEvent)> callback);
 };
 
 // "Soft" singleton global object defined as extern and initialized here,

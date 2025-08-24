@@ -59,7 +59,7 @@ void ErrorMgr::addError(const char* errorId, const char* msgForSerial,
 
   // Publish the event so that the errorLed can start blinking, and
   //  the LCD display (if any) to show the message.
-  pubsub_utils::pubSub.publish(new pubsub_utils::ErrorStatusUpdateEvent(true));
+  pubsub_utils::pubSub.publish(pubsub_utils::ErrorStatusUpdateEvent(true));
   _handleErrors(doSkipRemoteLog);
 }
 
@@ -75,15 +75,14 @@ void ErrorMgr::removeError(const char* errorId) {
   _errors.remove_if([errorId](Error e) { return e.errorId == errorId; });
 
   if (!areThereErrors()) {
-    pubsub_utils::pubSub.publish(
-        new pubsub_utils::ErrorStatusUpdateEvent(false));
+    pubsub_utils::pubSub.publish(pubsub_utils::ErrorStatusUpdateEvent(false));
   }
 }
 
 void ErrorMgr::removeAllErrors() {
   _errors.clear();
 
-  pubsub_utils::pubSub.publish(new pubsub_utils::ErrorStatusUpdateEvent(false));
+  pubsub_utils::pubSub.publish(pubsub_utils::ErrorStatusUpdateEvent(false));
 }
 
 bool ErrorMgr::areThereErrors() { return _errors.size() > 0; }

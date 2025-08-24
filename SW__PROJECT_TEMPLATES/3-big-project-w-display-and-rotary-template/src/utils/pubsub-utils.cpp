@@ -7,84 +7,83 @@ namespace pubsub_utils {
 //  but defined as extern and initialized in pubsub-utils.h.
 PubSub pubSub;
 
-void PubSub::publish(ErrorStatusUpdateEvent* pEvent) {
+void PubSub::publish(ErrorStatusUpdateEvent event) {
   for (auto& callback : _errorStatusUpdateSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::publish(AnyRotaryHoldEvent* pEvent) {
+void PubSub::publish(AnyRotaryHoldEvent event) {
   for (auto& callback : _anyRotaryHoldSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::publish(AllRotariesHoldEvent* pEvent) {
+void PubSub::publish(AllRotariesHoldEvent event) {
   for (auto& callback : _allRotariesHoldSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::publish(TimerRotaryPressEvent* pEvent) {
+void PubSub::publish(TimerRotaryPressEvent event) {
   for (auto& callback : _timerRotaryPressSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::publish(TimerRotaryRotationEvent* pEvent) {
+void PubSub::publish(TimerRotaryRotationEvent event) {
   for (auto& callback : _timerRotaryRotationSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::publish(TimerStartEvent* pEvent) {
+void PubSub::publish(TimerStartEvent event) {
   for (auto& callback : _timerStartSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::publish(TimerEndEvent* pEvent) {
+void PubSub::publish(TimerEndEvent event) {
   for (auto& callback : _timerEndSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::publish(TimerUpdateEvent* pEvent) {
+void PubSub::publish(TimerUpdateEvent event) {
   for (auto& callback : _timerUpdateSubCallbacks) {
-    callback(pEvent);
+    callback(event);
   }
 }
 
-void PubSub::subscribe(std::function<void(ErrorStatusUpdateEvent*)> callback) {
+void PubSub::subscribe(std::function<void(ErrorStatusUpdateEvent)> callback) {
   _errorStatusUpdateSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(AnyRotaryHoldEvent*)> callback) {
+void PubSub::subscribe(std::function<void(AnyRotaryHoldEvent)> callback) {
   _anyRotaryHoldSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(AllRotariesHoldEvent*)> callback) {
+void PubSub::subscribe(std::function<void(AllRotariesHoldEvent)> callback) {
   _allRotariesHoldSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(TimerRotaryPressEvent*)> callback) {
+void PubSub::subscribe(std::function<void(TimerRotaryPressEvent)> callback) {
   _timerRotaryPressSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(
-    std::function<void(TimerRotaryRotationEvent*)> callback) {
+void PubSub::subscribe(std::function<void(TimerRotaryRotationEvent)> callback) {
   _timerRotaryRotationSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(TimerStartEvent*)> callback) {
+void PubSub::subscribe(std::function<void(TimerStartEvent)> callback) {
   _timerStartSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(TimerEndEvent*)> callback) {
+void PubSub::subscribe(std::function<void(TimerEndEvent)> callback) {
   _timerEndSubCallbacks.push_back(callback);
 }
 
-void PubSub::subscribe(std::function<void(TimerUpdateEvent*)> callback) {
+void PubSub::subscribe(std::function<void(TimerUpdateEvent)> callback) {
   _timerUpdateSubCallbacks.push_back(callback);
 }
 
