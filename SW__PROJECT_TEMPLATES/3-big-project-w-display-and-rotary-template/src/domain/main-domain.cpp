@@ -56,27 +56,29 @@ void MainDomain::run() {
   domainLedDevice.switchOn(true);
 
   tick();
-  _handleTestError();
+  _handleTestErrors();
 
   domainLedDevice.switchOff(true);
 }
 
 /**
- * Add a test error after ~20 sec after boot and remove it 5 secs later.
+ * Add a test error after ~20 sec after boot and remove it 25 secs later.
  * The error should be printed to the Serial Monitor, sent to io-be at
- *  /iot/remote-logs/ and the errorLed should blink.
+ *  /iot/remote-logs/, the errorLed should blink and printed on the LCD display.
  */
-bool wasErrorAdded = false;
-void MainDomain::_handleTestError() {
+bool wereErrorAdded = false;
+void MainDomain::_handleTestErrors() {
   auto nowTs = millis();
   // After 20 secs from boot, add a test error for 10 secs.
-  if (nowTs > 20000 && !wasErrorAdded) {
-    error_utils::errorMgr.addError("TEST_ERROR", "Just a test error",
-                                   "Test err");
-    wasErrorAdded = true;
-    taskManager.schedule(onceSeconds(10), [] {
-      error_utils::errorMgr.removeError("TEST_ERROR");
-      // errorDomain.removeAllErrors();
+  if (nowTs > 20000 && !wereErrorAdded) {
+    error_utils::errorMgr.addError("TEST_ERROR1", "Just a test error1",
+                                   "Test err1");
+    error_utils::errorMgr.addError("TEST_ERROR2", "Just a test error2",
+                                   "Test err2");
+    wereErrorAdded = true;
+    taskManager.schedule(onceSeconds(25), [] {
+      // error_utils::errorMgr.removeError("TEST_ERROR1");
+      error_utils::errorMgr.removeAllErrors();
     });
   }
 }

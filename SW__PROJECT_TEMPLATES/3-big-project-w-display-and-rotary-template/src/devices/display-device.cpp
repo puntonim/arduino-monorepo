@@ -5,6 +5,7 @@
 #include <IoAbstractionWire.h>
 
 #include "domain/main-domain.h"
+#include "utils/error-utils.h"
 #include "utils/pubsub-utils.h"
 #include "utils/task-manager-utils.h"
 
@@ -171,7 +172,7 @@ void DisplayDevice::_printRows() {
 
   // Finally schedule a periodic task to update the data shown on display.
   // We cancel this task later on when the display is switched off.
-  if ((printRowsTaskId == TASKMGR_INVALIDID) && _isOn && _isBootComplete) {
+  if ((printRowsTaskId == TASKMGR_INVALIDID) && _isOn) {
 #if IS_DEBUG == true
     Serial.println(
         "DisplayDevice::_printRows - starting a new "
@@ -214,6 +215,45 @@ void DisplayDevice::_printFirstRow() {
 
 void DisplayDevice::_printSecondRow() {
   RowPrinter p(1);
+
+  // If there are errors,
+  //  and this is not the first execution after the button was pressed (when we
+  //  have to print the regular row) then we need to show different error msgs
+  //  every 3 seconds on rotation (which means that every 3 seconds we print the
+  //  next error msg in the list).
+  if (error_utils::errorMgr.areThereErrors() &&
+      (_counterForPrintRowsExecutions > 0)) {
+    // Reminder division by 3, and do something only if reminder is 0.
+    auto dv = std::div(_counterForPrintRowsExecutions, 3);
+    if (dv.rem != 0)
+      return;
+    else {
+      // It's time to rotate the msg on the display.
+      short size = error_utils::errorMgr.getErrors().size();
+      // If we have already shown all the error msgs, then it's time to show the
+      // regular row.
+      if (_indexForCurrentlyDisplayedErrorMsg >= (size - 1)) {
+        _indexForCurrentlyDisplayedErrorMsg = -1;
+      } else {
+        // Print the next msg in the list.
+        _indexForCurrentlyDisplayedErrorMsg++;
+        auto error = std::next(error_utils::errorMgr.getErrors().begin(),
+                               _indexForCurrentlyDisplayedErrorMsg);
+
+        if (error->msgForDisplay) {
+          p.print(error->msgForDisplay);
+          p.printFillingBlanks();
+        } else {
+          p.print("IndexError");
+          p.printFillingBlanks();
+#if IS_DEBUG == true
+          Serial.println("IndexError in DisplayDevice::_printSecondRow");
+#endif
+        }
+        return;
+      }
+    }
+  }
 
   if (!_isBootComplete) {
     p.print("Conn to WiFi...");
@@ -299,6 +339,11 @@ void RowPrinter::printFillingBlanks() {
   for (int i = 0; i < diff; i++) lcd.print(" ");
   _currentSize = _MAX_SIZE;
 #endif
+  // If there are any errors then print ! at the end of the 2nd row.
+  if (error_utils::errorMgr.areThereErrors()) {
+    lcd.setCursor(15, 1);
+    lcd.print("!");
+  }
 }
 
 /**

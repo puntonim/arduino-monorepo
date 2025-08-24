@@ -10,6 +10,14 @@ namespace error_utils {
 
 class Error {
  public:
+  // Note: these vars are char* and not char[] because it's not possible to use
+  //  char[]. Because you need to give it a value or a size at init,
+  //  eg. char name[] = "john"; // OK
+  //  eg. char name[100];
+  //      name = "John";  // NOK!!
+  //      strcpy(name, "John");  // OK
+  //  eg. char lastName[];   // NOK!!
+  //      lastName = "dow";  // NOK!!
   // Unique identifier for the error: eg. WIFI_CONNECT_AP_ERROR.
   const char* errorId;
   // Text to be used for Serial.println();
